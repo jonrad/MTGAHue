@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28803.156
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MTGAHue", "MTGAHue\MTGAHue.csproj", "{1E33939E-817E-4F0D-A163-FDB88094654D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MTGADispatcher", "MTGADispatcher\MTGADispatcher.csproj", "{BCC13AE8-1115-4C31-8867-48DE81640444}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MTGADispatcher.Specs", "MTGADispatcher.Specs\MTGADispatcher.Specs.csproj", "{E12484B8-1FE6-404F-8BAA-291CAE664EE0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MTGADispatcher.Integration", "MTGADispatcher.Integration\MTGADispatcher.Integration.csproj", "{B6E77CDB-038A-48B4-8BB9-8F6AE9686AFF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1E33939E-817E-4F0D-A163-FDB88094654D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E33939E-817E-4F0D-A163-FDB88094654D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E33939E-817E-4F0D-A163-FDB88094654D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E33939E-817E-4F0D-A163-FDB88094654D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BCC13AE8-1115-4C31-8867-48DE81640444}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BCC13AE8-1115-4C31-8867-48DE81640444}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BCC13AE8-1115-4C31-8867-48DE81640444}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BCC13AE8-1115-4C31-8867-48DE81640444}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E12484B8-1FE6-404F-8BAA-291CAE664EE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E12484B8-1FE6-404F-8BAA-291CAE664EE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E12484B8-1FE6-404F-8BAA-291CAE664EE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E12484B8-1FE6-404F-8BAA-291CAE664EE0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6E77CDB-038A-48B4-8BB9-8F6AE9686AFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6E77CDB-038A-48B4-8BB9-8F6AE9686AFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6E77CDB-038A-48B4-8BB9-8F6AE9686AFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6E77CDB-038A-48B4-8BB9-8F6AE9686AFF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9D023822-E65D-4FA5-826B-486594CA36B1}
+	EndGlobalSection
+EndGlobal
