@@ -20,7 +20,7 @@ namespace MTGADispatcher.Integration.Features
         }
 
         [Fact]
-        public void CastSingleMulticoloredSpell()
+        public void NotifiesOfSpellCast()
         {
             GivenGameStarted();
 

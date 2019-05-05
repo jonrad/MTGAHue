@@ -78,6 +78,24 @@ namespace MTGADispatcher.Specs.BlockProcessing
                 It cast_a_spell_exclamation_point = () =>
                     game.Events.WasToldTo(d => d.Dispatch(Param.IsAny<CastSpell>()));
             }
+
+            class when_contains_play_land
+            {
+                Establish context = () =>
+                    block = new Block("hi mom", BuildGameState(@"{
+                        'annotations': [ { 
+                            'type': ['AnnotationType_ZoneTransfer'],
+                            'affectedIds': [1],
+                            'details': [
+                                { 'key': 'foo', 'valueString': ['bar']},
+                                { 'key': 'category', 'valueString': ['PlayLand'] }
+                            ]
+                        } ]
+                    }"));
+
+                It played_a_land = () =>
+                    game.Events.WasToldTo(d => d.Dispatch(Param.IsAny<PlayLand>()));
+            }
         }
     }
 }

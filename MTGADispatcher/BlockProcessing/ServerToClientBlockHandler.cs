@@ -81,10 +81,9 @@ namespace MTGADispatcher.BlockProcessing
                 string category = null;
                 foreach (var detail in details)
                 {
-                    switch (detail["key"].Value<string>())
+                    if (detail["key"].Value<string>() == "category")
                     {
-                        case "category":
-                            category = detail["valueString"][0].Value<string>();
+                        category = detail["valueString"][0].Value<string>();
                         break;
                     }
                 }
@@ -93,6 +92,11 @@ namespace MTGADispatcher.BlockProcessing
                 {
                     game.InstancesById.TryGetValue(instanceId.Value, out var instance);
                     game.Events.Dispatch(new CastSpell(instance));
+                }
+                else if (category == "PlayLand")
+                {
+                    game.InstancesById.TryGetValue(instanceId.Value, out var instance);
+                    game.Events.Dispatch(new PlayLand(instance));
                 }
             }
         }
