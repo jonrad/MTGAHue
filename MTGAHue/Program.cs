@@ -1,4 +1,5 @@
-﻿using MTGADispatcher;
+﻿using Castle.Windsor;
+using MTGADispatcher;
 using MTGADispatcher.Events;
 using Newtonsoft.Json.Linq;
 using Q42.HueApi;
@@ -17,24 +18,19 @@ namespace MTGAHue
     {
         static async Task Main()
         {
-            var stream = await ConnectHue();
-            var spellFlasher = new HueSpellFlasher(stream);
 
             var path = MtgaOutputPath();
             var game = new Game();
 
-            using (var service = new MtgaService(
-                new BlockDispatcher(
-                    new BlockBuilder(),
-                    new Dispatcher<Block>(),
-                    () => new FileLineReader(MtgaOutputPath())),
-                new BlockProcessor(
-                    game,
-                    new IGameUpdater[] 
-                    {
-                        new ServerToClientBlockHandler(new InstanceBuilder())
-                    })))
+            using (var container = new WindsorContainer())
             {
+                container.Install(new AppInstaller(path, game));
+
+                var service = container.Resolve<MtgaService>();
+
+                var stream = await ConnectHue();
+                var spellFlasher = new HueSpellFlasher(stream);
+
                 game.Events.Subscriptions.Subscribe<CastSpell>(Debug);
                 game.Events.Subscriptions.Subscribe<CastSpell>(spellFlasher.OnCastSpell);
 

@@ -10,9 +10,7 @@ namespace MTGADispatcher
 
         private readonly IDispatcher<Block> dispatcher;
 
-        private readonly Func<ILineReader> lineReaderBuilder;
-
-        private ILineReader lineReader;
+        private readonly ILineReader lineReader;
 
         private IBlockBuilder blockBuilder;
 
@@ -21,11 +19,11 @@ namespace MTGADispatcher
         public BlockDispatcher(
             IBlockBuilder blockBuilder,
             IDispatcher<Block> dispatcher,
-            Func<ILineReader> lineReaderBuilder)
+            ILineReader lineReader)
         {
             this.blockBuilder = blockBuilder;
             this.dispatcher = dispatcher;
-            this.lineReaderBuilder = lineReaderBuilder;
+            this.lineReader = lineReader;
         }
 
         public ISubscriptions<Block> Subscriptions => dispatcher.Subscriptions;
@@ -36,8 +34,6 @@ namespace MTGADispatcher
             {
                 throw new InvalidOperationException("Already started");
             }
-
-            lineReader = lineReaderBuilder();
 
             task =
                 GetBlocks(cancellationTokenSource.Token)
@@ -58,8 +54,6 @@ namespace MTGADispatcher
             }
             finally
             {
-                lineReader.Dispose();
-                lineReader = null;
                 task = null;
             }
         }
