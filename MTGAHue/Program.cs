@@ -18,7 +18,6 @@ namespace MTGAHue
     {
         static async Task Main()
         {
-
             var path = MtgaOutputPath();
             var game = new Game();
 

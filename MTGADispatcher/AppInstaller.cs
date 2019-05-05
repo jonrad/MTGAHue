@@ -2,9 +2,8 @@
 using Castle.MicroKernel.Resolvers.SpecializedResolvers;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
-using MTGADispatcher;
 
-namespace MTGAHue
+namespace MTGADispatcher
 {
     public class AppInstaller : IWindsorInstaller
     {

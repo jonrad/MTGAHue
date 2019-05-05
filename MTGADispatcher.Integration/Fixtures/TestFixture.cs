@@ -1,4 +1,5 @@
-﻿using MTGADispatcher.Events;
+﻿using Castle.Windsor;
+using MTGADispatcher.Events;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,15 +10,15 @@ namespace MTGADispatcher.Integration.Features
 {
     public class TestFixture : IDisposable
     {
-        private MtgaService service;
-
         private string path;
 
         private StreamWriter streamWriter;
 
+        private WindsorContainer container;
+
         public List<CastSpell> SpellsCast = new List<CastSpell>();
 
-        public Game Game;
+        public Game Game { get; private set; }
 
         public Game CreateGame()
         {
@@ -26,19 +27,12 @@ namespace MTGADispatcher.Integration.Features
 
             Game = new Game();
 
-            service = new MtgaService(
-                new BlockDispatcher(
-                    new BlockBuilder(),
-                    new Dispatcher<Block>(),
-                    () => new FileLineReader(path)),
-                new BlockProcessor(
-                    Game,
-                    new IGameUpdater[]
-                    {
-                        new ServerToClientBlockHandler(new InstanceBuilder()),
-                        new GameEndedBlockHandler()
-                    }));
+            container = new WindsorContainer();
+            container.Install(
+                new AppInstaller(path, Game),
+                new IntegrationInstaller());
 
+            var service = container.Resolve<MtgaService>();
             service.Start();
 
             Game.Events.Subscriptions.Subscribe<CastSpell>(OnCastSpell);
@@ -98,8 +92,8 @@ namespace MTGADispatcher.Integration.Features
                 return;
             }
 
+            container.Dispose();
             Game.Events.Subscriptions.Unsubscribe<CastSpell>(OnCastSpell);
-            service?.Dispose();
             streamWriter?.Dispose();
 
             if (path != null && File.Exists(path))
