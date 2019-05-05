@@ -10,6 +10,15 @@ namespace MTGADispatcher
     // This should return an interface and build all of them
     public class InstanceBuilder : IInstanceBuilder
     {
+        private Dictionary<string, MagicColor> landColorMap = new Dictionary<string, MagicColor>
+        {
+            ["SubType_Plains"] = MagicColor.White,
+            ["SubType_Mountain"] = MagicColor.Red,
+            ["SubType_Forest"] = MagicColor.Green,
+            ["SubType_Island"] = MagicColor.Blue,
+            ["SubType_Swamp"] = MagicColor.Black
+        };
+
         public Instance Build(JToken gameObject)
         {
             //TODO: error handling, logging
@@ -22,24 +31,47 @@ namespace MTGADispatcher
 
         private IEnumerable<MagicColor> GetColors(JToken gameObject)
         {
-            //would be nice if we could figure out how to make
-            //lands the proper colors
-            if (!(gameObject["color"] is JArray colorToken))
+            if (gameObject["color"] is JArray colorToken)
             {
-                yield break;
+                return GetColorFromColorArray(colorToken);
             }
 
-            foreach (var colorString in colorToken.Select(c => c.Value<string>()))
+            if (gameObject["cardTypes"] is JArray cardTypes && cardTypes.Values<string>().Contains("CardType_Land"))
+            {
+                return GetColorsForLand(gameObject);
+            }
+
+            return Enumerable.Empty<MagicColor>();
+        }
+
+        private IEnumerable<MagicColor> GetColorFromColorArray(JArray colors)
+        {
+            foreach (var colorString in colors.Select(c => c.Value<string>()))
             {
                 var color = colorString.Split('_').Last();
                 if (!Enum.TryParse<MagicColor>(color, out var colorValue))
                 {
                     //Log me
-                    //Console.WriteLine($"Unknown color {colorString}");
                 }
                 else
                 {
                     yield return colorValue;
+                }
+            }
+        }
+
+        private IEnumerable<MagicColor> GetColorsForLand(JToken gameObject)
+        {
+            if (!(gameObject["subtypes"] is JArray subTypes))
+            {
+                yield break;
+            }
+
+            foreach (var subType in subTypes.Values<string>())
+            {
+                if (landColorMap.TryGetValue(subType, out var color))
+                {
+                    yield return color;
                 }
             }
         }
