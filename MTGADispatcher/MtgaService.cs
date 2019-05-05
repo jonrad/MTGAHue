@@ -14,7 +14,6 @@ namespace MTGADispatcher
         {
             this.blockDispatcher = blockDispatcher;
             this.blockProcessor = blockProcessor;
-
         }
 
         public void Start()

@@ -63,7 +63,7 @@ namespace MTGADispatcher.Specs
             subject = new BlockDispatcher(
                 The<IBlockBuilder>(),
                 The<IDispatcher<Block>>(),
-                () => line_reader);
+                line_reader);
         };
 
         Cleanup cleanup = () =>
@@ -73,15 +73,6 @@ namespace MTGADispatcher.Specs
         {
             Establish context = () =>
                 subject.Start();
-
-            class when_stopped_while_waiting
-            {
-                Because of = () =>
-                    subject.Stop();
-
-                It disposed_line_reader = () =>
-                    line_reader.Disposed.ShouldBeTrue();
-            }
 
             class when_stopped_twice
             {
