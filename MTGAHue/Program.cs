@@ -8,6 +8,7 @@ using Q42.HueApi.Models.Groups;
 using Q42.HueApi.Streaming;
 using Q42.HueApi.Streaming.Models;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -104,26 +105,27 @@ namespace MTGAHue
                 }
 
                 Console.Error.WriteLine($"Could not find entertainment group named {entertainmentGroupName}");
-                var names = entertainmentGroups.Select(e => e.Name);
-                Console.Error.WriteLine($"Possible group names are: {string.Join(", ", names)}");
+                WriteValidGroupNames(entertainmentGroups);
                 Exit(1);
             }
-            else if (entertainmentGroups.Count == 1)
+
+            if (entertainmentGroups.Count == 1)
             {
                 return entertainmentGroups.First();
             }
-            else
-            {
-                var names = entertainmentGroups.Select(e => e.Name);
-                Console.Error.WriteLine("Please select entertainment group name with the -e option");
-                Console.Error.WriteLine($"Possible group names are: {string.Join(", ", names)}");
-                Exit(1);
-            }
 
-            Console.Error.WriteLine("Couldn't find any entertainment groups. Giving up");
+            var names = entertainmentGroups.Select(e => e.Name);
+            Console.Error.WriteLine("Please select entertainment group name with the -e option");
+            WriteValidGroupNames(entertainmentGroups);
             Exit(1);
 
             throw new InvalidOperationException();
+        }
+
+        private static void WriteValidGroupNames(IEnumerable<Group> entertainmentGroups)
+        {
+            var names = entertainmentGroups.Select(e => e.Name);
+            Console.Error.WriteLine($"Possible group names are: {string.Join(", ", names)}");
         }
 
         private static async Task<StreamingHueClient> GetClient()
