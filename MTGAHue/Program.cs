@@ -1,11 +1,14 @@
 ﻿using Castle.Windsor;
+using CommandLine;
 using MTGADispatcher;
 using MTGADispatcher.Events;
 using Newtonsoft.Json.Linq;
 using Q42.HueApi;
+using Q42.HueApi.Models.Groups;
 using Q42.HueApi.Streaming;
 using Q42.HueApi.Streaming.Models;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -16,8 +19,19 @@ namespace MTGAHue
 {
     class Program
     {
-        static async Task Main()
+        public class Options
         {
+            [Option('e', "entertainment", Required = false, HelpText = "Entertainment Group Name")]
+            public string EntertainmentGroupName { get; set; }
+        }
+
+        static async Task Main(string[] args)
+        {
+            Options options = null;
+
+            var optionsResults = Parser.Default.ParseArguments<Options>(args)
+                .WithParsed(o => options = o);
+
             var path = MtgaOutputPath();
             var game = new Game();
 
@@ -27,7 +41,7 @@ namespace MTGAHue
 
                 var service = container.Resolve<MtgaService>();
 
-                var stream = await ConnectHue();
+                var stream = await ConnectHue(options.EntertainmentGroupName);
                 var spellFlasher = new HueSpellFlasher(stream);
 
                 game.Events.Subscriptions.Subscribe<CastSpell>(Debug);
@@ -51,23 +65,16 @@ namespace MTGAHue
                 "output_log.txt");
         }
 
-        private static async Task<StreamingGroup> ConnectHue()
+        private static async Task<StreamingGroup> ConnectHue(string entertainmentGroupName)
         {
             //most of this stolen from Q42 example
             var client = await GetClient();
 
-            var all = await client.LocalHueClient.GetEntertainmentGroups();
-            var group = all.FirstOrDefault();
+            var entertainmentGroup = await GetEntertainmentGroup(client, entertainmentGroupName);
 
-            if (group == null)
-            {
-                Console.Error.WriteLine("Couldn't find any entertainment groups. Giving up");
-                Exit(1);
-            }
+            var stream = new StreamingGroup(entertainmentGroup.Locations);
 
-            var stream = new StreamingGroup(group.Locations);
-
-            await client.Connect(group.Id);
+            await client.Connect(entertainmentGroup.Id);
 
             //waiting for this never returns?
             client.AutoUpdate(stream, CancellationToken.None, 50, onlySendDirtyStates: false);
@@ -76,6 +83,49 @@ namespace MTGAHue
             Console.WriteLine(bridgeInfo.IsStreamingActive ? "Streaming is active" : "Streaming is not active");
 
             return stream;
+        }
+
+        private static async Task<Group> GetEntertainmentGroup(StreamingHueClient client, string entertainmentGroupName)
+        {
+            var entertainmentGroups = await client.LocalHueClient.GetEntertainmentGroups();
+
+            if (entertainmentGroups.Count == 0)
+            {
+                Console.Error.WriteLine("No entertainment groups found. Please set them up through the Hue app");
+                Exit(1);
+            }
+
+            if (!string.IsNullOrEmpty(entertainmentGroupName))
+            {
+                var entertainmentGroup = entertainmentGroups.FirstOrDefault(g => g.Name == entertainmentGroupName);
+
+                if (entertainmentGroup != null)
+                {
+                    return entertainmentGroup;
+                }
+
+                Console.Error.WriteLine($"Could not find entertainment group named {entertainmentGroupName}");
+                WriteValidGroupNames(entertainmentGroups);
+                Exit(1);
+            }
+
+            if (entertainmentGroups.Count == 1)
+            {
+                return entertainmentGroups.First();
+            }
+
+            var names = entertainmentGroups.Select(e => e.Name);
+            Console.Error.WriteLine("Please select entertainment group name with the -e option");
+            WriteValidGroupNames(entertainmentGroups);
+            Exit(1);
+
+            throw new InvalidOperationException();
+        }
+
+        private static void WriteValidGroupNames(IEnumerable<Group> entertainmentGroups)
+        {
+            var names = entertainmentGroups.Select(e => e.Name);
+            Console.Error.WriteLine($"Possible group names are: {string.Join(", ", names)}");
         }
 
         private static async Task<StreamingHueClient> GetClient()
