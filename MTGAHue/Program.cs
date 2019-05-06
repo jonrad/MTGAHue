@@ -226,9 +226,9 @@ namespace MTGAHue
                 "settings.json");
         }
 
-        private static void Debug(CastSpell obj)
+        private static void Debug(IMagicEvent obj)
         {
-            Console.WriteLine($"Cast Spell with Colors: {string.Join(" ", obj.Instance.Colors)}");
+            Console.WriteLine($"Event occurred: {obj}");
         }
     }
 }

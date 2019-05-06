@@ -15,9 +15,11 @@ namespace MTGADispatcher
             //TODO: error handling, logging
             var instanceId = gameObject["instanceId"].Value<int>();
             var cardId = gameObject["grpId"].Value<int>();
+            var ownerId = gameObject["ownerSeatId"].Value<int>();
+            var controllerId = gameObject["controllerSeatId"].Value<int>();
 
             var colors = GetColors(gameObject).ToArray();
-            return new Instance(instanceId, cardId, colors);
+            return new Instance(instanceId, cardId, ownerId, controllerId, colors);
         }
 
         private IEnumerable<MagicColor> GetColors(JToken gameObject)

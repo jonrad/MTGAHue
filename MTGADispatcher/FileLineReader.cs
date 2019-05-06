@@ -48,7 +48,7 @@ namespace MTGADispatcher
                 FileAccess.Read,
                 FileShare.ReadWrite);
 
-            stream.Position = stream.Length;
+            //stream.Position = stream.Length;
             reader = new StreamReader(stream, Encoding.UTF8, true, 1024, false);
         }
  

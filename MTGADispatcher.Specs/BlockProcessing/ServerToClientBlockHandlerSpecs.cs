@@ -37,7 +37,7 @@ namespace MTGADispatcher.Specs.BlockProcessing
             block = null;
             The<IInstanceBuilder>()
                 .WhenToldTo(i => i.Build(Param.IsAny<JToken>()))
-                .Return<JToken>(j => new Instance(j["id"].Value<int>(), j["id"].Value<int>(), new MagicColor[0]));
+                .Return<JToken>(j => new Instance(j["id"].Value<int>(), j["id"].Value<int>(), 1, 1, new MagicColor[0]));
         };
 
         Because of = () =>

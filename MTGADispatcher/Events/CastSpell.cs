@@ -1,4 +1,6 @@
-﻿namespace MTGADispatcher.Events
+﻿using System.Linq;
+
+namespace MTGADispatcher.Events
 {
     public class CastSpell : IMagicEvent
     {
@@ -8,5 +10,10 @@
         }
 
         public Instance Instance { get; }
+
+        public override string ToString()
+        {
+            return $"Cast Spell {Instance}";
+        }
     }
 }

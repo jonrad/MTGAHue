@@ -37,7 +37,41 @@ namespace MTGADispatcher.BlockProcessing
         private void ProcessGameStateMessage(JToken message, Game game)
         {
             ProcessGameObjects(message["gameObjects"] as JArray, game);
+            ProcessZoneObjects(message["zones"] as JArray, game);
             ProcessAnnotations(message["annotations"] as JArray, game);
+        }
+
+        private void ProcessZoneObjects(JArray zones, Game game)
+        {
+            if (zones == null)
+            {
+                return;
+            }
+
+            var zone = zones.FirstOrDefault(z => z.Value<string>("type") == "ZoneType_Battlefield");
+
+            if (zone == null)
+            {
+                return;
+            }
+
+            var instanceIds = zone["objectInstanceIds"]?.Values<int>();
+
+            if (instanceIds == null)
+            {
+                return;
+            }
+
+            var instances = instanceIds
+                .Select(i =>
+                {
+                    game.InstancesById.TryGetValue(i, out var instance);
+                    return instance;
+                })
+                .Where(i => i != null)
+                .ToArray();
+
+            game.Events.Dispatch(new SetBattlefield(instances));
         }
 
         private void ProcessGameObjects(JArray gameObjects, Game game)
