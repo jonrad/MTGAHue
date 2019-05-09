@@ -1,6 +1,7 @@
 ﻿using MTGADispatcher;
 using MTGADispatcher.Events;
 using Q42.HueApi.ColorConverters;
+using Q42.HueApi.Streaming.Effects;
 using Q42.HueApi.Streaming.Extensions;
 using Q42.HueApi.Streaming.Models;
 using System;
@@ -13,8 +14,8 @@ namespace MTGAHue
 {
     public class HueSpellFlasher
     {
-        private Dictionary<MagicColor, Func<CancellationToken, Task>> effectMap =
-            new Dictionary<MagicColor, Func<CancellationToken, Task>>();
+        private Dictionary<MagicColor?, Func<CancellationToken, Task>> effectMap =
+            new Dictionary<MagicColor?, Func<CancellationToken, Task>>();
 
         private CancellationTokenSource cancellationTokenSource;
 
@@ -24,7 +25,7 @@ namespace MTGAHue
         {
             entLayer = stream.GetNewLayer(isBaseLayer: true);
 
-            effectMap.Add(MagicColor.Black, BuildEffect(new RGBColor(255, 255, 255), .2));
+            effectMap.Add(MagicColor.Black, BuildEffect(new RGBColor(255, 255, 255), .1));
             effectMap.Add(MagicColor.White, BuildEffect(new RGBColor(255, 255, 255)));
             effectMap.Add(MagicColor.Red, BuildEffect(new RGBColor(255, 0, 0)));
             effectMap.Add(MagicColor.Green, BuildEffect(new RGBColor(0, 255, 0)));
@@ -33,7 +34,7 @@ namespace MTGAHue
 
         private Func<CancellationToken, Task> BuildEffect(
             RGBColor color,
-            double fullBrightness = 1.0)
+            double fullBrightness = 6.0)
         {
             var flash = new[]
             {
