@@ -77,10 +77,6 @@ namespace LightsApi.WinForms
 
                 public RGB Calculate(double x, double y)
                 {
-                    if (x == 0D && y == 0D)
-                    {
-                        Console.WriteLine("HERE");
-                    }
                     var distance = Math.Abs(lineY - y);
                     var multiplier = (radius - distance) / radius;
 
@@ -89,6 +85,7 @@ namespace LightsApi.WinForms
                 }
             }
         }
+
         public Form1()
         {
             InitializeComponent();
@@ -97,28 +94,31 @@ namespace LightsApi.WinForms
         private void Button1_Click(object sender, EventArgs e)
         {
             var lightSource = new ArenaLightSource(
-                new[] { RGB.Red, RGB.Blue},
-                new[] { RGB.Green, RGB.Black, RGB.White });
+                new[] { RGB.Green },
+                new[] { RGB.Blue, RGB.Red });
 
             var count = 100;
 
-            var (boxWidth, boxHeight) = ((float)pictureBox1.Width / count, (float)pictureBox1.Height / count);
             using (var graphics = pictureBox1.CreateGraphics())
             {
+                // Transforms our coordinate system to make it -1 <= X <= 1, -1 <= Y <= 1
+                // AKA a 2x2 grid starting at top left -1, -1 and ending at bottom right 1, 1
+                graphics.ScaleTransform(pictureBox1.Width / 2f, pictureBox1.Height / 2f);
+                graphics.TranslateTransform(1, 1);
+
+                var stepSize = 2f / count;
                 for (var i = 0; i < count; i++)
                 {
                     for (var j = 0; j < count; j++)
                     {
-                        var x = -1f + (i + 1) / (float)count * 2f;
-                        var y = -1f + (j + 1) / (float)count * 2f;
+                        var x = -1f + i * stepSize;
+                        var y = -1f + j * stepSize;
 
-                        var color = lightSource.Calculate(x, y);
+                        var color = lightSource.Calculate(x + stepSize / 2, y + stepSize / 2);
 
-                        //I forget the API to change coordinate systems in winforms
-                        //so this will do for now
                         graphics.FillRectangle(
                             new SolidBrush(Color.FromArgb(color.R, color.G, color.B)),
-                            i * boxWidth, j * boxHeight, boxWidth, boxHeight);
+                            x, y, 2f / count, 2f / count);
                     }
                 }
             }
