@@ -13,7 +13,7 @@ namespace MTGAHue
             ['R'] = MagicColor.Red,
             ['G'] = MagicColor.Green,
             ['U'] = MagicColor.Blue,
-            ['B'] = MagicColor.Blue,
+            ['B'] = MagicColor.Black,
             ['W'] = MagicColor.White
         };
 

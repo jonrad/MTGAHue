@@ -11,6 +11,11 @@ namespace LightsApi.Transitions
 
         private readonly TimeSpan timeSpan;
 
+        public LightSourceTransition(ILightSource lightSource, double ms)
+            : this(lightSource, TimeSpan.FromMilliseconds(ms))
+        {
+        }
+
         public LightSourceTransition(ILightSource lightSource, TimeSpan timeSpan)
         {
             this.lightSource = lightSource;

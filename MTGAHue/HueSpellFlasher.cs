@@ -1,4 +1,7 @@
-﻿using MTGADispatcher;
+﻿using LightsApi;
+using LightsApi.LightSources;
+using LightsApi.Transitions;
+using MTGADispatcher;
 using MTGADispatcher.Events;
 using Q42.HueApi.ColorConverters;
 using Q42.HueApi.Streaming.Effects;
@@ -19,49 +22,45 @@ namespace MTGAHue
 
         private CancellationTokenSource cancellationTokenSource;
 
-        private EntertainmentLayer entLayer;
+        private readonly LightLayout layout;
 
-        public HueSpellFlasher(StreamingGroup stream)
+        public HueSpellFlasher(LightLayout layout)
         {
-            entLayer = stream.GetNewLayer(isBaseLayer: true);
+            effectMap.Add(MagicColor.Black, BuildEffect(new RGB(255, 255, 255) * .3));
+            effectMap.Add(MagicColor.White, BuildEffect(new RGB(255, 255, 255)));
+            effectMap.Add(MagicColor.Red, BuildEffect(new RGB(255, 0, 0)));
+            effectMap.Add(MagicColor.Green, BuildEffect(new RGB(0, 255, 0)));
+            effectMap.Add(MagicColor.Blue, BuildEffect(new RGB(0, 0, 255)));
 
-            effectMap.Add(MagicColor.Black, BuildEffect(new RGBColor(255, 255, 255), .1));
-            effectMap.Add(MagicColor.White, BuildEffect(new RGBColor(255, 255, 255)));
-            effectMap.Add(MagicColor.Red, BuildEffect(new RGBColor(255, 0, 0)));
-            effectMap.Add(MagicColor.Green, BuildEffect(new RGBColor(0, 255, 0)));
-            effectMap.Add(MagicColor.Blue, BuildEffect(new RGBColor(0, 0, 255)));
+            this.layout = layout;
         }
 
-        private Func<CancellationToken, Task> BuildEffect(
-            RGBColor color,
-            double fullBrightness = 6.0)
+        private Func<CancellationToken, Task> BuildEffect(RGB color)
         {
-            var flash = new[]
+            var flash = new ITransition[]
             {
-                new State(color, fullBrightness, 500),
-                new State(color, fullBrightness * .6, 500)
+                new LightSourceTransition(new OmniLightSource(color), 500),
+                new LightSourceTransition(new OmniLightSource(color * .6), 500)
             };
 
             var flashCount = 5;
 
-            var states =
-                new[] { new State(color, fullBrightness * .1, 50) }
+            var transitions =
+                new[] { new LightSourceTransition(new OmniLightSource(color * .1), 50) }
                 .Concat(Enumerable.Repeat(flash, flashCount).SelectMany(s => s))
-                .Concat(new[] { new State(color, fullBrightness * .3, 5000) })
+                .Concat(new[] { new LightSourceTransition(new OmniLightSource(color * .3), 5000) })
                 .ToArray();
 
             return async token =>
             {
-                foreach (var state in states)
+                foreach (var transition in transitions)
                 {
                     if (token.IsCancellationRequested)
                     {
                         return;
                     }
 
-                    entLayer.SetState(token, state.Rgb, state.Brightness, state.TransitionTime, true);
-
-                    await Task.Delay(state.TransitionTime, token);
+                    await layout.Transition(transition, token);
                 }
             };
         }
