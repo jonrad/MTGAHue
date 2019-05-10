@@ -1,7 +1,8 @@
-﻿using System.Threading;
+﻿using LightsApi.Transitions;
+using System.Threading;
 using System.Threading.Tasks;
 
-namespace MTGAHue
+namespace LightsApi
 {
     public interface ILightLayout
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MTGAHue
+namespace LightsApi.LightSources
 {
     public class AreaLightSource : ILightSource
     {

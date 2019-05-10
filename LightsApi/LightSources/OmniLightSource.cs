@@ -1,4 +1,4 @@
-﻿namespace MTGAHue
+﻿namespace LightsApi.LightSources
 {
     public class OmniLightSource : ILightSource
     {

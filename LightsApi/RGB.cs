@@ -1,4 +1,4 @@
-﻿namespace MTGAHue
+﻿namespace LightsApi
 {
     public struct RGB
     {

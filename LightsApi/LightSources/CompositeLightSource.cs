@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MTGAHue
+namespace LightsApi.LightSources
 {
     public class CompositeLightSource : ILightSource
     {

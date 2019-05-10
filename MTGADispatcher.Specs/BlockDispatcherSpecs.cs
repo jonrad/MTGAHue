@@ -1,5 +1,6 @@
 ﻿using Machine.Fakes;
 using Machine.Specifications;
+using MTGADispatcher.Dispatcher;
 using MTGADispatcher.Specs.Mocks;
 using Newtonsoft.Json.Linq;
 using System;

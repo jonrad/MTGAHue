@@ -1,8 +1,9 @@
-﻿using System;
+﻿using LightsApi.LightSources;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MTGAHue
+namespace LightsApi.Transitions
 {
     public class LightSourceTransition : ITransition
     {

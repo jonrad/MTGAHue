@@ -1,9 +1,11 @@
 ﻿using Machine.Fakes;
 using Machine.Specifications;
+using MTGADispatcher.BlockProcessing;
+using MTGADispatcher.Dispatcher;
 using MTGADispatcher.Events;
 using Newtonsoft.Json.Linq;
 
-namespace MTGADispatcher.Specs
+namespace MTGADispatcher.Specs.BlockProcessing
 {
     [Subject(typeof(ServerToClientBlockHandler))]
     class ServerToClientBlockHandlerSpecs : WithSubject<ServerToClientBlockHandler>

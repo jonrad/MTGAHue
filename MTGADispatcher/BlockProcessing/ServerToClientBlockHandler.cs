@@ -2,7 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System.Linq;
 
-namespace MTGADispatcher
+namespace MTGADispatcher.BlockProcessing
 {
     public class ServerToClientBlockHandler : IGameUpdater
     {

@@ -1,13 +1,15 @@
 ﻿using Castle.Windsor;
 using CommandLine;
+using LightsApi;
+using LightsApi.LightSources;
+using LightsApi.Transitions;
 using MTGADispatcher;
 using MTGADispatcher.Events;
+using MTGAHue.Hue;
 using Newtonsoft.Json.Linq;
 using Q42.HueApi;
-using Q42.HueApi.ColorConverters;
 using Q42.HueApi.Models.Groups;
 using Q42.HueApi.Streaming;
-using Q42.HueApi.Streaming.Effects.BasEffects;
 using Q42.HueApi.Streaming.Models;
 using System;
 using System.Collections.Generic;
@@ -111,7 +113,7 @@ namespace MTGAHue
             /*var stream = await ConnectHue(options.EntertainmentGroupName);
 
             var layer = stream.GetNewLayer(false);
-            var layout = new LightLayout(layer.Select(l => new HueLight(l)).ToArray());
+            var layout = new LightLayout(layer.Select(l => (ILight)new HueLight(l)).ToArray());
 
             var arena = new ArenaLightSource(new[] { RGB.Red }, new[] { RGB.Blue, RGB.Green, RGB.Red });
 

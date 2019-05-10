@@ -1,9 +1,9 @@
-﻿using System;
+﻿using LightsApi.Transitions;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MTGAHue
+namespace LightsApi
 {
     public class LightLayout : ILightLayout
     {

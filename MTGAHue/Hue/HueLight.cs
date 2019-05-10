@@ -1,10 +1,11 @@
-﻿using Q42.HueApi.ColorConverters;
+﻿using LightsApi;
+using Q42.HueApi.ColorConverters;
 using Q42.HueApi.Streaming.Models;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MTGAHue
+namespace MTGAHue.Hue
 {
     public class HueLight : ILight
     {

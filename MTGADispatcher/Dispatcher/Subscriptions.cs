@@ -4,7 +4,7 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 
-namespace MTGADispatcher
+namespace MTGADispatcher.Dispatcher
 {
     public class Subscriptions<TBase> : ISubscriptions<TBase>
         where TBase : class

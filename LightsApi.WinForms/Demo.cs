@@ -1,17 +1,13 @@
-﻿using MTGAHue;
+﻿using LightsApi.LightSources;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace LightsApi.WinForms
 {
-    public partial class Form1 : Form
+    public partial class Demo : Form
     {
         // Imagine the arena broken up into a grid, where X = -1 is the far left, X = 1 the far right
         // Y = 1 is the furthest in front (Where the opponent is), Y = -1 is the very back (Where the player is)
@@ -70,7 +66,7 @@ namespace LightsApi.WinForms
 
                 public LineLightSource(ILightSource lightSource, double y, double radius)
                 {
-                    this.lineY = y;
+                    lineY = y;
                     this.radius = radius;
                     this.lightSource = lightSource;
                 }
@@ -86,7 +82,7 @@ namespace LightsApi.WinForms
             }
         }
 
-        public Form1()
+        public Demo()
         {
             InitializeComponent();
         }
