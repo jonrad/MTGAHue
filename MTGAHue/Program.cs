@@ -23,6 +23,9 @@ namespace MTGAHue
         {
             [Option('e', "entertainment", Required = false, HelpText = "Entertainment Group Name")]
             public string EntertainmentGroupName { get; set; }
+
+            [Option('d', "demo", Required = false, HelpText = "Run demo")]
+            public bool Demo { get; set; }
         }
 
         static async Task Main(string[] args)
@@ -35,17 +38,25 @@ namespace MTGAHue
             var path = MtgaOutputPath();
             var game = new Game();
 
+            var stream = await ConnectHue(options.EntertainmentGroupName);
+            var spellFlasher = new HueSpellFlasher(stream);
+
+            game.Events.Subscriptions.Subscribe<CastSpell>(Debug);
+            game.Events.Subscriptions.Subscribe<CastSpell>(spellFlasher.OnCastSpell);
+
+            if (options.Demo)
+            {
+                var demo = new Demo(game);
+
+                demo.Start();
+                return;
+            }
+
             using (var container = new WindsorContainer())
             {
                 container.Install(new AppInstaller(path, game));
 
                 var service = container.Resolve<MtgaService>();
-
-                var stream = await ConnectHue(options.EntertainmentGroupName);
-                var spellFlasher = new HueSpellFlasher(stream);
-
-                game.Events.Subscriptions.Subscribe<CastSpell>(Debug);
-                game.Events.Subscriptions.Subscribe<CastSpell>(spellFlasher.OnCastSpell);
 
                 service.Start();
 
