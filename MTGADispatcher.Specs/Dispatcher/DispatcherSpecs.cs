@@ -1,10 +1,11 @@
 ﻿using Machine.Fakes;
 using Machine.Specifications;
+using MTGADispatcher.Dispatcher;
 using MTGADispatcher.Events;
 using System;
 using System.Threading;
 
-namespace MTGADispatcher.Specs
+namespace MTGADispatcher.Specs.Dispatcher
 {
     [Subject(typeof(Dispatcher<>))]
     class DispatcherSpecs : WithSubject<Dispatcher<IMagicEvent>>

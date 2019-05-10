@@ -1,6 +1,6 @@
 ﻿using System.Reactive.Subjects;
 
-namespace MTGADispatcher
+namespace MTGADispatcher.Dispatcher
 {
     public class Dispatcher<TBase> : IDispatcher<TBase>
         where TBase : class

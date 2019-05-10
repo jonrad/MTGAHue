@@ -2,6 +2,8 @@
 using Castle.MicroKernel.Resolvers.SpecializedResolvers;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
+using MTGADispatcher.BlockProcessing;
+using MTGADispatcher.Dispatcher;
 
 namespace MTGADispatcher
 {

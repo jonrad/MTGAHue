@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MTGADispatcher
+namespace MTGADispatcher.Dispatcher
 {
     public interface ISubscriptions<TBase>
         where TBase : class

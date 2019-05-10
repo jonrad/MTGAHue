@@ -1,4 +1,4 @@
-﻿namespace MTGADispatcher
+﻿namespace MTGADispatcher.Dispatcher
 {
     public interface IDispatcher<TBase>
         where TBase : class

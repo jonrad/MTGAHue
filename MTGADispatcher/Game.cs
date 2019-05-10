@@ -1,4 +1,5 @@
-﻿using MTGADispatcher.Events;
+﻿using MTGADispatcher.Dispatcher;
+using MTGADispatcher.Events;
 using System.Collections.Generic;
 
 namespace MTGADispatcher

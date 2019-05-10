@@ -1,4 +1,4 @@
-﻿namespace MTGADispatcher
+﻿namespace MTGADispatcher.BlockProcessing
 {
     public interface IGameUpdater
     {

@@ -1,7 +1,11 @@
 ﻿using Castle.Windsor;
 using CommandLine;
+using LightsApi;
+using LightsApi.LightSources;
+using LightsApi.Transitions;
 using MTGADispatcher;
 using MTGADispatcher.Events;
+using MTGAHue.Hue;
 using Newtonsoft.Json.Linq;
 using Q42.HueApi;
 using Q42.HueApi.Models.Groups;
@@ -39,7 +43,9 @@ namespace MTGAHue
             var game = new Game();
 
             var stream = await ConnectHue(options.EntertainmentGroupName);
-            var spellFlasher = new HueSpellFlasher(stream);
+            var layer = stream.GetNewLayer(false);
+            var layout = new LightLayout(layer.Select(l => (ILight)new HueLight(l)).ToArray());
+            var spellFlasher = new HueSpellFlasher(layout);
 
             game.Events.Subscriptions.Subscribe<CastSpell>(Debug);
             game.Events.Subscriptions.Subscribe<CastSpell>(spellFlasher.OnCastSpell);

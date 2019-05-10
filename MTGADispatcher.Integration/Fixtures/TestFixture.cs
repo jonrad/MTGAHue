@@ -6,7 +6,7 @@ using System.IO;
 using System.Reflection;
 using System.Threading;
 
-namespace MTGADispatcher.Integration.Features
+namespace MTGADispatcher.Integration.Fixtures
 {
     public class TestFixture : IDisposable
     {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MTGADispatcher.Integration.Fixtures;
+using System;
 using System.Linq;
 using Xunit;
 
