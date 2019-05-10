@@ -26,7 +26,6 @@
         public RGB(int r, int g, int b)
         {
             R = r < 0 ? 0 : r;
-
             G = g < 0 ? 0 : g;
             B = b < 0 ? 0 : b;
         }
