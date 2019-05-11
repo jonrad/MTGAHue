@@ -5,10 +5,10 @@ Integrate MTG Arena with Philips Hue Lights
 
 ## Current Limitations
 
-*Things I plan on updating* 
+*Things I plan on updating*
+* No UI. Everything is from the command line
 * Only flashes a single color (No multi color card support. Just uses the first color)
 * No artifact support
-* Doesn't let you select which entertainment group to use. Uses the first one found ([Hue Entertainment](https://www2.meethue.com/en-us/entertainment))
 * No customization whatsoever
 
 ## Other Related Projects
