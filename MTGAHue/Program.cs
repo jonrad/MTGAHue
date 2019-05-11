@@ -1,12 +1,10 @@
 ﻿using Castle.Windsor;
-using Colore;
 using CommandLine;
 using LightsApi;
 using LightsApi.LightSources;
 using LightsApi.Transitions;
 using MTGADispatcher;
 using MTGADispatcher.Events;
-using MTGAHue.Chroma;
 using MTGAHue.Hue;
 using Newtonsoft.Json.Linq;
 using Q42.HueApi;
@@ -34,29 +32,8 @@ namespace MTGAHue
             public bool Demo { get; set; }
         }
 
-        static IEnumerable<ILight> BuildKeyboardLights(IChroma chroma)
-        {
-            var keyboard = chroma.Keyboard;
-            var keyboardColumnStep = 2d / Colore.Effects.Keyboard.KeyboardConstants.MaxColumns;
-            var keyboardRowStep = 2d / Colore.Effects.Keyboard.KeyboardConstants.MaxRows;
-
-            var startX = -1 + keyboardColumnStep / 2;
-            var startY = -1 + keyboardRowStep / 2;
-
-            for (var column = 0; column < Colore.Effects.Keyboard.KeyboardConstants.MaxColumns; column++)
-            {
-                for (var row = 0; row < Colore.Effects.Keyboard.KeyboardConstants.MaxRows; row++)
-                {
-                    yield return new KeyboardLight(keyboard, column, row, startX + column * keyboardColumnStep, startY + row * keyboardRowStep);
-                }
-            }
-        }
-
         static async Task Main(string[] args)
         {
-            var chroma = await ColoreProvider.CreateNativeAsync();
-            await chroma.SetAllAsync(new Colore.Data.Color(255, 0, 0));
-
             Options options = null;
 
             var optionsResults = Parser.Default.ParseArguments<Options>(args)
@@ -65,10 +42,9 @@ namespace MTGAHue
             var path = MtgaOutputPath();
             var game = new Game();
 
-            //var stream = await ConnectHue(options.EntertainmentGroupName);
-            //var layer = stream.GetNewLayer(false);
-            //var layout = new LightLayout(layer.Select(l => (ILight)new HueLight(l)).ToArray());
-            var layout = new LightLayout(BuildKeyboardLights(chroma).ToArray());
+            var stream = await ConnectHue(options.EntertainmentGroupName);
+            var layer = stream.GetNewLayer(false);
+            var layout = new LightLayout(layer.Select(l => (ILight)new HueLight(l)).ToArray());
             var spellFlasher = new HueSpellFlasher(layout);
 
             game.Events.Subscriptions.Subscribe<CastSpell>(Debug);
