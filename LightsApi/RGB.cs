@@ -17,7 +17,7 @@ namespace LightsApi
 
         public static RGB operator *(RGB rgb, double multiplier)
         {
-            return new RGB((int)(rgb.R * multiplier), (int)(rgb.G * multiplier), (int)(rgb.B * multiplier));
+            return new RGB((float)(rgb.R * multiplier), (float)(rgb.G * multiplier), (float)(rgb.B * multiplier));
         }
 
         public float R { get; set; }

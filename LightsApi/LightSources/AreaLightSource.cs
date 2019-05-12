@@ -23,6 +23,12 @@ namespace LightsApi.LightSources
         public RGB Calculate(double lightX, double lightY)
         {
             var distance = Math.Sqrt(Math.Pow(lightX - x, 2) + Math.Pow(lightY - y, 2));
+
+            if (distance > radius)
+            {
+                return RGB.Black;
+            }
+
             var multiplier = (radius - distance) / radius;
 
             return color * multiplier;
