@@ -1,6 +1,6 @@
 ﻿using Castle.Windsor;
-using Colore;
 using CommandLine;
+using Colore;
 using MTGADispatcher;
 using MTGADispatcher.Events;
 using MTGAHue.Chroma;
