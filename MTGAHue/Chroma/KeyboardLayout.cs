@@ -5,6 +5,7 @@ using LightsApi;
 using LightsApi.LightSources;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,6 +17,8 @@ namespace MTGAHue.Chroma
         private readonly IKeyboard keyboard;
 
         private readonly KeyboardPosition[] positions;
+
+        private KeyboardCustom currentColors = KeyboardCustom.Create();
 
         public KeyboardLayout(IKeyboard keyboard)
         {
@@ -40,21 +43,51 @@ namespace MTGAHue.Chroma
             }
         }
 
-        public Task Transition(ILightSource lightSource, TimeSpan timeSpan, CancellationToken token = default)
+        public async Task Transition(ILightSource lightSource, TimeSpan timeSpan, CancellationToken token = default)
         {
-            var keyboardCustom = KeyboardCustom.Create();
+            var startingColors = currentColors;
+            var endingColors = KeyboardCustom.Create();
 
             foreach (var pos in positions)
             {
                 var rgb = lightSource.Calculate(pos.X, pos.Y);
-                keyboardCustom[pos.Row, pos.Column] = new Color((byte)rgb.R, (byte)rgb.G, (byte)rgb.B);
+                endingColors[pos.Row, pos.Column] = new Color((byte)rgb.R, (byte)rgb.G, (byte)rgb.B);
             }
 
-            return Task.WhenAll(new[]
+            var stopwatch = Stopwatch.StartNew();
+
+            while (!token.IsCancellationRequested && stopwatch.ElapsedMilliseconds < timeSpan.Milliseconds)
             {
-                Task.Delay(timeSpan, token),
-                keyboard.SetCustomAsync(keyboardCustom)
-            });
+                var passed = stopwatch.ElapsedMilliseconds;
+
+                KeyboardCustom nextColors;
+                if (passed > timeSpan.Milliseconds)
+                {
+                    nextColors = endingColors;
+                }
+                else
+                {
+                    var percentage = (float)passed / timeSpan.Milliseconds;
+                    nextColors = KeyboardCustom.Create();
+
+                    for (var i = 0; i < KeyboardConstants.MaxKeys; i++)
+                    {
+                        var color = new Color(
+                            (byte)(startingColors[i].R + (endingColors[i].R - startingColors[i].R) * percentage),
+                            (byte)(startingColors[i].G + (endingColors[i].G - startingColors[i].G) * percentage),
+                            (byte)(startingColors[i].B + (endingColors[i].B - startingColors[i].B) * percentage));
+
+                        nextColors[i] = color;
+                    }
+                }
+
+                currentColors = nextColors;
+                await Task.WhenAll(new[]
+                {
+                    keyboard.SetCustomAsync(nextColors),
+                    Task.Delay(100, token)
+                });
+            }
         }
 
         private class KeyboardPosition
