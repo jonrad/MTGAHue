@@ -65,6 +65,7 @@ namespace MTGAHue
                     var spellFlasher = new HueSpellFlasher(layout);
 
                     game.Events.Subscriptions.Subscribe<CastSpell>(Debug);
+                    game.Events.Subscriptions.Subscribe<PlayLand>(Debug);
                     game.Events.Subscriptions.Subscribe<CastSpell>(spellFlasher.OnCastSpell);
 
                     if (options.Demo)
@@ -226,9 +227,14 @@ namespace MTGAHue
                 "settings.json");
         }
 
-        private static void Debug(CastSpell obj)
+        private static void Debug(CastSpell castSpell)
         {
-            Console.WriteLine($"Cast Spell with Colors: {string.Join(" ", obj.Instance.Colors)}");
+            Console.WriteLine($"Cast Spell with Colors: {string.Join(" ", castSpell.Instance.Colors)}");
+        }
+
+        private static void Debug(PlayLand playLand)
+        {
+            Console.WriteLine($"Played Land with Colors: {string.Join(" ", playLand.Instance.Colors)}");
         }
     }
 }
