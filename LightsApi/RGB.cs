@@ -1,4 +1,7 @@
-﻿namespace LightsApi
+﻿using System;
+using System.Runtime.CompilerServices;
+
+namespace LightsApi
 {
     public struct RGB
     {
@@ -17,17 +20,32 @@
             return new RGB((int)(rgb.R * multiplier), (int)(rgb.G * multiplier), (int)(rgb.B * multiplier));
         }
 
-        public int R { get; set; }
+        public float R { get; set; }
 
-        public int G { get; set; }
+        public float G { get; set; }
 
-        public int B { get; set; }
+        public float B { get; set; }
 
-        public RGB(int r, int g, int b)
+        public RGB(float r, float g, float b)
         {
-            R = r < 0 ? 0 : r;
-            G = g < 0 ? 0 : g;
-            B = b < 0 ? 0 : b;
+            R = Check(r);
+            G = Check(g);
+            B = Check(b);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static float Check(float value)
+        {
+            if (value < 0)
+            {
+                throw new ArgumentException();
+            }
+            else if (value > 255)
+            {
+                throw new ArgumentException();
+            }
+
+            return value;
         }
     }
 }
