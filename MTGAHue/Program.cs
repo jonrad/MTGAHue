@@ -1,8 +1,9 @@
 ﻿using Castle.Windsor;
 using CommandLine;
-using LightsApi.Hue;
+using Colore;
 using MTGADispatcher;
 using MTGADispatcher.Events;
+using MTGAHue.Chroma;
 using Newtonsoft.Json.Linq;
 using Q42.HueApi;
 using Q42.HueApi.Models.Groups;
@@ -30,6 +31,9 @@ namespace MTGAHue
 
         static async Task Main(string[] args)
         {
+            var chroma = await ColoreProvider.CreateNativeAsync();
+            await chroma.SetAllAsync(new Colore.Data.Color(255, 0, 0));
+
             Options options = null;
 
             var optionsResults = Parser.Default.ParseArguments<Options>(args)
@@ -38,38 +42,42 @@ namespace MTGAHue
             var path = MtgaOutputPath();
             var game = new Game();
 
-            using (var hueClient = await GetClient())
+            //using (var hueClient = await GetClient())
             {
-                var entertainmentGroup = options.EntertainmentGroupName ?? await GetEntertainmentGroupName(hueClient);
+                //var entertainmentGroup = options.EntertainmentGroupName ?? await GetEntertainmentGroupName(hueClient);
+                //var stream = await ConnectHue(options.EntertainmentGroupName);
+                //var layer = stream.GetNewLayer(false);
+                //var layout = new LightLayout(layer.Select(l => (ILight)new HueLight(l)).ToArray());
+                //var layout = new LightLayout(BuildKeyboardLights(chroma).ToArray());
+                //var spellFlasher = new HueSpellFlasher(layout);
 
-                using (var lightClient = new HueLightClient(hueClient, entertainmentGroup))
+                var lightClient = new ChromaKeyboardClient();
+
+                await lightClient.Start(CancellationToken.None);
+                var layout = lightClient.GetLayout();
+                var spellFlasher = new HueSpellFlasher(layout);
+
+                game.Events.Subscriptions.Subscribe<CastSpell>(Debug);
+                game.Events.Subscriptions.Subscribe<CastSpell>(spellFlasher.OnCastSpell);
+
+                if (options.Demo)
                 {
-                    await lightClient.Start(CancellationToken.None);
-                    var layout = lightClient.GetLayout();
-                    var spellFlasher = new HueSpellFlasher(layout);
+                    var demo = new Demo(game);
 
-                    game.Events.Subscriptions.Subscribe<CastSpell>(Debug);
-                    game.Events.Subscriptions.Subscribe<CastSpell>(spellFlasher.OnCastSpell);
+                    demo.Start();
+                    return;
+                }
 
-                    if (options.Demo)
-                    {
-                        var demo = new Demo(game);
+                using (var container = new WindsorContainer())
+                {
+                    container.Install(new AppInstaller(path, game));
 
-                        demo.Start();
-                        return;
-                    }
+                    var service = container.Resolve<MtgaService>();
 
-                    using (var container = new WindsorContainer())
-                    {
-                        container.Install(new AppInstaller(path, game));
+                    service.Start();
 
-                        var service = container.Resolve<MtgaService>();
-
-                        service.Start();
-
-                        Console.WriteLine("Press enter to exit");
-                        Console.ReadLine();
-                    }
+                    Console.WriteLine("Press enter to exit");
+                    Console.ReadLine();
                 }
             }
         }
