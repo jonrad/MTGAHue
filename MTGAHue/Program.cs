@@ -29,13 +29,13 @@ namespace MTGAHue
 
             [Option('d', "demo", Required = false, HelpText = "Run demo")]
             public bool Demo { get; set; }
+
+            [Option('c', "chroma", Required = false, HelpText = "Use Chroma (Razer)")]
+            public bool Chroma { get; set; }
         }
 
         static async Task Main(string[] args)
         {
-            var chroma = await ColoreProvider.CreateNativeAsync();
-            await chroma.SetAllAsync(new Colore.Data.Color(255, 0, 0));
-
             Options options = null;
 
             var optionsResults = Parser.Default.ParseArguments<Options>(args)
@@ -44,14 +44,21 @@ namespace MTGAHue
             var path = MtgaOutputPath();
             var game = new Game();
 
+            //TODO: move to container
+            var clients = new List<ILightClient>();
+
             using (var hue = await GetClient())
             {
                 var entertainmentGroup = options.EntertainmentGroupName ?? await GetEntertainmentGroupName(hue);
                 using (var hueClient = new HueLightClient(hue, entertainmentGroup))
                 {
-                    var chromaClient = new ChromaKeyboardClient();
+                    clients.Add(hueClient);
+                    if (options.Chroma)
+                    {
+                        clients.Add(new ChromaKeyboardClient());
+                    }
 
-                    var lightClient = new CompositeLightClient(hueClient, chromaClient);
+                    var lightClient = new CompositeLightClient(clients.ToArray());
 
                     await lightClient.Start(CancellationToken.None);
                     var layout = lightClient.GetLayout();
