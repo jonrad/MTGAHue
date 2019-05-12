@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LightsApi.Hue
 {
-    public class HueLightClient : ILightClient
+    public class HueLightClient : ILightClient, IDisposable
     {
         private readonly StreamingHueClient hueClient;
 
@@ -43,7 +43,9 @@ namespace LightsApi.Hue
 
             streamingGroup = new StreamingGroup(entertainmentGroup.Locations);
 
+            Console.WriteLine("Attempting to connect to entertainment group");
             await hueClient.Connect(entertainmentGroup.Id);
+            Console.WriteLine("Connected");
 
             var layer = streamingGroup.GetNewLayer(true);
             lights = layer.Select(l => new HueLight(l)).ToArray();
@@ -56,6 +58,11 @@ namespace LightsApi.Hue
             stoppedSource.Cancel();
 
             return updatingTask;
+        }
+
+        public void Dispose()
+        {
+            Stop(CancellationToken.None)?.Wait();
         }
     }
 }

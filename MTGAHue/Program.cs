@@ -42,33 +42,34 @@ namespace MTGAHue
             {
                 var entertainmentGroup = options.EntertainmentGroupName ?? await GetEntertainmentGroupName(hueClient);
 
-                var lightClient = new HueLightClient(hueClient, entertainmentGroup);
-
-                await lightClient.Start(CancellationToken.None);
-                var layout = lightClient.GetLayout();
-                var spellFlasher = new HueSpellFlasher(layout);
-
-                game.Events.Subscriptions.Subscribe<CastSpell>(Debug);
-                game.Events.Subscriptions.Subscribe<CastSpell>(spellFlasher.OnCastSpell);
-
-                if (options.Demo)
+                using (var lightClient = new HueLightClient(hueClient, entertainmentGroup))
                 {
-                    var demo = new Demo(game);
+                    await lightClient.Start(CancellationToken.None);
+                    var layout = lightClient.GetLayout();
+                    var spellFlasher = new HueSpellFlasher(layout);
 
-                    demo.Start();
-                    return;
-                }
+                    game.Events.Subscriptions.Subscribe<CastSpell>(Debug);
+                    game.Events.Subscriptions.Subscribe<CastSpell>(spellFlasher.OnCastSpell);
 
-                using (var container = new WindsorContainer())
-                {
-                    container.Install(new AppInstaller(path, game));
+                    if (options.Demo)
+                    {
+                        var demo = new Demo(game);
 
-                    var service = container.Resolve<MtgaService>();
+                        demo.Start();
+                        return;
+                    }
 
-                    service.Start();
+                    using (var container = new WindsorContainer())
+                    {
+                        container.Install(new AppInstaller(path, game));
 
-                    Console.WriteLine("Press enter to exit");
-                    Console.ReadLine();
+                        var service = container.Resolve<MtgaService>();
+
+                        service.Start();
+
+                        Console.WriteLine("Press enter to exit");
+                        Console.ReadLine();
+                    }
                 }
             }
         }
