@@ -15,4 +15,6 @@ Integrate MTG Arena with Philips Hue Lights
 
 [MTGA Tracker](https://mtgatracker.com/) - MTG Arena Deck/Game Tracker application. A lot of logic was borrowed from here
 
-[Q42.HueApi](https://github.com/mtgatracker/python-mtga) - Philips Hue API used in this project
+[Q42.HueApi](https://github.com/Q42/Q42.HueApi) - Philips Hue API used in this project
+
+[Colore](https://github.com/chroma-sdk/Colore/) - Razer Chroma SDK
