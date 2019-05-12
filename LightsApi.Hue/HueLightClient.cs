@@ -19,6 +19,8 @@ namespace LightsApi.Hue
 
         private HueLight[] lights;
 
+        private Task updatingTask;
+
         public HueLightClient(StreamingHueClient hueClient, string entertainmentGroupName)
         {
             this.hueClient = hueClient;
@@ -27,7 +29,7 @@ namespace LightsApi.Hue
 
         public ILightLayout GetLayout()
         {
-            return new LightLayout(lights);
+            return new HueLightLayout(lights);
         }
 
         public async Task Start(CancellationToken token)
@@ -46,16 +48,14 @@ namespace LightsApi.Hue
             var layer = streamingGroup.GetNewLayer(true);
             lights = layer.Select(l => new HueLight(l)).ToArray();
 
-            //TODO
-            hueClient.AutoUpdate(streamingGroup, stoppedSource.Token, 50, onlySendDirtyStates: false);
+            updatingTask = hueClient.AutoUpdate(streamingGroup, stoppedSource.Token, 50, onlySendDirtyStates: false);
         }
 
-        //TODO
         public Task Stop(CancellationToken token)
         {
             stoppedSource.Cancel();
 
-            return Task.FromResult(true);
+            return updatingTask;
         }
     }
 }

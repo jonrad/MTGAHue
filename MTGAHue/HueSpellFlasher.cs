@@ -48,18 +48,9 @@ namespace MTGAHue
                 .Concat(new[] { new LightSourceTransition(new OmniLightSource(color * .3), 5000) })
                 .ToArray();
 
-            return async token =>
-            {
-                foreach (var transition in transitions)
-                {
-                    if (token.IsCancellationRequested)
-                    {
-                        return;
-                    }
+            var composite = new CompositeTransition(transitions);
 
-                    await layout.Transition(transition, token);
-                }
-            };
+            return token => composite.Transition(layout, token);
         }
 
         public void OnCastSpell(CastSpell spell)

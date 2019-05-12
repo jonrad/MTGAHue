@@ -47,5 +47,10 @@ namespace LightsApi
 
             return value;
         }
+
+        public override string ToString()
+        {
+            return $"{R}/{G}/{B}";
+        }
     }
 }

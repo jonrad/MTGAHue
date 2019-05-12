@@ -2,11 +2,10 @@
 using Q42.HueApi.Streaming.Models;
 using System;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace LightsApi.Hue
 {
-    public class HueLight : ILight
+    internal class HueLight
     {
         private readonly EntertainmentLight light;
 
@@ -21,17 +20,15 @@ namespace LightsApi.Hue
 
         public double Y { get; }
 
-        public Task Transition(RGB rgb, TimeSpan transitionTime, CancellationToken token)
+        public void Transition(RGB rgb, TimeSpan transitionTime, CancellationToken token)
         {
-            var transition = new Transition(new RGBColor(rgb.R, rgb.G, rgb.B), 1, transitionTime);
+            var transition = new Transition(new RGBColor((int)rgb.R, (int)rgb.G, (int)rgb.B), 1, transitionTime);
 
             light.Transition = transition;
             light.Transition.Start(
                 light.State.RGBColor,
                 light.State.Brightness,
                 token);
-
-            return Task.Delay(transitionTime, token);
         }
     }
 }
