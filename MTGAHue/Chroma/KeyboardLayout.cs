@@ -20,6 +20,8 @@ namespace MTGAHue.Chroma
 
         private KeyboardCustom currentColors = KeyboardCustom.Create();
 
+        private CancellationTokenSource cancellationTokenSource;
+
         public KeyboardLayout(IKeyboard keyboard)
         {
             this.keyboard = keyboard;
@@ -43,8 +45,18 @@ namespace MTGAHue.Chroma
             }
         }
 
-        public async Task Transition(ILightSource lightSource, TimeSpan timeSpan, CancellationToken token = default)
+        public async Task Transition(ILightSource lightSource, TimeSpan timeSpan, CancellationToken childToken = default)
         {
+            //this looks familiar
+            if (cancellationTokenSource != null)
+            {
+                cancellationTokenSource.Cancel();
+            }
+
+            cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(childToken);
+
+            var token = cancellationTokenSource.Token;
+
             var startingColors = currentColors;
             var endingColors = KeyboardCustom.Create();
 
