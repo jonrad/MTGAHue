@@ -1,14 +1,9 @@
 ﻿using Castle.Windsor;
 using Colore;
 using CommandLine;
-using LightsApi.Hue;
 using MTGADispatcher;
 using MTGADispatcher.Events;
-<<<<<<< HEAD
-=======
 using MTGAHue.Chroma;
-using MTGAHue.Hue;
->>>>>>> Revert "Revert "[Feature] Work with Chroma (Razer) keyboards""
 using Newtonsoft.Json.Linq;
 using Q42.HueApi;
 using Q42.HueApi.Models.Groups;
@@ -34,24 +29,6 @@ namespace MTGAHue
             public bool Demo { get; set; }
         }
 
-        static IEnumerable<ILight> BuildKeyboardLights(IChroma chroma)
-        {
-            var keyboard = chroma.Keyboard;
-            var keyboardColumnStep = 2d / Colore.Effects.Keyboard.KeyboardConstants.MaxColumns;
-            var keyboardRowStep = 2d / Colore.Effects.Keyboard.KeyboardConstants.MaxRows;
-
-            var startX = -1 + keyboardColumnStep / 2;
-            var startY = -1 + keyboardRowStep / 2;
-
-            for (var column = 0; column < Colore.Effects.Keyboard.KeyboardConstants.MaxColumns; column++)
-            {
-                for (var row = 0; row < Colore.Effects.Keyboard.KeyboardConstants.MaxRows; row++)
-                {
-                    yield return new KeyboardLight(keyboard, column, row, startX + column * keyboardColumnStep, startY + row * keyboardRowStep);
-                }
-            }
-        }
-
         static async Task Main(string[] args)
         {
             var chroma = await ColoreProvider.CreateNativeAsync();
@@ -65,16 +42,16 @@ namespace MTGAHue
             var path = MtgaOutputPath();
             var game = new Game();
 
-            using (var hueClient = await GetClient())
+            //using (var hueClient = await GetClient())
             {
-                var entertainmentGroup = options.EntertainmentGroupName ?? await GetEntertainmentGroupName(hueClient);
+                //var entertainmentGroup = options.EntertainmentGroupName ?? await GetEntertainmentGroupName(hueClient);
                 //var stream = await ConnectHue(options.EntertainmentGroupName);
                 //var layer = stream.GetNewLayer(false);
                 //var layout = new LightLayout(layer.Select(l => (ILight)new HueLight(l)).ToArray());
-                var layout = new LightLayout(BuildKeyboardLights(chroma).ToArray());
-                var spellFlasher = new HueSpellFlasher(layout);
+                //var layout = new LightLayout(BuildKeyboardLights(chroma).ToArray());
+                //var spellFlasher = new HueSpellFlasher(layout);
 
-                var lightClient = new HueLightClient(hueClient, entertainmentGroup);
+                var lightClient = new ChromaKeyboardClient();
 
                 await lightClient.Start(CancellationToken.None);
                 var layout = lightClient.GetLayout();
