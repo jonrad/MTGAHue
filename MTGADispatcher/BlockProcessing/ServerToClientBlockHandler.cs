@@ -65,29 +65,38 @@ namespace MTGADispatcher.BlockProcessing
             foreach (var annotation in annotations)
             {
                 var type = annotation["type"][0].Value<string>();
-                if (type == "AnnotationType_ZoneTransfer")
+                if (type != "AnnotationType_ZoneTransfer")
                 {
-                    var details = annotation["details"] as JArray;
-                    var instanceId = annotation["affectedIds"]?.First()?.Value<int>();
-                    if (details != null)
-                    {
-                        string category = null;
-                        foreach (var detail in details)
-                        {
-                            switch (detail["key"].Value<string>())
-                            {
-                                case "category":
-                                    category = detail["valueString"][0].Value<string>();
-                                break;
-                            }
-                        }
+                    continue;
+                }
 
-                        if (category == "CastSpell")
-                        {
-                            game.InstancesById.TryGetValue(instanceId.Value, out var instance);
-                            game.Events.Dispatch(new CastSpell(instance));
-                        }
+                var details = annotation["details"] as JArray;
+                var instanceId = annotation["affectedIds"]?.First()?.Value<int>();
+
+                if (details == null)
+                {
+                    continue;
+                }
+
+                string category = null;
+                foreach (var detail in details)
+                {
+                    if (detail["key"].Value<string>() == "category")
+                    {
+                        category = detail["valueString"][0].Value<string>();
+                        break;
                     }
+                }
+
+                if (category == "CastSpell")
+                {
+                    game.InstancesById.TryGetValue(instanceId.Value, out var instance);
+                    game.Events.Dispatch(new CastSpell(instance));
+                }
+                else if (category == "PlayLand")
+                {
+                    game.InstancesById.TryGetValue(instanceId.Value, out var instance);
+                    game.Events.Dispatch(new PlayLand(instance));
                 }
             }
         }

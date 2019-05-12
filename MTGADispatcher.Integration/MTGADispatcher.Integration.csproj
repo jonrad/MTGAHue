@@ -5,10 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Games\SimplePlayLand.txt" />
     <None Remove="Games\SimpleSpell.txt" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Games\SimplePlayLand.txt" />
     <EmbeddedResource Include="Games\SimpleSpell.txt" />
   </ItemGroup>
 

@@ -16,6 +16,8 @@ namespace MTGADispatcher.Integration.Fixtures
 
         private WindsorContainer container;
 
+        public List<PlayLand> PlayedLands = new List<PlayLand>();
+
         public List<CastSpell> SpellsCast = new List<CastSpell>();
 
         public Game Game { get; private set; }
@@ -36,6 +38,7 @@ namespace MTGADispatcher.Integration.Fixtures
             service.Start();
 
             Game.Events.Subscriptions.Subscribe<CastSpell>(OnCastSpell);
+            Game.Events.Subscriptions.Subscribe<PlayLand>(OnPlayLand);
 
             return Game;
         }
@@ -85,6 +88,11 @@ namespace MTGADispatcher.Integration.Fixtures
             SpellsCast.Add(spell);
         }
 
+        private void OnPlayLand(PlayLand playLAnd)
+        {
+            PlayedLands.Add(playLAnd);
+        }
+
         public void Dispose()
         {
             if (Game == null)
@@ -94,6 +102,7 @@ namespace MTGADispatcher.Integration.Fixtures
 
             container.Dispose();
             Game.Events.Subscriptions.Unsubscribe<CastSpell>(OnCastSpell);
+            Game.Events.Subscriptions.Unsubscribe<PlayLand>(OnPlayLand);
             streamWriter?.Dispose();
 
             if (path != null && File.Exists(path))
