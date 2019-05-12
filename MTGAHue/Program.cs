@@ -1,8 +1,9 @@
 ﻿using Castle.Windsor;
 using CommandLine;
-using LightsApi.Hue;
+using Colore;
 using MTGADispatcher;
 using MTGADispatcher.Events;
+using MTGAHue.Chroma;
 using Newtonsoft.Json.Linq;
 using Q42.HueApi;
 using Q42.HueApi.Models.Groups;
@@ -14,6 +15,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using static System.Environment;
+using LightsApi.Hue;
+using LightsApi;
 
 namespace MTGAHue
 {
@@ -26,6 +29,9 @@ namespace MTGAHue
 
             [Option('d', "demo", Required = false, HelpText = "Run demo")]
             public bool Demo { get; set; }
+
+            [Option('c', "chroma", Required = false, HelpText = "Use Chroma (Razer)")]
+            public bool Chroma { get; set; }
         }
 
         static async Task Main(string[] args)
@@ -38,12 +44,22 @@ namespace MTGAHue
             var path = MtgaOutputPath();
             var game = new Game();
 
-            using (var hueClient = await GetClient())
-            {
-                var entertainmentGroup = options.EntertainmentGroupName ?? await GetEntertainmentGroupName(hueClient);
+            //TODO: move to container
+            var clients = new List<ILightClient>();
 
-                using (var lightClient = new HueLightClient(hueClient, entertainmentGroup))
+            using (var hue = await GetClient())
+            {
+                var entertainmentGroup = options.EntertainmentGroupName ?? await GetEntertainmentGroupName(hue);
+                using (var hueClient = new HueLightClient(hue, entertainmentGroup))
                 {
+                    clients.Add(hueClient);
+                    if (options.Chroma)
+                    {
+                        clients.Add(new ChromaKeyboardClient());
+                    }
+
+                    var lightClient = new CompositeLightClient(clients.ToArray());
+
                     await lightClient.Start(CancellationToken.None);
                     var layout = lightClient.GetLayout();
                     var spellFlasher = new HueSpellFlasher(layout);

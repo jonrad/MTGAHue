@@ -44,7 +44,7 @@ namespace LightsApi.Hue
             streamingGroup = new StreamingGroup(entertainmentGroup.Locations);
 
             Console.WriteLine("Attempting to connect to entertainment group");
-            await hueClient.Connect(entertainmentGroup.Id);
+            await hueClient.Connect(entertainmentGroup.Id).ConfigureAwait(false);
             Console.WriteLine("Connected");
 
             var layer = streamingGroup.GetNewLayer(true);
