@@ -47,36 +47,38 @@ namespace MTGAHue
             using (var hue = await GetClient())
             {
                 var entertainmentGroup = options.EntertainmentGroupName ?? await GetEntertainmentGroupName(hue);
-                var hueClient = new HueLightClient(hue, entertainmentGroup);
-                var chromaClient = new ChromaKeyboardClient();
-
-                var lightClient = new CompositeLightClient(hueClient, chromaClient);
-
-                await lightClient.Start(CancellationToken.None);
-                var layout = lightClient.GetLayout();
-                var spellFlasher = new HueSpellFlasher(layout);
-
-                game.Events.Subscriptions.Subscribe<CastSpell>(Debug);
-                game.Events.Subscriptions.Subscribe<CastSpell>(spellFlasher.OnCastSpell);
-
-                if (options.Demo)
+                using (var hueClient = new HueLightClient(hue, entertainmentGroup))
                 {
-                    var demo = new Demo(game);
+                    var chromaClient = new ChromaKeyboardClient();
 
-                    demo.Start();
-                    return;
-                }
+                    var lightClient = new CompositeLightClient(hueClient, chromaClient);
 
-                using (var container = new WindsorContainer())
-                {
-                    container.Install(new AppInstaller(path, game));
+                    await lightClient.Start(CancellationToken.None);
+                    var layout = lightClient.GetLayout();
+                    var spellFlasher = new HueSpellFlasher(layout);
 
-                    var service = container.Resolve<MtgaService>();
+                    game.Events.Subscriptions.Subscribe<CastSpell>(Debug);
+                    game.Events.Subscriptions.Subscribe<CastSpell>(spellFlasher.OnCastSpell);
 
-                    service.Start();
+                    if (options.Demo)
+                    {
+                        var demo = new Demo(game);
 
-                    Console.WriteLine("Press enter to exit");
-                    Console.ReadLine();
+                        demo.Start();
+                        return;
+                    }
+
+                    using (var container = new WindsorContainer())
+                    {
+                        container.Install(new AppInstaller(path, game));
+
+                        var service = container.Resolve<MtgaService>();
+
+                        service.Start();
+
+                        Console.WriteLine("Press enter to exit");
+                        Console.ReadLine();
+                    }
                 }
             }
         }

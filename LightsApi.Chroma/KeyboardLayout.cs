@@ -40,14 +40,18 @@ namespace MTGAHue.Chroma
             {
                 for (var row = 0; row < KeyboardConstants.MaxRows; row++)
                 {
-                    yield return new KeyboardPosition(column, row, startX + column * keyboardColumnStep, startY + row * keyboardRowStep);
+                    yield return new KeyboardPosition(
+                        column,
+                        row,
+                        startX + column * keyboardColumnStep,
+                        startY + row * keyboardRowStep);
                 }
             }
         }
 
         public async Task Transition(ILightSource lightSource, TimeSpan timeSpan, CancellationToken childToken = default)
         {
-            //this looks familiar
+            //TODO: this looks familiar. clean up with transition code from Hue
             if (cancellationTokenSource != null)
             {
                 cancellationTokenSource.Cancel();
