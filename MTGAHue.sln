@@ -11,9 +11,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MTGADispatcher.Specs", "MTG
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MTGADispatcher.Integration", "MTGADispatcher.Integration\MTGADispatcher.Integration.csproj", "{B6E77CDB-038A-48B4-8BB9-8F6AE9686AFF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightsApi", "LightsApi\LightsApi.csproj", "{23C1599B-E719-4499-941F-5EAD2CC55A71}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LightsApi", "LightsApi\LightsApi.csproj", "{23C1599B-E719-4499-941F-5EAD2CC55A71}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightsApi.WinForms", "LightsApi.WinForms\LightsApi.WinForms.csproj", "{30F6364E-3016-43BD-AB40-221B3AE538DA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LightsApi.Hue", "LightsApi.Hue\LightsApi.Hue.csproj", "{58D93BA4-F13E-4F4E-A7F1-1261EE6F037D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightsApi.Specs", "LightsApi.Specs\LightsApi.Specs.csproj", "{0B001AEF-A11E-4598-9E85-622C83F97CAA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +49,14 @@ Global
 		{30F6364E-3016-43BD-AB40-221B3AE538DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{30F6364E-3016-43BD-AB40-221B3AE538DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{30F6364E-3016-43BD-AB40-221B3AE538DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58D93BA4-F13E-4F4E-A7F1-1261EE6F037D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58D93BA4-F13E-4F4E-A7F1-1261EE6F037D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58D93BA4-F13E-4F4E-A7F1-1261EE6F037D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58D93BA4-F13E-4F4E-A7F1-1261EE6F037D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B001AEF-A11E-4598-9E85-622C83F97CAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B001AEF-A11E-4598-9E85-622C83F97CAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B001AEF-A11E-4598-9E85-622C83F97CAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B001AEF-A11E-4598-9E85-622C83F97CAA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

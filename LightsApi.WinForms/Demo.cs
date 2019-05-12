@@ -111,7 +111,7 @@ namespace LightsApi.WinForms
                         var color = lightSource.Calculate(x + stepSize / 2, y + stepSize / 2);
 
                         graphics.FillRectangle(
-                            new SolidBrush(Color.FromArgb(color.R, color.G, color.B)),
+                            new SolidBrush(Color.FromArgb((int)color.R, (int)color.G, (int)color.B)),
                             x, y, 2f / count, 2f / count);
                     }
                 }

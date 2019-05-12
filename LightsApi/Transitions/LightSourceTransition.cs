@@ -22,10 +22,9 @@ namespace LightsApi.Transitions
             this.timeSpan = timeSpan;
         }
 
-        public Task Transition(ILight light, CancellationToken token = default)
+        public Task Transition(ILightLayout lightLayout, CancellationToken token = default)
         {
-            var rgb = lightSource.Calculate(light.X, light.Y);
-            return light.Transition(rgb, timeSpan, token);
+            return lightLayout.Transition(lightSource, timeSpan, token);
         }
     }
 }

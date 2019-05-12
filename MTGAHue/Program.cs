@@ -1,16 +1,12 @@
 ﻿using Castle.Windsor;
 using CommandLine;
-using LightsApi;
-using LightsApi.LightSources;
-using LightsApi.Transitions;
+using LightsApi.Hue;
 using MTGADispatcher;
 using MTGADispatcher.Events;
-using MTGAHue.Hue;
 using Newtonsoft.Json.Linq;
 using Q42.HueApi;
 using Q42.HueApi.Models.Groups;
 using Q42.HueApi.Streaming;
-using Q42.HueApi.Streaming.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -42,32 +38,39 @@ namespace MTGAHue
             var path = MtgaOutputPath();
             var game = new Game();
 
-            var stream = await ConnectHue(options.EntertainmentGroupName);
-            var layer = stream.GetNewLayer(false);
-            var layout = new LightLayout(layer.Select(l => (ILight)new HueLight(l)).ToArray());
-            var spellFlasher = new HueSpellFlasher(layout);
-
-            game.Events.Subscriptions.Subscribe<CastSpell>(Debug);
-            game.Events.Subscriptions.Subscribe<CastSpell>(spellFlasher.OnCastSpell);
-
-            if (options.Demo)
+            using (var hueClient = await GetClient())
             {
-                var demo = new Demo(game);
+                var entertainmentGroup = options.EntertainmentGroupName ?? await GetEntertainmentGroupName(hueClient);
 
-                demo.Start();
-                return;
-            }
+                using (var lightClient = new HueLightClient(hueClient, entertainmentGroup))
+                {
+                    await lightClient.Start(CancellationToken.None);
+                    var layout = lightClient.GetLayout();
+                    var spellFlasher = new HueSpellFlasher(layout);
 
-            using (var container = new WindsorContainer())
-            {
-                container.Install(new AppInstaller(path, game));
+                    game.Events.Subscriptions.Subscribe<CastSpell>(Debug);
+                    game.Events.Subscriptions.Subscribe<CastSpell>(spellFlasher.OnCastSpell);
 
-                var service = container.Resolve<MtgaService>();
+                    if (options.Demo)
+                    {
+                        var demo = new Demo(game);
 
-                service.Start();
+                        demo.Start();
+                        return;
+                    }
 
-                Console.WriteLine("Press enter to exit");
-                Console.ReadLine();
+                    using (var container = new WindsorContainer())
+                    {
+                        container.Install(new AppInstaller(path, game));
+
+                        var service = container.Resolve<MtgaService>();
+
+                        service.Start();
+
+                        Console.WriteLine("Press enter to exit");
+                        Console.ReadLine();
+                    }
+                }
             }
         }
 
@@ -82,27 +85,7 @@ namespace MTGAHue
                 "output_log.txt");
         }
 
-        private static async Task<StreamingGroup> ConnectHue(string entertainmentGroupName)
-        {
-            //most of this stolen from Q42 example
-            var client = await GetClient();
-
-            var entertainmentGroup = await GetEntertainmentGroup(client, entertainmentGroupName);
-
-            var stream = new StreamingGroup(entertainmentGroup.Locations);
-
-            await client.Connect(entertainmentGroup.Id);
-
-            //waiting for this never returns?
-            client.AutoUpdate(stream, CancellationToken.None, 50, onlySendDirtyStates: false);
-
-            var bridgeInfo = await client.LocalHueClient.GetBridgeAsync();
-            Console.WriteLine(bridgeInfo.IsStreamingActive ? "Streaming is active" : "Streaming is not active");
-
-            return stream;
-        }
-
-        private static async Task<Group> GetEntertainmentGroup(StreamingHueClient client, string entertainmentGroupName)
+        private static async Task<string> GetEntertainmentGroupName(StreamingHueClient client)
         {
             var entertainmentGroups = await client.LocalHueClient.GetEntertainmentGroups();
 
@@ -112,23 +95,9 @@ namespace MTGAHue
                 Exit(1);
             }
 
-            if (!string.IsNullOrEmpty(entertainmentGroupName))
-            {
-                var entertainmentGroup = entertainmentGroups.FirstOrDefault(g => g.Name == entertainmentGroupName);
-
-                if (entertainmentGroup != null)
-                {
-                    return entertainmentGroup;
-                }
-
-                Console.Error.WriteLine($"Could not find entertainment group named {entertainmentGroupName}");
-                WriteValidGroupNames(entertainmentGroups);
-                Exit(1);
-            }
-
             if (entertainmentGroups.Count == 1)
             {
-                return entertainmentGroups.First();
+                return entertainmentGroups.First().Name;
             }
 
             var names = entertainmentGroups.Select(e => e.Name);
@@ -136,7 +105,7 @@ namespace MTGAHue
             WriteValidGroupNames(entertainmentGroups);
             Exit(1);
 
-            throw new InvalidOperationException();
+            throw new ArgumentException();
         }
 
         private static void WriteValidGroupNames(IEnumerable<Group> entertainmentGroups)

@@ -4,9 +4,6 @@ using LightsApi.Transitions;
 using MTGADispatcher;
 using MTGADispatcher.Events;
 using Q42.HueApi.ColorConverters;
-using Q42.HueApi.Streaming.Effects;
-using Q42.HueApi.Streaming.Extensions;
-using Q42.HueApi.Streaming.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,9 +19,9 @@ namespace MTGAHue
 
         private CancellationTokenSource cancellationTokenSource;
 
-        private readonly LightLayout layout;
+        private readonly ILightLayout layout;
 
-        public HueSpellFlasher(LightLayout layout)
+        public HueSpellFlasher(ILightLayout layout)
         {
             effectMap.Add(MagicColor.Black, BuildEffect(new RGB(255, 255, 255) * .3));
             effectMap.Add(MagicColor.White, BuildEffect(new RGB(255, 255, 255)));
@@ -51,18 +48,9 @@ namespace MTGAHue
                 .Concat(new[] { new LightSourceTransition(new OmniLightSource(color * .3), 5000) })
                 .ToArray();
 
-            return async token =>
-            {
-                foreach (var transition in transitions)
-                {
-                    if (token.IsCancellationRequested)
-                    {
-                        return;
-                    }
+            var composite = new CompositeTransition(transitions);
 
-                    await layout.Transition(transition, token);
-                }
-            };
+            return token => composite.Transition(layout, token);
         }
 
         public void OnCastSpell(CastSpell spell)
