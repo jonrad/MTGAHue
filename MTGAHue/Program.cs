@@ -15,6 +15,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using static System.Environment;
+using LightsApi.Hue;
+using LightsApi;
 
 namespace MTGAHue
 {
@@ -42,16 +44,13 @@ namespace MTGAHue
             var path = MtgaOutputPath();
             var game = new Game();
 
-            //using (var hueClient = await GetClient())
+            using (var hue = await GetClient())
             {
-                //var entertainmentGroup = options.EntertainmentGroupName ?? await GetEntertainmentGroupName(hueClient);
-                //var stream = await ConnectHue(options.EntertainmentGroupName);
-                //var layer = stream.GetNewLayer(false);
-                //var layout = new LightLayout(layer.Select(l => (ILight)new HueLight(l)).ToArray());
-                //var layout = new LightLayout(BuildKeyboardLights(chroma).ToArray());
-                //var spellFlasher = new HueSpellFlasher(layout);
+                var entertainmentGroup = options.EntertainmentGroupName ?? await GetEntertainmentGroupName(hue);
+                var hueClient = new HueLightClient(hue, entertainmentGroup);
+                var chromaClient = new ChromaKeyboardClient();
 
-                var lightClient = new ChromaKeyboardClient();
+                var lightClient = new CompositeLightClient(hueClient, chromaClient);
 
                 await lightClient.Start(CancellationToken.None);
                 var layout = lightClient.GetLayout();

@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace MTGAHue.Chroma
 {
-    public class KeyboardLayout : ILightLayout
+    internal class KeyboardLayout : ILightLayout
     {
         private readonly IKeyboard keyboard;
 

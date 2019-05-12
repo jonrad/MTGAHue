@@ -17,7 +17,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightsApi.WinForms", "Light
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LightsApi.Hue", "LightsApi.Hue\LightsApi.Hue.csproj", "{58D93BA4-F13E-4F4E-A7F1-1261EE6F037D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightsApi.Specs", "LightsApi.Specs\LightsApi.Specs.csproj", "{0B001AEF-A11E-4598-9E85-622C83F97CAA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LightsApi.Specs", "LightsApi.Specs\LightsApi.Specs.csproj", "{0B001AEF-A11E-4598-9E85-622C83F97CAA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightsApi.Chroma", "LightsApi.Chroma\LightsApi.Chroma.csproj", "{C4487C19-D9DC-49EA-8F3F-4BF7F4310DCB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +59,10 @@ Global
 		{0B001AEF-A11E-4598-9E85-622C83F97CAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0B001AEF-A11E-4598-9E85-622C83F97CAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0B001AEF-A11E-4598-9E85-622C83F97CAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4487C19-D9DC-49EA-8F3F-4BF7F4310DCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4487C19-D9DC-49EA-8F3F-4BF7F4310DCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4487C19-D9DC-49EA-8F3F-4BF7F4310DCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4487C19-D9DC-49EA-8F3F-4BF7F4310DCB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
