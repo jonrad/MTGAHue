@@ -1,9 +1,7 @@
 ﻿using Castle.Windsor;
 using CommandLine;
-using Colore;
 using MTGADispatcher;
 using MTGADispatcher.Events;
-using MTGAHue.Chroma;
 using Newtonsoft.Json.Linq;
 using Q42.HueApi;
 using Q42.HueApi.Models.Groups;
@@ -12,11 +10,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using static System.Environment;
-using LightsApi.Hue;
 using LightsApi;
+using Castle.MicroKernel.Registration;
 
 namespace MTGAHue
 {
@@ -47,45 +44,36 @@ namespace MTGAHue
             //TODO: move to container
             var clients = new List<ILightClient>();
 
-            using (var hue = await GetClient())
+            var installers = new List<IWindsorInstaller>();
+
+            installers.Add(new AppInstaller(path, game));
+            installers.Add(new DebuggerInstaller());
+
+            if (options.Demo)
             {
-                var entertainmentGroup = options.EntertainmentGroupName ?? await GetEntertainmentGroupName(hue);
-                using (var hueClient = new HueLightClient(hue, entertainmentGroup))
+                installers.Add(new DemoInstaller());
+            }
+
+            if (options.Chroma)
+            {
+                installers.Add(new ChromaInstaller());
+            }
+
+            installers.Add(new LightsInstaller());
+            installers.Add(new ApplicationInstaller());
+
+            //using (var hue = await GetClient())
+            {
+                //var entertainmentGroup = options.EntertainmentGroupName ?? await GetEntertainmentGroupName(hue);
+                //using (var hueClient = new HueLightClient(hue, entertainmentGroup))
                 {
-                    clients.Add(hueClient);
-                    if (options.Chroma)
-                    {
-                        clients.Add(new ChromaKeyboardClient());
-                    }
-
-                    var lightClient = new CompositeLightClient(clients.ToArray());
-
-                    await lightClient.Start(CancellationToken.None);
-                    var layout = lightClient.GetLayout();
-                    var spellFlasher = new HueSpellFlasher(layout);
-
-                    game.Events.Subscriptions.Subscribe<CastSpell>(Debug);
-                    game.Events.Subscriptions.Subscribe<PlayLand>(Debug);
-                    game.Events.Subscriptions.Subscribe<CastSpell>(spellFlasher.OnCastSpell);
-
-                    if (options.Demo)
-                    {
-                        var demo = new Demo(game);
-
-                        demo.Start();
-                        return;
-                    }
-
                     using (var container = new WindsorContainer())
                     {
-                        container.Install(new AppInstaller(path, game));
+                        container.Install(installers.ToArray());
 
-                        var service = container.Resolve<MtgaService>();
+                        var application = container.Resolve<Application>();
 
-                        service.Start();
-
-                        Console.WriteLine("Press enter to exit");
-                        Console.ReadLine();
+                        await application.Play();
                     }
                 }
             }
@@ -225,16 +213,6 @@ namespace MTGAHue
                 GetFolderPath(SpecialFolder.LocalApplicationData, SpecialFolderOption.DoNotVerify),
                 "MTGAHue",
                 "settings.json");
-        }
-
-        private static void Debug(CastSpell castSpell)
-        {
-            Console.WriteLine($"Cast Spell with Colors: {string.Join(" ", castSpell.Instance.Colors)}");
-        }
-
-        private static void Debug(PlayLand playLand)
-        {
-            Console.WriteLine($"Played Land with Colors: {string.Join(" ", playLand.Instance.Colors)}");
         }
     }
 }

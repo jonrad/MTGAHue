@@ -3,7 +3,7 @@ using System;
 
 namespace MTGADispatcher
 {
-    public class MtgaService : IDisposable
+    public class MtgaService : IMagicService, IDisposable
     {
         private readonly IBlockProcessor blockProcessor;
 

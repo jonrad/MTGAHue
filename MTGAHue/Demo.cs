@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace MTGAHue
 {
-    public class Demo
+    public class Demo : IMagicService
     {
         private static Dictionary<char, MagicColor> colorMap = new Dictionary<char, MagicColor>
         {
@@ -44,6 +44,10 @@ namespace MTGAHue
                 var instance = new Instance(instanceId, instanceId, colors);
                 game.Events.Dispatch(new CastSpell(instance));
             }
+        }
+
+        public void Stop()
+        {
         }
 
         private IEnumerable<MagicColor> ParseColors(string input)
