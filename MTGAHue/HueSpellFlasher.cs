@@ -3,7 +3,6 @@ using LightsApi.LightSources;
 using LightsApi.Transitions;
 using MTGADispatcher;
 using MTGADispatcher.Events;
-using Q42.HueApi.ColorConverters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,8 +13,14 @@ namespace MTGAHue
 {
     public class HueSpellFlasher
     {
-        private Dictionary<MagicColor?, Func<CancellationToken, Task>> effectMap =
-            new Dictionary<MagicColor?, Func<CancellationToken, Task>>();
+        private Dictionary<MagicColor, RGB> colorMap = new Dictionary<MagicColor, RGB>
+        {
+            [MagicColor.Black] = new RGB(255, 255, 255) * .3,
+            [MagicColor.White] = new RGB(255, 255, 255),
+            [MagicColor.Red] = new RGB(255, 0, 0),
+            [MagicColor.Green] = new RGB(0, 255, 0),
+            [MagicColor.Blue] = new RGB(0, 0, 255)
+        };
 
         private CancellationTokenSource cancellationTokenSource;
 
@@ -23,12 +28,6 @@ namespace MTGAHue
 
         public HueSpellFlasher(ILightLayout layout)
         {
-            effectMap.Add(MagicColor.Black, BuildEffect(new RGB(255, 255, 255) * .3));
-            effectMap.Add(MagicColor.White, BuildEffect(new RGB(255, 255, 255)));
-            effectMap.Add(MagicColor.Red, BuildEffect(new RGB(255, 0, 0)));
-            effectMap.Add(MagicColor.Green, BuildEffect(new RGB(0, 255, 0)));
-            effectMap.Add(MagicColor.Blue, BuildEffect(new RGB(0, 0, 255)));
-
             this.layout = layout;
         }
 
@@ -53,6 +52,13 @@ namespace MTGAHue
             return token => composite.Transition(layout, token);
         }
 
+        private void RunEffect(RGB color, CancellationToken token)
+        {
+            var effect = BuildEffect(color);
+
+            effect(token);
+        }
+
         public void OnCastSpell(CastSpell spell)
         {
             CancelPrevious();
@@ -64,12 +70,11 @@ namespace MTGAHue
                 return;
             }
 
-            var color = colors[0];
+            var rgb = colorMap[colors[0]];
 
             cancellationTokenSource = new CancellationTokenSource();
 
-            effectMap[color](cancellationTokenSource.Token)
-                .ContinueWith(t => { }, TaskContinuationOptions.OnlyOnCanceled);
+            RunEffect(rgb, cancellationTokenSource.Token);
         }
 
         private void CancelPrevious()
@@ -77,22 +82,6 @@ namespace MTGAHue
             if (cancellationTokenSource != null)
             {
                 cancellationTokenSource.Cancel();
-            }
-        }
-
-        private class State
-        {
-            public RGBColor Rgb { get; set; }
-
-            public double Brightness { get; set; }
-
-            public TimeSpan TransitionTime { get; set; }
-
-            public State(RGBColor color, double brightness, int ms)
-            {
-                Rgb = color;
-                Brightness = brightness;
-                TransitionTime = TimeSpan.FromMilliseconds(ms);
             }
         }
     }
