@@ -14,6 +14,10 @@ namespace MTGAHue.Chroma
 {
     internal class KeyboardLayout : ILightLayout
     {
+        private const int ColumnCount = 16;
+
+        private const int RowCount = 6;
+
         private readonly IKeyboard keyboard;
 
         private readonly KeyboardPosition[] positions;
@@ -30,15 +34,15 @@ namespace MTGAHue.Chroma
 
         private IEnumerable<KeyboardPosition> CalculatePositions()
         {
-            var keyboardColumnStep = 2d / KeyboardConstants.MaxColumns;
-            var keyboardRowStep = 2d / KeyboardConstants.MaxRows;
+            var keyboardColumnStep = 2d / ColumnCount;
+            var keyboardRowStep = 2d / RowCount;
 
             var startX = -1 + keyboardColumnStep / 2;
             var startY = -1 + keyboardRowStep / 2;
 
-            for (var column = 0; column < KeyboardConstants.MaxColumns; column++)
+            for (var column = 0; column < ColumnCount; column++)
             {
-                for (var row = 0; row < KeyboardConstants.MaxRows; row++)
+                for (var row = 0; row < RowCount; row++)
                 {
                     yield return new KeyboardPosition(
                         column,
@@ -51,6 +55,8 @@ namespace MTGAHue.Chroma
 
         public async Task Transition(ILightSource lightSource, TimeSpan timeSpan, CancellationToken childToken = default)
         {
+            var totalMilliseconds = timeSpan.TotalMilliseconds;
+
             //TODO: this looks familiar. clean up with transition code from Hue
             if (cancellationTokenSource != null)
             {
@@ -72,38 +78,34 @@ namespace MTGAHue.Chroma
 
             var stopwatch = Stopwatch.StartNew();
 
-            while (!token.IsCancellationRequested && stopwatch.ElapsedMilliseconds < timeSpan.Milliseconds)
+            long elapsed;
+            while (!token.IsCancellationRequested && (elapsed = stopwatch.ElapsedMilliseconds) < totalMilliseconds)
             {
-                var passed = stopwatch.ElapsedMilliseconds;
+                var nextColors = KeyboardCustom.Create();
+                var percentage = elapsed / totalMilliseconds;
 
-                KeyboardCustom nextColors;
-                if (passed > timeSpan.Milliseconds)
+                for (var i = 0; i < KeyboardConstants.MaxKeys; i++)
                 {
-                    nextColors = endingColors;
-                }
-                else
-                {
-                    var percentage = (float)passed / timeSpan.Milliseconds;
-                    nextColors = KeyboardCustom.Create();
+                    var color = new Color(
+                        (byte)(startingColors[i].R + (endingColors[i].R - startingColors[i].R) * percentage),
+                        (byte)(startingColors[i].G + (endingColors[i].G - startingColors[i].G) * percentage),
+                        (byte)(startingColors[i].B + (endingColors[i].B - startingColors[i].B) * percentage));
 
-                    for (var i = 0; i < KeyboardConstants.MaxKeys; i++)
-                    {
-                        var color = new Color(
-                            (byte)(startingColors[i].R + (endingColors[i].R - startingColors[i].R) * percentage),
-                            (byte)(startingColors[i].G + (endingColors[i].G - startingColors[i].G) * percentage),
-                            (byte)(startingColors[i].B + (endingColors[i].B - startingColors[i].B) * percentage));
-
-                        nextColors[i] = color;
-                    }
+                    nextColors[i] = color;
                 }
+
+                var delay = Math.Min(100, totalMilliseconds - elapsed);
 
                 currentColors = nextColors;
                 await Task.WhenAll(new[]
                 {
                     keyboard.SetCustomAsync(nextColors),
-                    Task.Delay(100, token)
+                    Task.Delay(TimeSpan.FromMilliseconds(delay), token)
                 });
             }
+
+            currentColors = endingColors;
+            await keyboard.SetCustomAsync(endingColors);
         }
 
         private class KeyboardPosition

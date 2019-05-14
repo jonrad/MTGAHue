@@ -14,7 +14,7 @@ namespace MTGAHue.Chroma
             return new KeyboardLayout(chroma.Keyboard);
         }
 
-        public async Task Start(CancellationToken token)
+        public async Task Start(CancellationToken token = default)
         {
             chroma = await ColoreProvider.CreateNativeAsync();
         }
