@@ -13,7 +13,7 @@ namespace LightsApi.Specs.LightSources
         class when_single
         {
             Because of = () =>
-                result = new CompositeLightSource(new OmniLightSource(rgb1)).Calculate(0, 0);
+                result = new CompositeLightSource(new SolidLightSource(rgb1)).Calculate(0, 0);
 
             class with_red
             {
@@ -28,7 +28,7 @@ namespace LightsApi.Specs.LightSources
         class with_two_colors
         {
             Because of = () =>
-                result = new CompositeLightSource(new OmniLightSource(rgb1), new OmniLightSource(rgb2)).Calculate(0, 0);
+                result = new CompositeLightSource(new SolidLightSource(rgb1), new SolidLightSource(rgb2)).Calculate(0, 0);
 
             class when_one_color_overpowers_other
             {

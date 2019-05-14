@@ -1,10 +1,10 @@
 ﻿namespace LightsApi.LightSources
 {
-    public class OmniLightSource : ILightSource
+    public class SolidLightSource : ILightSource
     {
         private readonly RGB rgb;
 
-        public OmniLightSource(RGB rgb)
+        public SolidLightSource(RGB rgb)
         {
             this.rgb = rgb;
         }
