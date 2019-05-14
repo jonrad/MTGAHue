@@ -1,6 +1,5 @@
 ﻿using LightsApi.LightSources;
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -9,6 +8,8 @@ namespace LightsApi.WinForms
 {
     public partial class Demo : Form
     {
+        private GraphicsLightLayout layout;
+
         // Imagine the arena broken up into a grid, where X = -1 is the far left, X = 1 the far right
         // Y = 1 is the furthest in front (Where the opponent is), Y = -1 is the very back (Where the player is)
         // We can think of an Arena as two halves: the opponent and the player
@@ -91,33 +92,12 @@ namespace LightsApi.WinForms
                 new[] { RGB.Green },
                 new[] { RGB.Blue, RGB.Red });
 
-            var count = 100;
+            layout.Transition(lightSource, TimeSpan.FromMilliseconds(10));
+        }
 
-            using (var graphics = pictureBox1.CreateGraphics())
-            {
-                // Transforms our coordinate system to make it -1 <= X <= 1, -1 <= Y <= 1
-                // AKA a 2x2 grid starting at top left -1, 1 and ending at bottom right 1, -1
-                // AKA the cartesian coordinate system that we all know and love
-                graphics.ScaleTransform(pictureBox1.Width / 2f, pictureBox1.Height / 2f);
-                graphics.TranslateTransform(1, 1);
-                graphics.ScaleTransform(1.0F, -1.0F);
-
-                var stepSize = 2f / count;
-                for (var i = 0; i < count; i++)
-                {
-                    for (var j = 0; j < count; j++)
-                    {
-                        var x = -1f + i * stepSize;
-                        var y = -1f + j * stepSize;
-
-                        var color = lightSource.Calculate(x + stepSize / 2, y + stepSize / 2);
-
-                        graphics.FillRectangle(
-                            new SolidBrush(Color.FromArgb((int)color.R, (int)color.G, (int)color.B)),
-                            x, y, 2f / count, 2f / count);
-                    }
-                }
-            }
+        private void Demo_Load(object sender, EventArgs e)
+        {
+            layout = new GraphicsLightLayout(pictureBox1.CreateGraphics());
         }
     }
 }
