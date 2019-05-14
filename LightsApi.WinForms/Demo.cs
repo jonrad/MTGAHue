@@ -96,9 +96,11 @@ namespace LightsApi.WinForms
             using (var graphics = pictureBox1.CreateGraphics())
             {
                 // Transforms our coordinate system to make it -1 <= X <= 1, -1 <= Y <= 1
-                // AKA a 2x2 grid starting at top left -1, -1 and ending at bottom right 1, 1
+                // AKA a 2x2 grid starting at top left -1, 1 and ending at bottom right 1, -1
+                // AKA the cartesian coordinate system that we all know and love
                 graphics.ScaleTransform(pictureBox1.Width / 2f, pictureBox1.Height / 2f);
                 graphics.TranslateTransform(1, 1);
+                graphics.ScaleTransform(1.0F, -1.0F);
 
                 var stepSize = 2f / count;
                 for (var i = 0; i < count; i++)

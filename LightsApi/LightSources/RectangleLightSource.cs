@@ -18,12 +18,12 @@
             this.left = left;
             this.top = top;
             right = left + width;
-            bottom = top + height;
+            bottom = top - height;
         }
 
         public RGB Calculate(double x, double y)
         {
-            if (x >= left && y >= top && x <= right && y <= bottom)
+            if (x >= left && y <= top && x <= right && y >= bottom)
             {
                 return rgb;
             }

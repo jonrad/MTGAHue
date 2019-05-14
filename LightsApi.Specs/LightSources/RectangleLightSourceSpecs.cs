@@ -11,7 +11,7 @@ namespace LightsApi.Specs.LightSources
         static RGB result;
 
         static RectangleLightSource subject =
-            new RectangleLightSource(RGB.Red, -5, 5, 1, 3); //-5 <= X <= -4, 5 <= Y <= 8
+            new RectangleLightSource(RGB.Red, -5, 8, 1, 3); //-5 <= X <= -4, 5 <= Y <= 8
 
         Because of = () =>
             result = subject.Calculate(x, y);

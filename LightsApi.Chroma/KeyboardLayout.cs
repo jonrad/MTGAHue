@@ -38,7 +38,7 @@ namespace MTGAHue.Chroma
             var keyboardRowStep = 2d / RowCount;
 
             var startX = -1 + keyboardColumnStep / 2;
-            var startY = -1 + keyboardRowStep / 2;
+            var startY = 1 - keyboardRowStep / 2;
 
             for (var column = 0; column < ColumnCount; column++)
             {
@@ -48,7 +48,7 @@ namespace MTGAHue.Chroma
                         column,
                         row,
                         startX + column * keyboardColumnStep,
-                        startY + row * keyboardRowStep);
+                        startY - row * keyboardRowStep);
                 }
             }
         }
