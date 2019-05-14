@@ -1,21 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace LightsApi.LightSources
 {
     public class CompositeLightSource : ILightSource
     {
-        private List<ILightSource> sources = new List<ILightSource>();
+        private ILightSource[] sources;
 
         public CompositeLightSource(params ILightSource[] lightSources)
         {
-            sources.AddRange(lightSources);
-        }
-
-        public void Add(ILightSource lightSource)
-        {
-            sources.Add(lightSource);
+            sources = lightSources;
         }
 
         public RGB Calculate(double x, double y)
