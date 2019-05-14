@@ -6,11 +6,13 @@ using LightsApi.LightSources;
 
 namespace LightsApi.WinForms
 {
-    public class GraphicsLightLayout : ILightLayout
+    public class GraphicsLightLayout : ILightLayout, IDisposable
     {
         private const int count = 100;
 
         private readonly BufferedGraphics buffer;
+
+        private readonly Graphics graphics;
 
         public GraphicsLightLayout(Graphics graphics)
         {
@@ -28,6 +30,7 @@ namespace LightsApi.WinForms
             buffer.Graphics.ScaleTransform(graphics.VisibleClipBounds.Width / 2f, graphics.VisibleClipBounds.Height / 2f);
             buffer.Graphics.TranslateTransform(1, 1);
             buffer.Graphics.ScaleTransform(1.0F, -1.0F);
+            this.graphics = graphics;
         }
 
         public async Task Transition(
@@ -69,6 +72,12 @@ namespace LightsApi.WinForms
             }
 
             buffer.Render();
+        }
+
+        public void Dispose()
+        {
+            buffer.Dispose();
+            graphics.Dispose();
         }
     }
 }

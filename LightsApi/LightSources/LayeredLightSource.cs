@@ -2,7 +2,7 @@
 
 namespace LightsApi.LightSources
 {
-    public class LayeredLightSource : ILightSource
+    public class LayeredLightSource : ILightSource //TODO needs specs
     {
         private readonly ILightSource[] layers;
 
