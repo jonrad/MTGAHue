@@ -8,13 +8,13 @@ using MTGADispatcher.Dispatcher;
 
 namespace MTGADispatcher
 {
-    public class AppInstaller : IWindsorInstaller
+    public class MagicDispatcherInstaller : IWindsorInstaller
     {
         private readonly string filePath;
 
         private readonly Game game;
 
-        public AppInstaller(string filePath, Game game)
+        public MagicDispatcherInstaller(string filePath, Game game)
         {
             this.filePath = filePath;
             this.game = game;

@@ -12,21 +12,21 @@ namespace MTGAHue
 
         private readonly IMagicService magicService;
 
-        private readonly ILightClientFactory lightClientFactories;
+        private readonly ILightClientFactory lightClientFactory;
 
         public Application(
             Game game,
             IMagicService magicService,
-            ILightClientFactory lightClientFactories)
+            ILightClientFactory lightClientFactory)
         {
             this.game = game;
             this.magicService = magicService;
-            this.lightClientFactories = lightClientFactories;
+            this.lightClientFactory = lightClientFactory;
         }
 
         public async Task Run()
         {
-            var lightClient = await lightClientFactories.Create();
+            var lightClient = await lightClientFactory.Create();
 
             await lightClient.Start(CancellationToken.None);
 

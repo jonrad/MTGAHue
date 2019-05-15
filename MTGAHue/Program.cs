@@ -52,7 +52,7 @@ namespace MTGAHue
             installers.AddRange(
                 new IWindsorInstaller[]
                 {
-                    new AppInstaller(path, game),
+                    new MagicDispatcherInstaller(path, game),
                     new DebuggerInstaller(),
                     new LightsInstaller(),
                     new ApplicationInstaller()

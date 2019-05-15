@@ -24,6 +24,8 @@ namespace LightsApi
 
         public async Task Start(CancellationToken token)
         {
+            // There's a bug somewhere where if the chroma client starts before/same time
+            // as the hue client, the hue client breaks (auth error?)
             foreach (var client in lightClients)
             {
                 await client.Start(token);
