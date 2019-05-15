@@ -62,20 +62,13 @@ namespace MTGAHue
             installers.Add(new LightsInstaller());
             installers.Add(new ApplicationInstaller());
 
-            //using (var hue = await GetClient())
+            using (var container = new WindsorContainer())
             {
-                //var entertainmentGroup = options.EntertainmentGroupName ?? await GetEntertainmentGroupName(hue);
-                //using (var hueClient = new HueLightClient(hue, entertainmentGroup))
-                {
-                    using (var container = new WindsorContainer())
-                    {
-                        container.Install(installers.ToArray());
+                container.Install(installers.ToArray());
 
-                        var application = container.Resolve<Application>();
+                var application = container.Resolve<Application>();
 
-                        await application.Play();
-                    }
-                }
+                await application.Run();
             }
         }
 

@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace MTGAHue
 {
-    public class HueSpellFlasher : IMagicService
+    public class HueSpellFlasher
     {
         private Dictionary<MagicColor, RGB> colorMap = new Dictionary<MagicColor, RGB>
         {
