@@ -1,17 +1,13 @@
 ﻿using Castle.Windsor;
 using CommandLine;
 using MTGADispatcher;
-using Newtonsoft.Json.Linq;
-using Q42.HueApi;
-using Q42.HueApi.Models.Groups;
-using Q42.HueApi.Streaming;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
-using static System.Environment;
 using Castle.MicroKernel.Registration;
+
+using static System.Environment;
+using System;
 
 namespace MTGAHue
 {
@@ -28,7 +24,7 @@ namespace MTGAHue
             [Option('c', "chroma", Required = false, HelpText = "Use Chroma (Razer)")]
             public bool Chroma { get; set; }
 
-            [Option('h', "hue", Required = false, Default = true, HelpText = "Use Hue")]
+            [Option('h', "hue", Required = false, HelpText = "Use Hue")]
             public bool Hue { get; set; }
         }
 
@@ -38,6 +34,15 @@ namespace MTGAHue
 
             var optionsResults = Parser.Default.ParseArguments<Options>(args)
                 .WithParsed(o => options = o);
+
+            if (!options.Chroma && !options.Hue)
+            {
+                Console.Error.WriteLine(
+                    "WARNING! You did not specify either [-h] Hue and/or [-c] Chroma");
+
+                Console.Error.WriteLine(
+                    "Running in Debug mode. This is boring, it will only print things to the console");
+            }
 
             var path = MtgaOutputPath();
             var game = new Game();

@@ -1,6 +1,4 @@
 ﻿using Colore;
-using LightsApi.LightSources;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 

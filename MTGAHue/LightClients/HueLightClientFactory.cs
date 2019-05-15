@@ -114,12 +114,10 @@ namespace MTGAHue.LightClients
                 await Task.Delay(TimeSpan.FromMilliseconds(5000));
             }
 
-            throw new InvalidOperationException("Couldn't find bridge. Ginving up");
-
-            return (null, null);
+            throw new InvalidOperationException("Couldn't find bridge. Giving up");
         }
 
-        //TODO make this strongly typed
+        //TODO make this strongly typed. And move this into a shared space
         private static async Task<JObject> GetSettings()
         {
             var path = GetSettingsPath();
