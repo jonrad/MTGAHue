@@ -1,8 +1,8 @@
-﻿using System.Linq;
-using System.Threading;
+﻿using LightsApi;
+using System.Linq;
 using System.Threading.Tasks;
 
-namespace LightsApi
+namespace MTGAHue.LightClients
 {
     public class CompositeLightClientFactory : ILightClientFactory
     {
@@ -16,11 +16,7 @@ namespace LightsApi
         public async Task<ILightClient> Create()
         {
             var clients = factories.Select(f => f.Create());
-            var client = new CompositeLightClient(await Task.WhenAll(clients));
-
-            await client.Start(CancellationToken.None);
-
-            return client;
+            return new CompositeLightClient(await Task.WhenAll(clients));
         }
 
         public void Dispose()

@@ -1,8 +1,8 @@
-﻿using MTGAHue.Chroma;
-using System;
+﻿using LightsApi;
+using LightsApi.Chroma;
 using System.Threading.Tasks;
 
-namespace LightsApi.Chroma
+namespace MTGAHue.LightClients
 {
     public class ChromaLightClientFactory : ILightClientFactory
     {

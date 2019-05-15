@@ -1,8 +1,7 @@
 ﻿using Castle.Windsor;
 using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Configuration;
-using LightsApi;
-using Castle.Facilities.Startable;
+using MTGAHue.LightClients;
 
 namespace MTGAHue
 {
@@ -12,10 +11,7 @@ namespace MTGAHue
         {
             container.Register(
                 Component.For<ILightClientFactory>()
-                    .ImplementedBy<CompositeLightClientFactory>().IsDefault(),
-                Component.For<ILightClient>()
-                    .UsingFactoryMethod(k => k.Resolve<ILightClientFactory>().Create().Result),
-                Component.For<ILightLayout>().UsingFactoryMethod(k => k.Resolve<ILightClient>().GetLayout()));
+                    .ImplementedBy<CompositeLightClientFactory>().IsDefault());
         }
     }
 }

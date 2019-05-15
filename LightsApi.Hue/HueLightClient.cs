@@ -9,11 +9,11 @@ namespace LightsApi.Hue
 {
     public class HueLightClient : ILightClient, IDisposable
     {
+        private readonly CancellationTokenSource stoppedSource = new CancellationTokenSource();
+
         private readonly StreamingHueClient hueClient;
 
         private readonly string entertainmentGroupName;
-
-        private readonly CancellationTokenSource stoppedSource = new CancellationTokenSource();
 
         private StreamingGroup streamingGroup;
 

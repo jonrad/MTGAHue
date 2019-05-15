@@ -22,13 +22,12 @@ namespace LightsApi
             return new CompositeLightLayout(layouts);
         }
 
-        public Task Start(CancellationToken token)
+        public async Task Start(CancellationToken token)
         {
-            var tasks = lightClients
-                .Select(l => l.Start(token))
-                .ToArray();
-
-            return Task.WhenAll(tasks);
+            foreach (var client in lightClients)
+            {
+                await client.Start(token);
+            }
         }
 
         public Task Stop(CancellationToken token)

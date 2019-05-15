@@ -2,7 +2,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using LightsApi;
+using MTGAHue.LightClients;
 
 namespace MTGAHue
 {

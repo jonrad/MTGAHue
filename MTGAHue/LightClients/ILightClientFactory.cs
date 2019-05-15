@@ -1,8 +1,8 @@
-﻿using System;
-using System.Linq;
+﻿using LightsApi;
+using System;
 using System.Threading.Tasks;
 
-namespace LightsApi
+namespace MTGAHue.LightClients
 {
     public interface ILightClientFactory : IDisposable
     {

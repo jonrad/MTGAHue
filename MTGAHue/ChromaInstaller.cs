@@ -1,8 +1,7 @@
 ﻿using Castle.Windsor;
 using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Configuration;
-using LightsApi;
-using LightsApi.Chroma;
+using MTGAHue.LightClients;
 
 namespace MTGAHue
 {
