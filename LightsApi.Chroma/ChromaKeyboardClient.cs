@@ -1,9 +1,8 @@
 ﻿using Colore;
-using LightsApi;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MTGAHue.Chroma
+namespace LightsApi.Chroma
 {
     public class ChromaKeyboardClient : ILightClient
     {

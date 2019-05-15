@@ -31,10 +31,10 @@ namespace MTGADispatcher.Integration.Fixtures
 
             container = new WindsorContainer();
             container.Install(
-                new AppInstaller(path, Game),
+                new MagicDispatcherInstaller(path, Game),
                 new IntegrationInstaller());
 
-            var service = container.Resolve<MtgaService>();
+            var service = container.Resolve<IMagicService>();
             service.Start();
 
             Game.Events.Subscriptions.Subscribe<CastSpell>(OnCastSpell);

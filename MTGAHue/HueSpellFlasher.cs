@@ -2,6 +2,7 @@
 using LightsApi.LightSources;
 using LightsApi.Transitions;
 using MTGADispatcher;
+using MTGADispatcher.Dispatcher;
 using MTGADispatcher.Events;
 using System;
 using System.Collections.Generic;
@@ -24,10 +25,13 @@ namespace MTGAHue
 
         private CancellationTokenSource cancellationTokenSource;
 
+        private ISubscriptions<IMagicEvent> subscriptions;
+
         private readonly ILightLayout layout;
 
-        public HueSpellFlasher(ILightLayout layout)
+        public HueSpellFlasher(Game game, ILightLayout layout)
         {
+            subscriptions = game.Events.Subscriptions;
             this.layout = layout;
         }
 
@@ -83,6 +87,16 @@ namespace MTGAHue
             {
                 cancellationTokenSource.Cancel();
             }
+        }
+
+        public void Start()
+        {
+            subscriptions.Subscribe<CastSpell>(OnCastSpell);
+        }
+
+        public void Stop()
+        {
+            subscriptions.Unsubscribe<CastSpell>(OnCastSpell);
         }
     }
 }

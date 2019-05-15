@@ -22,13 +22,14 @@ namespace LightsApi
             return new CompositeLightLayout(layouts);
         }
 
-        public Task Start(CancellationToken token)
+        public async Task Start(CancellationToken token)
         {
-            var tasks = lightClients
-                .Select(l => l.Start(token))
-                .ToArray();
-
-            return Task.WhenAll(tasks);
+            // There's a bug somewhere where if the chroma client starts before/same time
+            // as the hue client, the hue client breaks (auth error?)
+            foreach (var client in lightClients)
+            {
+                await client.Start(token);
+            }
         }
 
         public Task Stop(CancellationToken token)

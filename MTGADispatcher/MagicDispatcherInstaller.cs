@@ -1,4 +1,5 @@
-﻿using Castle.MicroKernel.Registration;
+﻿using Castle.Facilities.Startable;
+using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.Resolvers.SpecializedResolvers;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
@@ -7,13 +8,13 @@ using MTGADispatcher.Dispatcher;
 
 namespace MTGADispatcher
 {
-    public class AppInstaller : IWindsorInstaller
+    public class MagicDispatcherInstaller : IWindsorInstaller
     {
         private readonly string filePath;
 
         private readonly Game game;
 
-        public AppInstaller(string filePath, Game game)
+        public MagicDispatcherInstaller(string filePath, Game game)
         {
             this.filePath = filePath;
             this.game = game;
@@ -21,10 +22,14 @@ namespace MTGADispatcher
 
         public void Install(IWindsorContainer container, IConfigurationStore store)
         {
-            container.Kernel.Resolver.AddSubResolver(new CollectionResolver(container.Kernel));
+            container.Kernel.Resolver.AddSubResolver(new CollectionResolver(container.Kernel, true));
+
+            container.AddFacility<StartableFacility>();
 
             container.Register(
-                Component.For<MtgaService>(),
+                Component.For<Game>().Instance(game),
+                Component.For<IMagicService>()
+                    .ImplementedBy<MtgaService>(),
                 Component.For(typeof(IDispatcher<>))
                     .ImplementedBy(typeof(Dispatcher<>)),
 
@@ -39,8 +44,7 @@ namespace MTGADispatcher
                     .ImplementedBy<FileLineReader>()
                     .DependsOn(Dependency.OnValue<string>(filePath)),
                 Component.For<IBlockProcessor>()
-                    .ImplementedBy<BlockProcessor>()
-                    .DependsOn(Dependency.OnValue<Game>(game)),
+                    .ImplementedBy<BlockProcessor>(),
                 Classes.FromAssemblyContaining<IGameUpdater>()
                     .BasedOn<IGameUpdater>()
                     .WithService.FromInterface());
