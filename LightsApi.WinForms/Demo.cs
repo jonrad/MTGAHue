@@ -1,5 +1,6 @@
 ﻿using LightsApi.LightSources;
 using System;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace LightsApi.WinForms
@@ -7,6 +8,8 @@ namespace LightsApi.WinForms
     public partial class Demo : Form
     {
         private GraphicsLightLayout layout;
+
+        private Task transition;
 
         public Demo()
         {
@@ -17,6 +20,11 @@ namespace LightsApi.WinForms
 
         private void Demo_Disposed(object sender, EventArgs e)
         {
+            if (transition != null)
+            {
+                transition.Wait();
+            }
+
             layout.Dispose();
         }
 
@@ -37,7 +45,7 @@ namespace LightsApi.WinForms
                     140)
                 );
 
-            layout.Transition(lightSource, TimeSpan.FromMilliseconds(10));
+            transition = layout.Transition(lightSource, TimeSpan.FromMilliseconds(10));
         }
 
         private void Demo_Load(object sender, EventArgs e)

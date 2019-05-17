@@ -15,11 +15,11 @@ namespace LightsApi.Hue
 
         private readonly string entertainmentGroupName;
 
-        private StreamingGroup streamingGroup;
+        private StreamingGroup? streamingGroup;
 
-        private HueLight[] lights;
+        private HueLight[]? lights;
 
-        private Task updatingTask;
+        private Task? updatingTask;
 
         public HueLightClient(StreamingHueClient hueClient, string entertainmentGroupName)
         {
@@ -29,6 +29,11 @@ namespace LightsApi.Hue
 
         public ILightLayout GetLayout()
         {
+            if (lights == null)
+            {
+                throw new InvalidOperationException("Must start client");
+            }
+
             return new HueLightLayout(lights);
         }
 
@@ -57,7 +62,7 @@ namespace LightsApi.Hue
         {
             stoppedSource.Cancel();
 
-            return updatingTask;
+            return updatingTask ?? Task.FromResult(true);
         }
 
         public void Dispose()

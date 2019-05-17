@@ -15,12 +15,12 @@ namespace MTGADispatcher.ClientModels
         public int OwnerId { get; set; }
 
         [JsonProperty("color")]
-        public string[] Colors { get; set; }
+        public string[]? Colors { get; set; }
 
         [JsonProperty("cardTypes")]
-        public string[] CardTypes { get; set; }
+        public string[]? CardTypes { get; set; }
 
         [JsonProperty("subTypes")]
-        public string[] CardSubtypes { get; set; }
+        public string[]? CardSubtypes { get; set; }
     }
 }

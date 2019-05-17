@@ -6,9 +6,9 @@ namespace MTGADispatcher.ClientModels
     public class Turn
     {
         [JsonProperty("phase")]
-        public string Phase { get; set; }
+        public string? Phase { get; set; }
 
         [JsonProperty("Step")]
-        public string Step { get; set; }
+        public string? Step { get; set; }
     }
 }

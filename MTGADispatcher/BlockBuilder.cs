@@ -23,12 +23,12 @@ namespace MTGADispatcher
             lines.Clear();
         }
 
-        public (bool, Block) TryBuild()
+        public Block? TryBuild()
         {
             //TODO: tons of error handling and missing cases
             if (lines.Count <= 1)
             {
-                return (false, null);
+                return null;
             }
 
             if (lines[1].StartsWith("==>") || lines[1].StartsWith("<=="))
@@ -43,7 +43,7 @@ namespace MTGADispatcher
 
                 if (json == null)
                 {
-                    return (false, null);
+                    return null;
                 }
 
                 return Build(blockTitle, json);
@@ -58,23 +58,23 @@ namespace MTGADispatcher
                 return Build(titleBlock, json);
             }
 
-            return (false, null);
+            return null;
         }
 
-        private (bool, Block) Build(string title, string json)
+        private Block? Build(string title, string json)
         {
             try
             {
-                return (true, new Block(title, JObject.Parse(json)));
+                return new Block(title, JObject.Parse(json));
             }
             catch (Exception)
             {
                 //TODO logging
-                return (false, null);
+                return null;
             }
         }
 
-        private string BuildRequestResponseJson(string title)
+        private string? BuildRequestResponseJson(string title)
         {
             if (lines[2].StartsWith("["))
             {

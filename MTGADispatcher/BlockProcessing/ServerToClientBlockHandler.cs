@@ -41,7 +41,7 @@ namespace MTGADispatcher.BlockProcessing
             ProcessAnnotations(message["annotations"] as JArray, game);
         }
 
-        private void ProcessGameObjects(JArray gameObjects, Game game)
+        private void ProcessGameObjects(JArray? gameObjects, Game game)
         {
             if (gameObjects == null)
             {
@@ -56,7 +56,7 @@ namespace MTGADispatcher.BlockProcessing
             }
         }
 
-        private void ProcessAnnotations(JArray annotations, Game game)
+        private void ProcessAnnotations(JArray? annotations, Game game)
         {
             if (annotations == null)
             {
@@ -79,7 +79,7 @@ namespace MTGADispatcher.BlockProcessing
                     continue;
                 }
 
-                string category = null;
+                string? category = null;
                 foreach (var detail in details)
                 {
                     if (detail["key"].Value<string>() == "category")
@@ -91,11 +91,21 @@ namespace MTGADispatcher.BlockProcessing
 
                 if (category == "CastSpell")
                 {
+                    if (instanceId == null)
+                    {
+                        continue;
+                    }
+
                     game.InstancesById.TryGetValue(instanceId.Value, out var instance);
                     game.Events.Dispatch(new CastSpell(instance));
                 }
                 else if (category == "PlayLand")
                 {
+                    if (instanceId == null)
+                    {
+                        continue;
+                    }
+
                     game.InstancesById.TryGetValue(instanceId.Value, out var instance);
                     game.Events.Dispatch(new PlayLand(instance));
                 }

@@ -15,7 +15,7 @@ namespace MTGADispatcher
 
         private IBlockBuilder blockBuilder;
 
-        private Task task;
+        private Task? task;
 
         public BlockDispatcher(
             IBlockBuilder blockBuilder,
@@ -75,9 +75,9 @@ namespace MTGADispatcher
                 }
                 else
                 {
-                    var (sucess, block) = ProcessLine(line.TrimEnd());
+                    var block = ProcessLine(line.TrimEnd());
 
-                    if (sucess)
+                    if (block != null)
                     {
                         dispatcher.Dispatch(block);
                     }
@@ -85,11 +85,11 @@ namespace MTGADispatcher
             }
         }
 
-        private (bool, Block) ProcessLine(string line)
+        private Block? ProcessLine(string line)
         {
             if (line.Length == 0)
             {
-                return (false, null);
+                return null;
             }
 
             if (line.StartsWith("[UnityCrossThreadLogger]") || line.StartsWith("[Client GRE]")) 
@@ -111,7 +111,7 @@ namespace MTGADispatcher
                 blockBuilder.Append(line);
             }
 
-            return (false, null);
+            return null;
         }
 
         public void Dispose()

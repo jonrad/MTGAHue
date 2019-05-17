@@ -18,6 +18,6 @@ namespace MTGADispatcher.ClientModels
         public int OwnerId { get; set; }
 
         [JsonProperty("objectInstanceIds")]
-        public int[] InstanceIds { get; set; }
+        public int[]? InstanceIds { get; set; }
     }
 }
