@@ -24,7 +24,7 @@ namespace MTGADispatcher
             this.startAtEnd = startAtEnd;
         }
 
-        //making this blocking would be more efficient...
+        // This should be an async stream
         public Task<string?> ReadLine()
         {
             if (reader == null)
