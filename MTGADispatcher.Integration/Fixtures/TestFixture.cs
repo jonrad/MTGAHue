@@ -88,9 +88,9 @@ namespace MTGADispatcher.Integration.Fixtures
             SpellsCast.Add(spell);
         }
 
-        private void OnPlayLand(PlayLand playLAnd)
+        private void OnPlayLand(PlayLand playLand)
         {
-            PlayedLands.Add(playLAnd);
+            PlayedLands.Add(playLand);
         }
 
         public void Dispose()

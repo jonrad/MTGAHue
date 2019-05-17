@@ -10,13 +10,18 @@ namespace MTGADispatcher
     {
         private readonly string path;
 
+        private readonly bool startAtEnd;
+
         private Stream stream;
 
         private StreamReader reader;
 
-        public FileLineReader(string path)
+        public FileLineReader(
+            string path,
+            bool startAtEnd = true)
         {
             this.path = path;
+            this.startAtEnd = startAtEnd;
         }
 
         //making this blocking would be more efficient...
@@ -48,7 +53,11 @@ namespace MTGADispatcher
                 FileAccess.Read,
                 FileShare.ReadWrite);
 
-            stream.Position = stream.Length;
+            if (startAtEnd)
+            {
+                stream.Position = stream.Length;
+            }
+
             reader = new StreamReader(stream, Encoding.UTF8, true, 1024, false);
         }
  

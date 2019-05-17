@@ -1,14 +1,14 @@
 ﻿using Machine.Fakes;
 using Machine.Specifications;
+using MTGADispatcher.ClientModels;
 using MTGADispatcher.Specs.Fixtures;
-using Newtonsoft.Json.Linq;
 
 namespace MTGADispatcher.Specs
 {
     [Subject(typeof(InstanceBuilder))]
     class InstanceBuilderSpecs : WithSubject<InstanceBuilder>
     {
-        static JObject input;
+        static InstanceModel input;
 
         static Instance result;
 
@@ -18,13 +18,16 @@ namespace MTGADispatcher.Specs
         class when_building_colorless
         {
             Establish context = () =>
-                input = InstanceJson.Build(new { instanceId = 12, grpId = 13 });
+                input = new InstanceModel { Id = 12, CardId = 13, OwnerId = 14 };
 
             It created_expected_instance_id = () =>
                 result.Id.ShouldEqual(12);
 
             It created_expected_card_id = () =>
                 result.CardId.ShouldEqual(13);
+
+            It created_expected_owner_id = () =>
+                result.OwnerId.ShouldEqual(14);
 
             It was_colorless = () =>
                 result.Colors.ShouldBeEmpty();
@@ -33,7 +36,7 @@ namespace MTGADispatcher.Specs
         class when_building_with_single_valid_color
         {
             Establish context = () =>
-                input = InstanceJson.Build().WithColors("CardColor_Green");
+                input = InstanceModelFixture.Build().WithColors("CardColor_Green");
 
             It was_added_green_color = () =>
                 result.Colors.ShouldContainOnly(new[] { MagicColor.Green });
@@ -42,7 +45,7 @@ namespace MTGADispatcher.Specs
         class when_building_with_multiple_valid_color
         {
             Establish context = () =>
-                input = InstanceJson.Build().WithColors("CardColor_Green", "CardColor_Blue");
+                input = InstanceModelFixture.Build().WithColors("CardColor_Green", "CardColor_Blue");
 
             It has_both_colors = () =>
                 result.Colors.ShouldContainOnly(new[] { MagicColor.Green, MagicColor.Blue });
@@ -51,7 +54,7 @@ namespace MTGADispatcher.Specs
         class when_building_with_invalid_color
         {
             Establish context = () =>
-                input = InstanceJson.Build().WithColors("CardColor_Ultraviolet");
+                input = InstanceModelFixture.Build().WithColors("CardColor_Ultraviolet");
 
             It has_no_colors = () =>
                 result.Colors.ShouldBeEmpty();
@@ -62,7 +65,7 @@ namespace MTGADispatcher.Specs
             class for_single_color
             {
                 Establish context = () =>
-                    input = InstanceJson.Build()
+                    input = InstanceModelFixture.Build()
                         .WithCardTypes("CardType_Land")
                         .WithSubTypes("SubType_Plains");
 
@@ -73,7 +76,7 @@ namespace MTGADispatcher.Specs
             class for_all_colors
             {
                 Establish context = () =>
-                    input = InstanceJson.Build()
+                    input = InstanceModelFixture.Build()
                         .WithCardTypes("CardType_Land")
                         .WithSubTypes("SubType_Plains", "SubType_Mountain", "SubType_Island", "SubType_Swamp", "SubType_Forest");
 

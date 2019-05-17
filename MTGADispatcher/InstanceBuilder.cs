@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using MTGADispatcher.ClientModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,34 +19,35 @@ namespace MTGADispatcher
             ["SubType_Swamp"] = MagicColor.Black
         };
 
-        public Instance Build(JToken gameObject)
+        public Instance Build(InstanceModel model)
         {
             //TODO: error handling, logging
-            var instanceId = gameObject["instanceId"].Value<int>();
-            var cardId = gameObject["grpId"].Value<int>();
+            var instanceId = model.Id;
+            var cardId = model.CardId;
+            var ownerId = model.OwnerId;
 
-            var colors = GetColors(gameObject).ToArray();
-            return new Instance(instanceId, cardId, colors);
+            var colors = GetColors(model).ToArray();
+            return new Instance(instanceId, cardId, ownerId, colors);
         }
 
-        private IEnumerable<MagicColor> GetColors(JToken gameObject)
+        private IEnumerable<MagicColor> GetColors(InstanceModel model)
         {
-            if (gameObject["color"] is JArray colorToken)
+            if (model.Colors != null)
             {
-                return GetColorFromColorArray(colorToken);
+                return GetColorFromColorArray(model.Colors);
             }
 
-            if (gameObject["cardTypes"] is JArray cardTypes && cardTypes.Values<string>().Contains("CardType_Land"))
+            if (model.CardTypes != null && model.CardTypes.Contains("CardType_Land"))
             {
-                return GetColorsForLand(gameObject);
+                return GetColorsForLand(model);
             }
 
             return Enumerable.Empty<MagicColor>();
         }
 
-        private IEnumerable<MagicColor> GetColorFromColorArray(JArray colors)
+        private IEnumerable<MagicColor> GetColorFromColorArray(string[] colors)
         {
-            foreach (var colorString in colors.Select(c => c.Value<string>()))
+            foreach (var colorString in colors)
             {
                 var color = colorString.Split('_').Last();
                 if (!Enum.TryParse<MagicColor>(color, out var colorValue))
@@ -60,14 +61,14 @@ namespace MTGADispatcher
             }
         }
 
-        private IEnumerable<MagicColor> GetColorsForLand(JToken gameObject)
+        private IEnumerable<MagicColor> GetColorsForLand(InstanceModel model)
         {
-            if (!(gameObject["subtypes"] is JArray subTypes))
+            if (model.CardSubtypes == null)
             {
                 yield break;
             }
 
-            foreach (var subType in subTypes.Values<string>())
+            foreach (var subType in model.CardSubtypes)
             {
                 if (landColorMap.TryGetValue(subType, out var color))
                 {

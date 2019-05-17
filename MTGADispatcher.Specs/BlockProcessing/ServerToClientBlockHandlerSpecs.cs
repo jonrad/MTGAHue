@@ -1,6 +1,7 @@
 ﻿using Machine.Fakes;
 using Machine.Specifications;
 using MTGADispatcher.BlockProcessing;
+using MTGADispatcher.ClientModels;
 using MTGADispatcher.Dispatcher;
 using MTGADispatcher.Events;
 using Newtonsoft.Json.Linq;
@@ -36,8 +37,8 @@ namespace MTGADispatcher.Specs.BlockProcessing
             game = new Game(The<IDispatcher<IMagicEvent>>());
             block = null;
             The<IInstanceBuilder>()
-                .WhenToldTo(i => i.Build(Param.IsAny<JToken>()))
-                .Return<JToken>(j => new Instance(j["id"].Value<int>(), j["id"].Value<int>(), new MagicColor[0]));
+                .WhenToldTo(i => i.Build(Param.IsAny<InstanceModel>()))
+                .Return<InstanceModel>(j => new Instance(j.Id, j.Id, j.Id, new MagicColor[0]));
         };
 
         Because of = () =>
