@@ -13,13 +13,13 @@ namespace MTGAHue.LightClients
 {
     public class HueLightClientFactory : ILightClientFactory
     {
-        private StreamingHueClient hueClient;
+        private StreamingHueClient? hueClient;
 
-        private HueLightClient lightClient;
+        private HueLightClient? lightClient;
 
-        private string entertainmentGroupName;
+        private string? entertainmentGroupName;
 
-        public HueLightClientFactory(string entertainmentGroupName = null)
+        public HueLightClientFactory(string? entertainmentGroupName = null)
         {
             this.entertainmentGroupName = entertainmentGroupName;
         }
@@ -31,13 +31,13 @@ namespace MTGAHue.LightClients
                 return lightClient;
             }
 
-            var client = await GetClient();
+            hueClient = await GetClient();
             if (entertainmentGroupName == null)
             {
-                entertainmentGroupName = await GetEntertainmentGroupName(client);
+                entertainmentGroupName = await GetEntertainmentGroupName(hueClient);
             }
 
-            return lightClient = new HueLightClient(client, entertainmentGroupName);
+            return lightClient = new HueLightClient(hueClient, entertainmentGroupName);
         }
 
         public void Dispose()
