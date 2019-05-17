@@ -1,4 +1,5 @@
-﻿using MTGADispatcher.Events;
+﻿using MTGADispatcher.ClientModels;
+using MTGADispatcher.Events;
 using Newtonsoft.Json.Linq;
 using System.Linq;
 
@@ -47,9 +48,9 @@ namespace MTGADispatcher.BlockProcessing
                 return;
             }
 
-            foreach (var gameObject in gameObjects)
+            foreach (var instanceModel in gameObjects.Select(g => g.ToObject<InstanceModel>()))
             {
-                var instance = instanceBuilder.Build(gameObject);
+                var instance = instanceBuilder.Build(instanceModel);
 
                 game.InstancesById[instance.Id] = instance;
             }

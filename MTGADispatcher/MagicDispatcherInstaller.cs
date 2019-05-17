@@ -42,7 +42,8 @@ namespace MTGADispatcher
                     .ImplementedBy<BlockDispatcher>(),
                 Component.For<ILineReader>()
                     .ImplementedBy<FileLineReader>()
-                    .DependsOn(Dependency.OnValue<string>(filePath)),
+                    .DependsOn(
+                        Dependency.OnValue<string>(filePath)),
                 Component.For<IBlockProcessor>()
                     .ImplementedBy<BlockProcessor>(),
                 Classes.FromAssemblyContaining<IGameUpdater>()

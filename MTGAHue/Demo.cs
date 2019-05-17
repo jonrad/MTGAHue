@@ -41,7 +41,7 @@ namespace MTGAHue
                 var colors = ParseColors(input).ToArray();
                 instanceId++;
 
-                var instance = new Instance(instanceId, instanceId, colors);
+                var instance = new Instance(instanceId, instanceId, 1, colors);
                 game.Events.Dispatch(new CastSpell(instance));
             }
         }

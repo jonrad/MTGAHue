@@ -1,24 +1,10 @@
-﻿using MTGADispatcher.Integration.Fixtures;
-using System;
 using System.Linq;
 using Xunit;
 
 namespace MTGADispatcher.Integration.Features
 {
-    public class PlayLandFeature : IDisposable
+    public class PlayLandFeature : BaseFeature
     {
-        private readonly TestFixture fixture;
-
-        public PlayLandFeature()
-        {
-            fixture = new TestFixture();
-        }
-
-        public void Dispose()
-        {
-            fixture.Dispose();
-        }
-
         [Fact]
         public void NotifiesOfLandPlay()
         {

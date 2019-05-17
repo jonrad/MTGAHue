@@ -1,9 +1,9 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using MTGADispatcher.ClientModels;
 
 namespace MTGADispatcher
 {
     public interface IInstanceBuilder
     {
-        Instance Build(JToken gameObject);
+        Instance Build(InstanceModel model);
     }
 }
