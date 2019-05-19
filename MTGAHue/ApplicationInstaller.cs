@@ -4,6 +4,7 @@ using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Facilities.TypedFactory;
 using MTGADispatcher.Events;
 using System.Reflection;
+using MTGAHue.Effects;
 
 namespace MTGAHue
 {

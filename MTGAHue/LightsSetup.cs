@@ -2,6 +2,7 @@
 using MTGADispatcher;
 using MTGADispatcher.Events;
 using MTGAHue.Configuration.Models;
+using MTGAHue.Effects;
 using MTGAHue.LightClients;
 using System;
 using System.Collections.Generic;

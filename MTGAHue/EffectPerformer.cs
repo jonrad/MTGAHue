@@ -1,5 +1,6 @@
 ﻿using LightsApi;
 using MTGADispatcher.Events;
+using MTGAHue.Effects;
 
 namespace MTGAHue
 {
