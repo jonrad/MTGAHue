@@ -2,32 +2,26 @@
 using LightsApi.LightSources;
 using LightsApi.Transitions;
 using MTGADispatcher;
-using MTGADispatcher.Dispatcher;
 using MTGADispatcher.Events;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace MTGAHue
 {
-    public interface IEventEffect<T>
+    public interface IEffect<T>
         where T : IMagicEvent
     {
-        string Name { get; }
-
-        void OnMagicEvent(T magicEvent);
+        ITransition? OnMagicEvent(T magicEvent);
     }
 
-    public interface IEventEffectBuilder
+    public interface IEffectFactory
     {
-        IEventEffect<T>[] Get<T>(Game game, ILightLayout layout)
+        IEffect<T> Get<T>(string id)
             where T : IMagicEvent;
     }
 
     public class HueSpellFlasher
-        : IEventEffect<CastSpell>
+        : IEffect<CastSpell>
     {
         private Dictionary<MagicColor, RGB> colorMap = new Dictionary<MagicColor, RGB>
         {
@@ -38,23 +32,17 @@ namespace MTGAHue
             [MagicColor.Blue] = new RGB(0, 0, 255)
         };
 
-        private CancellationTokenSource cancellationTokenSource;
-
-        private ISubscriptions<IMagicEvent> subscriptions;
-
-        private readonly ILightLayout layout;
-
-        public HueSpellFlasher(Game game, ILightLayout layout)
+        public ITransition? OnMagicEvent(CastSpell magicEvent)
         {
-            cancellationTokenSource = new CancellationTokenSource();
-            subscriptions = game.Events.Subscriptions;
-            this.layout = layout;
-        }
+            var colors = magicEvent.Instance.Colors;
 
-        public string Name => "Flash";  //Savior of the universe
+            if (colors.Length == 0)
+            {
+                return null;
+            }
 
-        private Func<CancellationToken, Task> BuildEffect(RGB color)
-        {
+            var color = colorMap[colors[0]];
+
             var flash = new ITransition[]
             {
                 new LightSourceTransition(new SolidLightSource(color), 500),
@@ -71,52 +59,7 @@ namespace MTGAHue
 
             var composite = new CompositeTransition(transitions);
 
-            return token => composite.Transition(layout, token);
-        }
-
-        private void RunEffect(RGB color, CancellationToken token)
-        {
-            var effect = BuildEffect(color);
-
-            effect(token);
-        }
-
-        public void OnCastSpell(CastSpell spell)
-        {
-            CancelPrevious();
-
-            var colors = spell.Instance.Colors;
-
-            if (colors.Length == 0)
-            {
-                return;
-            }
-
-            var rgb = colorMap[colors[0]];
-
-            cancellationTokenSource = new CancellationTokenSource();
-
-            RunEffect(rgb, cancellationTokenSource.Token);
-        }
-
-        public void OnMagicEvent(CastSpell magicEvent)
-        {
-            OnCastSpell(magicEvent);
-        }
-
-        private void CancelPrevious()
-        {
-            cancellationTokenSource.Cancel();
-        }
-
-        public void Start()
-        {
-            subscriptions.Subscribe<CastSpell>(OnCastSpell);
-        }
-
-        public void Stop()
-        {
-            subscriptions.Unsubscribe<CastSpell>(OnCastSpell);
+            return composite;
         }
     }
 }

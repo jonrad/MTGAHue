@@ -10,7 +10,7 @@ namespace MTGAHue
         public void Install(IWindsorContainer container, IConfigurationStore store)
         {
             container.Register(
-                Component.For<ILightClientProvider>().ImplementedBy<ChromaLightClientFactory>());
+                Component.For<ILightClientProvider>().ImplementedBy<ChromaLightClientProvider>());
         }
     }
 }

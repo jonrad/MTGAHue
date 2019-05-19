@@ -11,23 +11,18 @@ using static System.Environment;
 
 namespace MTGAHue.LightClients
 {
-    public class HueLightClientFactory : ILightClientProvider
+    public class HueLightClientProvider :
+        AbstractLightClientProvider<HueLightClientProvider.Configuration>
     {
         private StreamingHueClient? hueClient;
 
         private HueLightClient? lightClient;
 
-        private string? entertainmentGroupName;
+        public override string Id { get; } = "hue";
 
-        public HueLightClientFactory(string? entertainmentGroupName = null)
+        public override async Task<ILightClient> Create(Configuration configuration)
         {
-            this.entertainmentGroupName = entertainmentGroupName;
-        }
-
-        public string Name { get; } = "Philips Hue";
-
-        public async Task<ILightClient> Create()
-        {
+            var entertainmentGroupName = configuration.EntertainmentGroup;
             if (lightClient != null)
             {
                 return lightClient;
@@ -42,8 +37,9 @@ namespace MTGAHue.LightClients
             return lightClient = new HueLightClient(hueClient, entertainmentGroupName);
         }
 
-        public void Dispose()
+        public override void Dispose()
         {
+            base.Dispose();
             lightClient?.Dispose();
             hueClient?.Dispose();
         }
@@ -158,6 +154,11 @@ namespace MTGAHue.LightClients
 
             throw new InvalidOperationException(
                 "Please select entertainment group name with the -e option");
+        }
+
+        public class Configuration
+        {
+            public string? EntertainmentGroup { get; set; }
         }
     }
 }

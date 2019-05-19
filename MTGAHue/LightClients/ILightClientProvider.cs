@@ -6,8 +6,10 @@ namespace MTGAHue.LightClients
 {
     public interface ILightClientProvider : IDisposable
     {
-        string Name { get; }
+        string Id { get; }
 
-        Task<ILightClient> Create();
+        Type ConfigurationType { get; }
+
+        Task<ILightClient> Create(object configuration);
     }
 }

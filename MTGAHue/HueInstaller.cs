@@ -18,7 +18,7 @@ namespace MTGAHue
         {
             container.Register(
                 Component.For<ILightClientProvider>()
-                    .ImplementedBy<HueLightClientFactory>()
+                    .ImplementedBy<HueLightClientProvider>()
                     .DependsOn(Dependency.OnValue<string>(entertainmentGroupName)));
         }
     }

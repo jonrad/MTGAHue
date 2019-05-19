@@ -5,9 +5,9 @@ namespace LightsApi
 {
     public interface ILightClient
     {
-        Task Start(CancellationToken token);
+        Task Start(CancellationToken token = default);
 
-        Task Stop(CancellationToken token);
+        Task Stop(CancellationToken token = default);
 
         ILightLayout GetLayout();
     }
