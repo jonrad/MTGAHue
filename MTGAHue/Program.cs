@@ -5,16 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Castle.MicroKernel.Registration;
-
 using static System.Environment;
-using System;
-using Newtonsoft.Json;
-using MTGAHue.Configuration.Models;
-using MTGAHue.LightClients;
-using LightsApi;
-using MTGADispatcher.Events;
-using Newtonsoft.Json.Linq;
-using System.Linq;
 
 namespace MTGAHue
 {

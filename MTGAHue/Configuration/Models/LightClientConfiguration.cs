@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace MTGAHue.Configuration.Models
 {
@@ -9,7 +10,7 @@ namespace MTGAHue.Configuration.Models
 
         public bool Enabled { get; set; }
 
-        public KeyValueConfiguration[]? Config { get; set; }
+        public JArray? Config { get; set; }
 
         public EventConfiguration[]? Events { get; set; }
     }

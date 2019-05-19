@@ -24,10 +24,10 @@ namespace MTGAHue
 
         public async Task Run()
         {
-            var text = await File.ReadAllTextAsync("config.json");
+            var text = File.ReadAllText("config.json");
             var config = JsonConvert.DeserializeObject<Config>(text);
 
-            var lightClient = await lightsSetup.Build(config);
+            var lightClient = await lightsSetup.Start(config);
 
             magicService.Start();
 

@@ -4,6 +4,8 @@ using MTGADispatcher.Events;
 using MTGAHue.Configuration.Models;
 using MTGAHue.Effects;
 using MTGAHue.LightClients;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,6 +24,8 @@ namespace MTGAHue
 
         private readonly IEffectFactory effectFactory;
 
+        private readonly JsonSerializer serializer;
+
         public LightsSetup(
             Game game,
             ILightClientProvider[] lightClientProviders,
@@ -31,10 +35,11 @@ namespace MTGAHue
                 lightClientProviders.ToDictionary(l => l.Id);
             this.game = game;
             this.effectFactory = effectFactory;
+            serializer = new JsonSerializer();
             eventsById = BuildRegisters();
         }
 
-        public async Task<CompositeLightClient> Build(Config configuration)
+        public async Task<CompositeLightClient> Start(Config configuration)
         {
             var clients = BuildClients(
                 configuration.LightClients ?? new LightClientConfiguration[0]);
@@ -69,7 +74,7 @@ namespace MTGAHue
             }
 
             var clientConfiguration =
-                BuildClientArgs(provider);
+                BuildClientArgs(provider, lightClientConfiguration.Config);
 
             var client = await provider.Create(clientConfiguration);
             await client.Start();
@@ -118,11 +123,27 @@ namespace MTGAHue
                 performer.Perform);
         }
 
-        private object BuildClientArgs(ILightClientProvider provider)
+        private object BuildClientArgs(
+            ILightClientProvider provider,
+            JArray? config)
         {
+            // more reflection..
             var type = provider.ConfigurationType;
             var ctor = type.GetConstructor(Array.Empty<Type>());
-            return ctor.Invoke(Array.Empty<object>());
+
+            var instance = ctor.Invoke(Array.Empty<object>());
+
+            if (config == null)
+            {
+                return instance;
+            }
+
+            var jObect = new JObject(
+                config.Select(c => new JProperty(c.Value<string>("Key"), c["Value"])));
+
+            serializer.Populate(jObect.CreateReader(), instance);
+
+            return instance;
         }
 
         private Dictionary<string, Action<ILightLayout, EffectConfiguration>> BuildRegisters()

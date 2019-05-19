@@ -19,7 +19,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LightsApi.Hue", "LightsApi.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LightsApi.Specs", "LightsApi.Specs\LightsApi.Specs.csproj", "{0B001AEF-A11E-4598-9E85-622C83F97CAA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightsApi.Chroma", "LightsApi.Chroma\LightsApi.Chroma.csproj", "{C4487C19-D9DC-49EA-8F3F-4BF7F4310DCB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LightsApi.Chroma", "LightsApi.Chroma\LightsApi.Chroma.csproj", "{C4487C19-D9DC-49EA-8F3F-4BF7F4310DCB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MagicLights.Specs", "MagicLights.Specs\MagicLights.Specs.csproj", "{BC8CBEBB-9B57-44B4-BBA7-86E1DDE7C520}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +65,10 @@ Global
 		{C4487C19-D9DC-49EA-8F3F-4BF7F4310DCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C4487C19-D9DC-49EA-8F3F-4BF7F4310DCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C4487C19-D9DC-49EA-8F3F-4BF7F4310DCB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC8CBEBB-9B57-44B4-BBA7-86E1DDE7C520}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC8CBEBB-9B57-44B4-BBA7-86E1DDE7C520}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC8CBEBB-9B57-44B4-BBA7-86E1DDE7C520}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC8CBEBB-9B57-44B4-BBA7-86E1DDE7C520}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

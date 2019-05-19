@@ -19,7 +19,7 @@ namespace MTGAHue.LightClients
     {
         private readonly object syncObject = new object();
 
-        private StreamingHueClient hueClient;
+        private StreamingHueClient? hueClient;
 
         private Dictionary<string, ILightClient> lightClients =
             new Dictionary<string, ILightClient>();
@@ -177,7 +177,7 @@ namespace MTGAHue.LightClients
                 return new JObject();
             }
 
-            return JObject.Parse(await File.ReadAllTextAsync(path));
+            return JObject.Parse(File.ReadAllText(path));
         }
 
         private static string GetSettingsPath()

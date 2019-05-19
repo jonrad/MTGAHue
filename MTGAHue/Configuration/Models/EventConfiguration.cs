@@ -7,6 +7,6 @@ namespace MTGAHue.Configuration.Models
     {
         public string? Id { get; set; }
 
-        public EffectConfiguration Effect { get; set; }
+        public EffectConfiguration? Effect { get; set; }
     }
 }
