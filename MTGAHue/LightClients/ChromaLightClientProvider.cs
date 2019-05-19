@@ -4,8 +4,10 @@ using System.Threading.Tasks;
 
 namespace MTGAHue.LightClients
 {
-    public class ChromaLightClientFactory : ILightClientFactory
+    public class ChromaLightClientFactory : ILightClientProvider
     {
+        public string Name { get; } = "Chroma (Razer) Keyboards";
+
         public Task<ILightClient> Create()
         {
             return Task.FromResult<ILightClient>(new ChromaKeyboardClient());

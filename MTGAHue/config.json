@@ -1,0 +1,39 @@
+{
+  "colors": {
+    "Red": "FF0000",
+    "Green": "00FF00",
+    "Blue": "0000FF",
+    "Black": "000000",
+    "White": "FFFFFF"
+  },
+  "LightClients": [
+    {
+      "id": "hue",
+      "enabled": false,
+
+      //overrides
+      "colors": {
+        //"Red": "#DD0000"
+      },
+
+      "effects": [
+        {
+          "id": "flash",
+          //overrides
+          "colors": {
+            //"Red": "#DD0000"
+          },
+          "events": [
+            {
+              "id": "CastSpell",
+              //overrides
+              "colors": {
+                //"Red": "#DD0000"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

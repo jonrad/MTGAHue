@@ -12,7 +12,22 @@ using System.Threading.Tasks;
 
 namespace MTGAHue
 {
+    public interface IEventEffect<T>
+        where T : IMagicEvent
+    {
+        string Name { get; }
+
+        void OnMagicEvent(T magicEvent);
+    }
+
+    public interface IEventEffectBuilder
+    {
+        IEventEffect<T>[] Get<T>(Game game, ILightLayout layout)
+            where T : IMagicEvent;
+    }
+
     public class HueSpellFlasher
+        : IEventEffect<CastSpell>
     {
         private Dictionary<MagicColor, RGB> colorMap = new Dictionary<MagicColor, RGB>
         {
@@ -35,6 +50,8 @@ namespace MTGAHue
             subscriptions = game.Events.Subscriptions;
             this.layout = layout;
         }
+
+        public string Name => "Flash";  //Savior of the universe
 
         private Func<CancellationToken, Task> BuildEffect(RGB color)
         {
@@ -80,6 +97,11 @@ namespace MTGAHue
             cancellationTokenSource = new CancellationTokenSource();
 
             RunEffect(rgb, cancellationTokenSource.Token);
+        }
+
+        public void OnMagicEvent(CastSpell magicEvent)
+        {
+            OnCastSpell(magicEvent);
         }
 
         private void CancelPrevious()

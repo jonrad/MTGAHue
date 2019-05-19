@@ -17,7 +17,7 @@ namespace MTGAHue
         public void Install(IWindsorContainer container, IConfigurationStore store)
         {
             container.Register(
-                Component.For<ILightClientFactory>()
+                Component.For<ILightClientProvider>()
                     .ImplementedBy<HueLightClientFactory>()
                     .DependsOn(Dependency.OnValue<string>(entertainmentGroupName)));
         }

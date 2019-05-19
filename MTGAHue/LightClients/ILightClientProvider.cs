@@ -4,8 +4,10 @@ using System.Threading.Tasks;
 
 namespace MTGAHue.LightClients
 {
-    public interface ILightClientFactory : IDisposable
+    public interface ILightClientProvider : IDisposable
     {
+        string Name { get; }
+
         Task<ILightClient> Create();
     }
 }

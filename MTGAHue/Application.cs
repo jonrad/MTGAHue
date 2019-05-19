@@ -3,6 +3,10 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using MTGAHue.LightClients;
+using System.Linq;
+using LightsApi;
+using MTGADispatcher.Events;
+using System.Collections.Generic;
 
 namespace MTGAHue
 {
@@ -12,28 +16,31 @@ namespace MTGAHue
 
         private readonly IMagicService magicService;
 
-        private readonly ILightClientFactory lightClientFactory;
+        private readonly ILightClientProvider[] lightClientProviders;
+
+        private readonly IEventEffectBuilder eventEffects;
 
         public Application(
             Game game,
             IMagicService magicService,
-            ILightClientFactory lightClientFactory)
+            ILightClientProvider[] lightClientProviders,
+            IEventEffectBuilder eventEffects)
         {
             this.game = game;
             this.magicService = magicService;
-            this.lightClientFactory = lightClientFactory;
+            this.lightClientProviders = lightClientProviders;
+            this.eventEffects = eventEffects;
         }
 
         public async Task Run()
         {
-            var lightClient = await lightClientFactory.Create();
+            var lightClient = await BuildLightClient();
 
             await lightClient.Start(CancellationToken.None);
 
             var layout = lightClient.GetLayout();
 
-            var flasher = new HueSpellFlasher(game, layout);
-            flasher.Start();
+            var unsubscribe = Subscribe<CastSpell>(layout).ToArray();
 
             magicService.Start();
 
@@ -41,6 +48,35 @@ namespace MTGAHue
             Console.ReadLine();
 
             await lightClient.Stop(CancellationToken.None);
+
+            foreach (var action in unsubscribe)
+            {
+                action();
+            }
+        }
+
+        private IEnumerable<Action> Subscribe<T>(ILightLayout lightLayout)
+            where T : IMagicEvent
+        {
+            var handlers = eventEffects.Get<T>(game, lightLayout);
+            foreach (var handler in handlers)
+            {
+                game.Events.Subscriptions.Subscribe<T>(handler.OnMagicEvent);
+                yield return () =>
+                {
+                    game.Events.Subscriptions.Unsubscribe<T>(handler.OnMagicEvent);
+                };
+            }
+        }
+
+        public async Task<ILightClient> BuildLightClient()
+        {
+            var lightClients = await Task.WhenAll(
+                lightClientProviders
+                    .Select(l => l.Create())
+                    .ToArray());
+
+            return new CompositeLightClient(lightClients);
         }
     }
 }

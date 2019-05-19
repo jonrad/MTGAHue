@@ -11,7 +11,7 @@ using static System.Environment;
 
 namespace MTGAHue.LightClients
 {
-    public class HueLightClientFactory : ILightClientFactory
+    public class HueLightClientFactory : ILightClientProvider
     {
         private StreamingHueClient? hueClient;
 
@@ -23,6 +23,8 @@ namespace MTGAHue.LightClients
         {
             this.entertainmentGroupName = entertainmentGroupName;
         }
+
+        public string Name { get; } = "Philips Hue";
 
         public async Task<ILightClient> Create()
         {

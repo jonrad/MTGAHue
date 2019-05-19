@@ -8,6 +8,9 @@ using Castle.MicroKernel.Registration;
 
 using static System.Environment;
 using System;
+using MTGAHue.Configuration.Serialization;
+using LightsApi;
+using System.Globalization;
 
 namespace MTGAHue
 {
@@ -59,7 +62,6 @@ namespace MTGAHue
                 {
                     new MagicDispatcherInstaller(path, game),
                     new DebuggerInstaller(),
-                    new LightsInstaller(),
                     new ApplicationInstaller()
                 });
 
