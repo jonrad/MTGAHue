@@ -5,6 +5,6 @@ namespace MTGADispatcher
 {
     public interface ILineReader : IDisposable
     {
-        Task<string> ReadLine();
+        Task<string?> ReadLine();
     }
 }

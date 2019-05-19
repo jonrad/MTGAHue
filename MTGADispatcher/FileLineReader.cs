@@ -12,9 +12,9 @@ namespace MTGADispatcher
 
         private readonly bool startAtEnd;
 
-        private Stream stream;
+        private Stream? stream;
 
-        private StreamReader reader;
+        private StreamReader? reader;
 
         public FileLineReader(
             string path,
@@ -24,16 +24,16 @@ namespace MTGADispatcher
             this.startAtEnd = startAtEnd;
         }
 
-        //making this blocking would be more efficient...
-        public Task<string> ReadLine()
+        // This should be an async stream
+        public Task<string?> ReadLine()
         {
-            if (stream == null)
+            if (reader == null)
             {
                 TryOpenStream();
 
-                if (stream == null)
+                if (reader == null)
                 {
-                    return Task.FromResult<string>(null);
+                    return Task.FromResult<string?>(null);
                 }
             }
 

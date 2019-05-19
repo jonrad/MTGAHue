@@ -9,8 +9,8 @@ namespace LightsApi.Hue
     {
         private readonly HueLight[] lights;
 
-        // gross, we need a wrapper around lightlayout
-        private CancellationTokenSource tokenSource;
+        // TODO refactor this+chroma
+        private CancellationTokenSource tokenSource = new CancellationTokenSource();
 
         public HueLightLayout(HueLight[] lights)
         {
@@ -22,10 +22,7 @@ namespace LightsApi.Hue
             TimeSpan timeSpan,
             CancellationToken token = default)
         {
-            if (tokenSource != null)
-            {
-                tokenSource.Cancel();
-            }
+            tokenSource.Cancel();
 
             tokenSource = CancellationTokenSource.CreateLinkedTokenSource(token);
 

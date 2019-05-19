@@ -1,4 +1,5 @@
 ﻿using Colore;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -6,10 +7,15 @@ namespace LightsApi.Chroma
 {
     public class ChromaKeyboardClient : ILightClient
     {
-        private IChroma chroma;
+        private IChroma? chroma;
 
         public ILightLayout GetLayout()
         {
+            if (chroma == null)
+            {
+                throw new InvalidOperationException("Must start chroma client");
+            }
+
             return new KeyboardLayout(chroma.Keyboard);
         }
 

@@ -7,18 +7,13 @@ namespace MTGADispatcher.Specs
     [Subject(typeof(BlockBuilder))]
     class BlockBuilderSpecs : WithSubject<BlockBuilder>
     {
-        static bool success;
-
         static Block block;
 
         Because of = () =>
-            (success, block) = Subject.TryBuild();
+            block = Subject.TryBuild();
 
         class when_empty
         {
-            It failed = () =>
-                success.ShouldBeFalse();
-
             It returned_null_block = () =>
                 block.ShouldBeNull();
         }
@@ -28,8 +23,8 @@ namespace MTGADispatcher.Specs
             Establish context = () =>
                 Subject.Append("Garbage");
 
-            It failed = () =>
-                success.ShouldBeFalse();
+            It returned_null_block = () =>
+                block.ShouldBeNull();
         }
 
         class for_request_response
@@ -43,10 +38,7 @@ namespace MTGADispatcher.Specs
     ""json"": ""stuff""
 }");
 
-                It succeeded = () =>
-                    success.ShouldBeTrue();
-
-                It returned_block = () =>
+               It returned_block = () =>
                     block.ShouldNotBeNull();
 
                 It set_title = () =>
@@ -64,7 +56,7 @@ namespace MTGADispatcher.Specs
 { foobar }");
 
                 It failed = () =>
-                    success.ShouldBeFalse();
+                    block.ShouldBeNull();
             }
 
             class when_array_json
@@ -73,9 +65,6 @@ namespace MTGADispatcher.Specs
                     Append(@"
 ==> HelloWorld()
 [ { ""foo"": ""bar"" } ]");
-
-                It succeeds = () =>
-                    success.ShouldBeTrue();
 
                 It returned_object_with_title_as_main_token = () =>
                     block.JObject["HelloWorld"][0]["foo"].ToString().ShouldEqual("bar");
@@ -91,9 +80,6 @@ namespace MTGADispatcher.Specs
 {
   ""json"": ""stuff""
 }");
-
-                It succeeds = () =>
-                    success.ShouldBeTrue();
 
                 It set_title_to_last_word = () =>
                     block.Title.ShouldEqual("GreToClientEvent");

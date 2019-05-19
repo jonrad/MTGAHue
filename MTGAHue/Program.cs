@@ -16,7 +16,7 @@ namespace MTGAHue
         public class Options
         {
             [Option('e', "entertainment", Required = false, HelpText = "Entertainment Group Name (Hue Only)")]
-            public string EntertainmentGroupName { get; set; }
+            public string? EntertainmentGroupName { get; set; }
 
             [Option('d', "demo", Required = false, HelpText = "Run demo")]
             public bool Demo { get; set; }
@@ -30,10 +30,15 @@ namespace MTGAHue
 
         static async Task Main(string[] args)
         {
-            Options options = null;
+            Options? options = null;
 
             var optionsResults = Parser.Default.ParseArguments<Options>(args)
                 .WithParsed(o => options = o);
+
+            if (options == null)
+            {
+                return;
+            }
 
             if (!options.Chroma && !options.Hue)
             {

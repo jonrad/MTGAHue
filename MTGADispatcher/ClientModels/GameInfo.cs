@@ -6,6 +6,6 @@ namespace MTGADispatcher.ClientModels
     public class GameInfo
     {
         [JsonProperty("stage")]
-        public string Stage { get; set; }
+        public string? Stage { get; set; }
     }
 }

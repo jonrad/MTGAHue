@@ -152,7 +152,7 @@ namespace MTGADispatcher.Specs
                 Establish context = () =>
                     The<IBlockBuilder>()
                         .WhenToldTo(w => w.TryBuild())
-                        .Return((true, new Block("Hello world", new JObject())));
+                        .Return(new Block("Hello world", new JObject()));
 
                 class when_squigly_bracket
                 {

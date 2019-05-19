@@ -7,9 +7,9 @@ namespace MTGAHue
 {
     public class HueInstaller : IWindsorInstaller
     {
-        private readonly string entertainmentGroupName;
+        private readonly string? entertainmentGroupName;
 
-        public HueInstaller(string entertainmentGroupName = null)
+        public HueInstaller(string? entertainmentGroupName = null)
         {
             this.entertainmentGroupName = entertainmentGroupName;
         }

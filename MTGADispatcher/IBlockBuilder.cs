@@ -6,6 +6,6 @@
 
         void Clear();
 
-        (bool, Block) TryBuild();
+        Block? TryBuild();
     }
 }

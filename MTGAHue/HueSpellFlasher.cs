@@ -31,6 +31,7 @@ namespace MTGAHue
 
         public HueSpellFlasher(Game game, ILightLayout layout)
         {
+            cancellationTokenSource = new CancellationTokenSource();
             subscriptions = game.Events.Subscriptions;
             this.layout = layout;
         }
@@ -83,10 +84,7 @@ namespace MTGAHue
 
         private void CancelPrevious()
         {
-            if (cancellationTokenSource != null)
-            {
-                cancellationTokenSource.Cancel();
-            }
+            cancellationTokenSource.Cancel();
         }
 
         public void Start()

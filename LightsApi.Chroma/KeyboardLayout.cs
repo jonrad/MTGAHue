@@ -1,7 +1,6 @@
 ﻿using Colore;
 using Colore.Data;
 using Colore.Effects.Keyboard;
-using LightsApi;
 using LightsApi.LightSources;
 using System;
 using System.Collections.Generic;
@@ -24,7 +23,7 @@ namespace LightsApi.Chroma
 
         private KeyboardCustom currentColors = KeyboardCustom.Create();
 
-        private CancellationTokenSource cancellationTokenSource;
+        private CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
         public KeyboardLayout(IKeyboard keyboard)
         {
@@ -58,10 +57,7 @@ namespace LightsApi.Chroma
             var totalMilliseconds = timeSpan.TotalMilliseconds;
 
             //TODO: this looks familiar. clean up with transition code from Hue
-            if (cancellationTokenSource != null)
-            {
-                cancellationTokenSource.Cancel();
-            }
+            cancellationTokenSource.Cancel();
 
             cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(childToken);
 
