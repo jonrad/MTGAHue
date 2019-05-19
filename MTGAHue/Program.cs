@@ -49,30 +49,6 @@ namespace MTGAHue
 
             Game game = new Game();
 
-            /*var chromaClient =
-                await new ChromaLightClientProvider().Create(
-                    new ChromaLightClientProvider.ChromaConfiguration());
-
-            await chromaClient.Start();
-
-            var layout = chromaClient.GetLayout();
-
-            var effect1 = new HueSpellFlasher(chromaClient.GetLayout());
-
-            game.Events.Subscriptions.Subscribe<CastSpell>(
-                effect1.OnMagicEvent);
-
-            return;*/
-
-            /*if (!options.Chroma && !options.Hue)
-            {
-                Console.Error.WriteLine(
-                    "WARNING! You did not specify either [-h] Hue and/or [-c] Chroma");
-
-                Console.Error.WriteLine(
-                    "Running in Debug mode. This is boring, it will only print things to the console");
-            }*/
-
             var path = MtgaOutputPath();
 
             var installers = new List<IWindsorInstaller>();
@@ -90,7 +66,7 @@ namespace MTGAHue
                 installers.Add(new DemoInstaller());
             }
 
-            //installers.Add(new HueInstaller(options.EntertainmentGroupName));
+            installers.Add(new HueInstaller());
             installers.Add(new ChromaInstaller());
 
             using (var container = new WindsorContainer())

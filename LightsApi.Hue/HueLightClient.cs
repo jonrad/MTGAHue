@@ -11,51 +11,28 @@ namespace LightsApi.Hue
     {
         private readonly CancellationTokenSource stoppedSource = new CancellationTokenSource();
 
-        private readonly StreamingHueClient hueClient;
+        private EntertainmentLayer hueLayer;
 
-        private readonly string entertainmentGroupName;
+        private readonly Task updatingTask;
 
-        private StreamingGroup? streamingGroup;
-
-        private HueLight[]? lights;
-
-        private Task? updatingTask;
-
-        public HueLightClient(StreamingHueClient hueClient, string entertainmentGroupName)
+        public HueLightClient(
+            StreamingHueClient hueClient,
+            StreamingGroup streamingGroup)
         {
-            this.hueClient = hueClient;
-            this.entertainmentGroupName = entertainmentGroupName;
+            hueLayer = streamingGroup.GetNewLayer(true);
+
+            updatingTask = hueClient.AutoUpdate(streamingGroup, stoppedSource.Token, 50, onlySendDirtyStates: false);
         }
 
         public ILightLayout GetLayout()
         {
-            if (lights == null)
-            {
-                throw new InvalidOperationException("Must start client");
-            }
+            var lights = hueLayer.Select(l => new HueLight(l)).ToArray();
 
             return new HueLightLayout(lights);
         }
 
         public async Task Start(CancellationToken token)
         {
-            var entertainmentGroups = await hueClient.LocalHueClient.GetEntertainmentGroups();
-            var entertainmentGroup = entertainmentGroups.FirstOrDefault(g => g.Name == entertainmentGroupName);
-            if (entertainmentGroup == null)
-            {
-                throw new ArgumentException($"Cannot find entertainment group {entertainmentGroupName}");
-            }
-
-            streamingGroup = new StreamingGroup(entertainmentGroup.Locations);
-
-            Console.WriteLine("Attempting to connect to entertainment group");
-            await hueClient.Connect(entertainmentGroup.Id).ConfigureAwait(false);
-            Console.WriteLine("Connected");
-
-            var layer = streamingGroup.GetNewLayer(true);
-            lights = layer.Select(l => new HueLight(l)).ToArray();
-
-            updatingTask = hueClient.AutoUpdate(streamingGroup, stoppedSource.Token, 50, onlySendDirtyStates: false);
         }
 
         public Task Stop(CancellationToken token)

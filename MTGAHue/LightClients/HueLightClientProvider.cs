@@ -3,9 +3,12 @@ using LightsApi.Hue;
 using Newtonsoft.Json.Linq;
 using Q42.HueApi;
 using Q42.HueApi.Streaming;
+using Q42.HueApi.Streaming.Models;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using static System.Environment;
 
@@ -14,34 +17,84 @@ namespace MTGAHue.LightClients
     public class HueLightClientProvider :
         AbstractLightClientProvider<HueLightClientProvider.Configuration>
     {
-        private StreamingHueClient? hueClient;
+        private readonly object syncObject = new object();
 
-        private HueLightClient? lightClient;
+        private StreamingHueClient hueClient;
+
+        private Dictionary<string, ILightClient> lightClients =
+            new Dictionary<string, ILightClient>();
 
         public override string Id { get; } = "hue";
 
         public override async Task<ILightClient> Create(Configuration configuration)
         {
             var entertainmentGroupName = configuration.EntertainmentGroup;
-            if (lightClient != null)
+
+            if (hueClient == null)
             {
-                return lightClient;
+                try
+                {
+                    Monitor.Enter(syncObject);
+                    if (hueClient == null)
+                    {
+                        hueClient = await GetClient();
+                    }
+                }
+                finally
+                {
+                    Monitor.Exit(syncObject);
+                }
             }
 
-            hueClient = await GetClient();
             if (entertainmentGroupName == null)
             {
                 entertainmentGroupName = await GetEntertainmentGroupName(hueClient);
+
+                if (entertainmentGroupName == null)
+                {
+                    throw new InvalidOperationException();
+                }
             }
 
-            return lightClient = new HueLightClient(hueClient, entertainmentGroupName);
+            try
+            {
+                Monitor.Enter(lightClients);
+                if (lightClients.TryGetValue(entertainmentGroupName, out var client))
+                {
+                    return client;
+                }
+
+                return lightClients[entertainmentGroupName] =
+                    await Connect(hueClient, entertainmentGroupName);
+            }
+            finally
+            {
+                Monitor.Exit(lightClients);
+            }
+        }
+
+        private async Task<HueLightClient> Connect(StreamingHueClient hueClient, string entertainmentGroupName)
+        {
+            var entertainmentGroups = await hueClient.LocalHueClient.GetEntertainmentGroups();
+            var entertainmentGroup = entertainmentGroups.FirstOrDefault(g => g.Name == entertainmentGroupName);
+
+            if (entertainmentGroup == null)
+            {
+                throw new ArgumentException($"Cannot find entertainment group {entertainmentGroupName}");
+            }
+
+            var streamingGroup = new StreamingGroup(entertainmentGroup.Locations);
+
+            Console.WriteLine("Attempting to connect to entertainment group");
+            await hueClient.Connect(entertainmentGroup.Id).ConfigureAwait(false);
+            Console.WriteLine("Connected");
+
+            return new HueLightClient(hueClient, streamingGroup);
         }
 
         public override void Dispose()
         {
             base.Dispose();
-            lightClient?.Dispose();
-            hueClient?.Dispose();
         }
 
         private static async Task<StreamingHueClient> GetClient()
