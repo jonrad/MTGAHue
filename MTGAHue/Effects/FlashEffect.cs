@@ -6,20 +6,8 @@ using MTGADispatcher.Events;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MTGAHue
+namespace MTGAHue.Effects
 {
-    public interface IEffect<T>
-        where T : IMagicEvent
-    {
-        ITransition? OnMagicEvent(T magicEvent);
-    }
-
-    public interface IEffectFactory
-    {
-        IEffect<T> Get<T>(string id)
-            where T : IMagicEvent;
-    }
-
     public class HueSpellFlasher
         : IEffect<CastSpell>
     {
@@ -57,9 +45,7 @@ namespace MTGAHue
                 .Concat(new[] { new LightSourceTransition(new SolidLightSource(color * .3), 5000) })
                 .ToArray();
 
-            var composite = new CompositeTransition(transitions);
-
-            return composite;
+            return new CompositeTransition(transitions);
         }
     }
 }
