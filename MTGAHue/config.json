@@ -21,7 +21,9 @@
       "id": "chroma",
       "enabled": true,
 
-      "config": [],
+      "config": [
+        { "key": "Columns", "value": 16 }
+      ],
 
       "events": [
         {
@@ -31,6 +33,6 @@
           }
         }
       ]
-    }
+    },
   ]
 }

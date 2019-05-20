@@ -17,14 +17,16 @@ namespace MTGAHue.LightClients
     public class HueLightClientProvider :
         AbstractLightClientProvider<HueLightClientProvider.Configuration>
     {
-        private readonly AutoResetEvent createHueClientEvent = new AutoResetEvent(true);
+        private readonly Lazy<Task<StreamingHueClient>> buildClient =
+            new Lazy<Task<StreamingHueClient>>(() => GetClient());
 
-        private readonly AutoResetEvent connectEntertainmentGroupEvent = new AutoResetEvent(true);
-
-        private StreamingHueClient? hueClient;
+        private readonly SemaphoreSlim connectEntertainmentGroupEvent =
+            new SemaphoreSlim(1);
 
         private ConcurrentDictionary<string, ILightClient> lightClients =
             new ConcurrentDictionary<string, ILightClient>();
+
+        private StreamingHueClient? hueClient;
 
         public override string Id { get; } = "hue";
 
@@ -34,19 +36,7 @@ namespace MTGAHue.LightClients
 
             if (hueClient == null)
             {
-                try
-                {
-                    createHueClientEvent.WaitOne();
-
-                    if (hueClient == null)
-                    {
-                        hueClient = await GetClient();
-                    }
-                }
-                finally
-                {
-                    createHueClientEvent.Set();
-                }
+                hueClient = await buildClient.Value;
             }
 
             if (entertainmentGroupName == null)
@@ -59,14 +49,14 @@ namespace MTGAHue.LightClients
                 }
             }
 
+            if (lightClients.TryGetValue(entertainmentGroupName, out var client))
+            {
+                return client;
+            }
+
             try
             {
-                if (lightClients.TryGetValue(entertainmentGroupName, out var client))
-                {
-                    return client;
-                }
-
-                connectEntertainmentGroupEvent.WaitOne();
+                await connectEntertainmentGroupEvent.WaitAsync();
 
                 if (lightClients.TryGetValue(entertainmentGroupName, out client))
                 {
@@ -78,7 +68,7 @@ namespace MTGAHue.LightClients
             }
             finally
             {
-                connectEntertainmentGroupEvent.Set();
+                connectEntertainmentGroupEvent.Release();
             }
         }
 

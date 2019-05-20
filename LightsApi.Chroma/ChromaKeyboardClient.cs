@@ -7,9 +7,9 @@ namespace LightsApi.Chroma
     {
         private readonly KeyboardLayout layout;
 
-        public ChromaKeyboardClient(IChroma chroma)
+        public ChromaKeyboardClient(IChroma chroma, int? columnCount, int? rowCount)
         {
-            layout = new KeyboardLayout(chroma.Keyboard);
+            layout = new KeyboardLayout(chroma.Keyboard, columnCount, rowCount);
         }
 
         public Task<ILightLayout> GetLayout()
