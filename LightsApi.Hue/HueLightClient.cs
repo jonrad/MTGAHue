@@ -9,42 +9,58 @@ namespace LightsApi.Hue
 {
     public class HueLightClient : ILightClient, IDisposable
     {
+        private readonly object syncObject = new object();
+
         private readonly CancellationTokenSource stoppedSource = new CancellationTokenSource();
 
-        private EntertainmentLayer hueLayer;
+        private readonly StreamingHueClient hueClient;
 
-        private readonly Task updatingTask;
+        private readonly StreamingGroup streamingGroup;
+
+        private ILightLayout? layout;
+
+        private Task? updatingTask;
 
         public HueLightClient(
             StreamingHueClient hueClient,
             StreamingGroup streamingGroup)
         {
-            hueLayer = streamingGroup.GetNewLayer(true);
-
-            updatingTask = hueClient.AutoUpdate(streamingGroup, stoppedSource.Token, 50, onlySendDirtyStates: false);
+            this.hueClient = hueClient;
+            this.streamingGroup = streamingGroup;
         }
 
-        public ILightLayout GetLayout()
+        public Task<ILightLayout> GetLayout()
         {
-            var lights = hueLayer.Select(l => new HueLight(l)).ToArray();
-
-            return new HueLightLayout(lights);
+            return Task.FromResult(GetLayoutSync());
         }
 
-        public async Task Start(CancellationToken token)
+        private ILightLayout GetLayoutSync()
         {
-        }
+            if (layout != null)
+            {
+                return layout;
+            }
 
-        public Task Stop(CancellationToken token)
-        {
-            stoppedSource.Cancel();
+            lock (syncObject)
+            {
+                if (layout != null)
+                {
+                    return layout;
+                }
 
-            return updatingTask ?? Task.FromResult(true);
+                var hueLayer = streamingGroup.GetNewLayer(true);
+
+                updatingTask = hueClient.AutoUpdate(streamingGroup, stoppedSource.Token, 50, onlySendDirtyStates: false);
+                var lights = hueLayer.Select(l => new HueLight(l)).ToArray();
+
+                return layout = new HueLightLayout(lights);
+            }
         }
 
         public void Dispose()
         {
-            Stop(CancellationToken.None)?.Wait();
+            stoppedSource.Cancel();
+            updatingTask?.Wait();
         }
     }
 }

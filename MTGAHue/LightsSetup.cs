@@ -85,8 +85,7 @@ namespace MTGAHue
                 BuildClientArgs(provider, lightClientConfiguration.Config);
 
             var client = await provider.Create(clientConfiguration);
-            await client.Start();
-            var layout = client.GetLayout();
+            var layout = await client.GetLayout();
 
             foreach (var eventConfiguration in 
                 lightClientConfiguration.Events ?? Enumerable.Empty<EventConfiguration>())

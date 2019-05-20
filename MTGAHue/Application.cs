@@ -27,14 +27,12 @@ namespace MTGAHue
             var text = File.ReadAllText("config.json");
             var config = JsonConvert.DeserializeObject<Config>(text);
 
-            var lightClient = await lightsSetup.Start(config);
+            await lightsSetup.Start(config);
 
             magicService.Start();
 
             Console.WriteLine("Press enter to quit");
             Console.ReadLine();
-
-            await lightClient.Stop(CancellationToken.None);
         }
     }
 }

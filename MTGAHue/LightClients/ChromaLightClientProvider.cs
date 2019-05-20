@@ -1,4 +1,5 @@
-﻿using LightsApi;
+﻿using Colore;
+using LightsApi;
 using LightsApi.Chroma;
 using System.Threading.Tasks;
 
@@ -8,9 +9,10 @@ namespace MTGAHue.LightClients
     {
         public override string Id { get; } = "chroma";
 
-        public override Task<ILightClient> Create(ChromaConfiguration configuration)
+        public override async Task<ILightClient> CreateAsync(ChromaConfiguration configuration)
         {
-            return Task.FromResult<ILightClient>(new ChromaKeyboardClient());
+            var chroma = await ColoreProvider.CreateNativeAsync();
+            return new ChromaKeyboardClient(chroma);
         }
 
         public class ChromaConfiguration { }

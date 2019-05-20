@@ -28,7 +28,7 @@ namespace MTGAHue.LightClients
 
         public override string Id { get; } = "hue";
 
-        public override async Task<ILightClient> Create(Configuration configuration)
+        public override async Task<ILightClient> CreateAsync(Configuration configuration)
         {
             var entertainmentGroupName = configuration.EntertainmentGroup;
 

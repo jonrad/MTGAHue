@@ -42,7 +42,7 @@ namespace MagicLights.Specs
             provider1.WhenToldTo(p => p.Create(Param.IsAny<object>()))
                 .Return(Task.FromResult(The<ILightClient>()));
 
-            The<ILightClient>().WhenToldTo(l => l.GetLayout()).Return(The<ILightLayout>());
+            The<ILightClient>().WhenToldTo(l => l.GetLayout()).Return(Task.FromResult(The<ILightLayout>()));
 
             The<IEffect<CastSpell>>().WhenToldTo(t => t.OnMagicEvent(Param.IsAny<CastSpell>()))
                 .Return(The<ITransition>());

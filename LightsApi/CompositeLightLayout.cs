@@ -23,5 +23,9 @@ namespace LightsApi
 
             return Task.WhenAll(tasks);
         }
+
+        public void Dispose()
+        {
+        }
     }
 }

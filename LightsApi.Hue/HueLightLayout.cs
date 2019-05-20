@@ -17,6 +17,10 @@ namespace LightsApi.Hue
             this.lights = lights;
         }
 
+        public void Dispose()
+        {
+        }
+
         public Task Transition(
             ILightSource lightSource,
             TimeSpan timeSpan,

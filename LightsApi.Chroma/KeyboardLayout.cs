@@ -28,6 +28,7 @@ namespace LightsApi.Chroma
         public KeyboardLayout(IKeyboard keyboard)
         {
             this.keyboard = keyboard;
+            //this does too much in the ctor
             positions = CalculatePositions().ToArray();
         }
 
@@ -102,6 +103,10 @@ namespace LightsApi.Chroma
 
             currentColors = endingColors;
             await keyboard.SetCustomAsync(endingColors);
+        }
+
+        public void Dispose()
+        {
         }
 
         private class KeyboardPosition

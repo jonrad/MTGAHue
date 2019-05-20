@@ -15,13 +15,13 @@ namespace MTGAHue.LightClients
         {
             if (configuration is TConfig concreteConfiguration)
             {
-                return Create(concreteConfiguration);
+                return CreateAsync(concreteConfiguration);
             }
 
             throw new ArgumentException();
         }
 
-        public abstract Task<ILightClient> Create(TConfig configuration);
+        public abstract Task<ILightClient> CreateAsync(TConfig configuration);
 
         public virtual void Dispose()
         {
