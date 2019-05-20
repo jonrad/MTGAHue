@@ -71,14 +71,14 @@ namespace MTGAHue
         {
             if (lightClientConfiguration.Id == null)
             {
-                throw new ArgumentException();
+                throw new ArgumentException("Must set id for light client");
             }
 
             var id = lightClientConfiguration.Id;
 
             if (!lightClientProviders.TryGetValue(id, out var provider))
             {
-                throw new ArgumentException();
+                throw new ArgumentException($"Could not find light client with id {id}");
             }
 
             var clientConfiguration =

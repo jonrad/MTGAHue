@@ -55,7 +55,7 @@ namespace MTGAHue.LightClients
 
                 if (entertainmentGroupName == null)
                 {
-                    throw new InvalidOperationException();
+                    throw new InvalidOperationException("Must set entertainment group name");
                 }
             }
 

@@ -13,7 +13,7 @@ namespace MTGAHue.Effects
     {
         private Dictionary<MagicColor, RGB> colorMap = new Dictionary<MagicColor, RGB>
         {
-            [MagicColor.Black] = new RGB(255, 255, 255) * .3,
+            [MagicColor.Black] = new RGB(100, 0, 100),
             [MagicColor.White] = new RGB(255, 255, 255),
             [MagicColor.Red] = new RGB(255, 0, 0),
             [MagicColor.Green] = new RGB(0, 255, 0),
