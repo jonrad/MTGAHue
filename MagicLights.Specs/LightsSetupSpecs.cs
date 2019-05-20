@@ -117,14 +117,14 @@ namespace MagicLights.Specs
                                     new JObject(
                                         new object[]
                                         {
-                                            new JProperty("Key", "Name"),
-                                            new JProperty("Value", "Jon")
+                                            new JProperty("key", "Name"),
+                                            new JProperty("value", "Jon")
                                         }),
                                     new JObject(
                                         new object[]
                                         {
-                                            new JProperty("Key", "Age"),
-                                            new JProperty("Value", "42")
+                                            new JProperty("key", "Age"),
+                                            new JProperty("value", "42")
                                         })
                                 }),
                                 Events = new[]

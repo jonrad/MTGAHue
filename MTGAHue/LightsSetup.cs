@@ -50,12 +50,20 @@ namespace MTGAHue
         private async Task<ILightClient[]> BuildClients(
             LightClientConfiguration[] lightClients)
         {
-            var results = lightClients
-                .Where(l => l.Enabled)
-                .Select(BuildClient)
-                .ToArray();
+            List<ILightClient> clients = new List<ILightClient>();
 
-            return await Task.WhenAll(results);
+            // Why does hue hate when I'm async here...
+            foreach (var l in lightClients)
+            {
+                if (!l.Enabled)
+                {
+                    continue;
+                }
+
+                clients.Add(await BuildClient(l));
+            }
+
+            return clients.ToArray();
         }
 
         private async Task<ILightClient> BuildClient(
@@ -139,7 +147,7 @@ namespace MTGAHue
             }
 
             var jObect = new JObject(
-                config.Select(c => new JProperty(c.Value<string>("Key"), c["Value"])));
+                config.Select(c => new JProperty(c.Value<string>("key"), c["value"])));
 
             serializer.Populate(jObect.CreateReader(), instance);
 

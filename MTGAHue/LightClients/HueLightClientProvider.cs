@@ -5,7 +5,7 @@ using Q42.HueApi;
 using Q42.HueApi.Streaming;
 using Q42.HueApi.Streaming.Models;
 using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -17,12 +17,14 @@ namespace MTGAHue.LightClients
     public class HueLightClientProvider :
         AbstractLightClientProvider<HueLightClientProvider.Configuration>
     {
-        private readonly object syncObject = new object();
+        private readonly AutoResetEvent createHueClientEvent = new AutoResetEvent(true);
+
+        private readonly AutoResetEvent connectEntertainmentGroupEvent = new AutoResetEvent(true);
 
         private StreamingHueClient? hueClient;
 
-        private Dictionary<string, ILightClient> lightClients =
-            new Dictionary<string, ILightClient>();
+        private ConcurrentDictionary<string, ILightClient> lightClients =
+            new ConcurrentDictionary<string, ILightClient>();
 
         public override string Id { get; } = "hue";
 
@@ -34,7 +36,8 @@ namespace MTGAHue.LightClients
             {
                 try
                 {
-                    Monitor.Enter(syncObject);
+                    createHueClientEvent.WaitOne();
+
                     if (hueClient == null)
                     {
                         hueClient = await GetClient();
@@ -42,7 +45,7 @@ namespace MTGAHue.LightClients
                 }
                 finally
                 {
-                    Monitor.Exit(syncObject);
+                    createHueClientEvent.Set();
                 }
             }
 
@@ -58,8 +61,14 @@ namespace MTGAHue.LightClients
 
             try
             {
-                Monitor.Enter(lightClients);
                 if (lightClients.TryGetValue(entertainmentGroupName, out var client))
+                {
+                    return client;
+                }
+
+                connectEntertainmentGroupEvent.WaitOne();
+
+                if (lightClients.TryGetValue(entertainmentGroupName, out client))
                 {
                     return client;
                 }
@@ -69,7 +78,7 @@ namespace MTGAHue.LightClients
             }
             finally
             {
-                Monitor.Exit(lightClients);
+                connectEntertainmentGroupEvent.Set();
             }
         }
 
@@ -95,6 +104,8 @@ namespace MTGAHue.LightClients
         public override void Dispose()
         {
             base.Dispose();
+
+            hueClient?.Dispose();
         }
 
         private static async Task<StreamingHueClient> GetClient()
@@ -110,7 +121,7 @@ namespace MTGAHue.LightClients
 
             Console.WriteLine($"Found bridge! IP: {bridge.IpAddress}");
 
-            var settings = await GetSettings();
+            var settings = GetSettings();
 
             var (appKey, entertainmentKey) = (settings.Value<string>("appKey"), settings.Value<string>("entertainmentKey"));
             if (appKey == null || entertainmentKey == null)
@@ -169,7 +180,7 @@ namespace MTGAHue.LightClients
         }
 
         //TODO make this strongly typed. And move this into a shared space
-        private static async Task<JObject> GetSettings()
+        private static JObject GetSettings()
         {
             var path = GetSettingsPath();
             if (!File.Exists(path))

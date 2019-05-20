@@ -1,6 +1,23 @@
 {
   "LightClients": [
     {
+      "id": "hue",
+      "enabled": true,
+
+      "config": [
+        { "key": "EntertainmentGroup", "value": "Entertainment area 2" }
+      ],
+
+      "events": [
+        {
+          "id": "CastSpell",
+          "effect": {
+            "id": "flash"
+          }
+        }
+      ]
+    },
+    {
       "id": "chroma",
       "enabled": true,
 
