@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace MTGAHue.Effects
 {
-    public class HueSpellFlasher
+    public class FlashEffect
         : IEffect<CastSpell>
     {
         private Dictionary<MagicColor, RGB> colorMap = new Dictionary<MagicColor, RGB>

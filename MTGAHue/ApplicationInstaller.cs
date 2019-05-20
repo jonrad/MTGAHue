@@ -16,8 +16,11 @@ namespace MTGAHue
 
             container.Register(
                 Component.For<IEffect<CastSpell>>()
-                    .ImplementedBy<HueSpellFlasher>()
+                    .ImplementedBy<FlashEffect>()
                     .Named("flash"),
+                Component.For<IEffect<CastSpell>>()
+                    .ImplementedBy<ExplosionEffect>()
+                    .Named("explosion"),
 
                 Component.For<IEffectFactory>().AsFactory(f =>
                     f.SelectedWith(new NamedCustomSelector())),

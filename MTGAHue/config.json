@@ -27,7 +27,7 @@
         {
           "id": "CastSpell",
           "effect": {
-            "id": "flash"
+            "id": "explosion"
           }
         }
       ]
