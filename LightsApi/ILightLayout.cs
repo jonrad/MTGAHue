@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace LightsApi
 {
-    public interface ILightLayout : IDisposable
+    public interface ILightLayout
     {
         Task Transition(ILightSource lightSource, TimeSpan timeSpan, CancellationToken token = default);
     }

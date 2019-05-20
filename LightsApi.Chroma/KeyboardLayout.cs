@@ -105,10 +105,6 @@ namespace LightsApi.Chroma
             await keyboard.SetCustomAsync(endingColors);
         }
 
-        public void Dispose()
-        {
-        }
-
         private class KeyboardPosition
         {
             public KeyboardPosition(int column, int row, double x, double y)
