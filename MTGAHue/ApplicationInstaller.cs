@@ -19,6 +19,9 @@ namespace MTGAHue
                     .ImplementedBy<FlashEffect>()
                     .Named("flash"),
                 Component.For<IEffect<CastSpell>>()
+                    .ImplementedBy<MultiColorFlash>()
+                    .Named("multiflash"),
+                Component.For<IEffect<CastSpell>>()
                     .ImplementedBy<ExplosionEffect>()
                     .Named("explosion"),
 
