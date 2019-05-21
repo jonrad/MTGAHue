@@ -1,32 +1,20 @@
 ﻿using Colore;
-using System;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace LightsApi.Chroma
 {
     public class ChromaKeyboardClient : ILightClient
     {
-        private IChroma? chroma;
+        private readonly KeyboardLayout layout;
 
-        public ILightLayout GetLayout()
+        public ChromaKeyboardClient(IChroma chroma, int? columnCount, int? rowCount)
         {
-            if (chroma == null)
-            {
-                throw new InvalidOperationException("Must start chroma client");
-            }
-
-            return new KeyboardLayout(chroma.Keyboard);
+            layout = new KeyboardLayout(chroma.Keyboard, columnCount, rowCount);
         }
 
-        public async Task Start(CancellationToken token = default)
+        public Task<ILightLayout> GetLayout()
         {
-            chroma = await ColoreProvider.CreateNativeAsync();
-        }
-
-        public Task Stop(CancellationToken token)
-        {
-            return Task.FromResult(0);
+            return Task.FromResult<ILightLayout>(layout);
         }
     }
 }

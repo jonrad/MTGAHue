@@ -3,46 +3,98 @@ using LightsApi.Hue;
 using Newtonsoft.Json.Linq;
 using Q42.HueApi;
 using Q42.HueApi.Streaming;
+using Q42.HueApi.Streaming.Models;
 using System;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using static System.Environment;
 
 namespace MTGAHue.LightClients
 {
-    public class HueLightClientFactory : ILightClientFactory
+    public class HueLightClientProvider :
+        AbstractLightClientProvider<HueLightClientProvider.Configuration>
     {
+        private readonly Lazy<Task<StreamingHueClient>> buildClient =
+            new Lazy<Task<StreamingHueClient>>(() => GetClient());
+
+        private readonly SemaphoreSlim connectEntertainmentGroupEvent =
+            new SemaphoreSlim(1);
+
+        private ConcurrentDictionary<string, ILightClient> lightClients =
+            new ConcurrentDictionary<string, ILightClient>();
+
         private StreamingHueClient? hueClient;
 
-        private HueLightClient? lightClient;
+        public override string Id { get; } = "hue";
 
-        private string? entertainmentGroupName;
-
-        public HueLightClientFactory(string? entertainmentGroupName = null)
+        public override async Task<ILightClient> CreateAsync(Configuration configuration)
         {
-            this.entertainmentGroupName = entertainmentGroupName;
-        }
+            var entertainmentGroupName = configuration.EntertainmentGroup;
 
-        public async Task<ILightClient> Create()
-        {
-            if (lightClient != null)
+            if (hueClient == null)
             {
-                return lightClient;
+                hueClient = await buildClient.Value;
             }
 
-            hueClient = await GetClient();
             if (entertainmentGroupName == null)
             {
                 entertainmentGroupName = await GetEntertainmentGroupName(hueClient);
+
+                if (entertainmentGroupName == null)
+                {
+                    throw new InvalidOperationException("Must set entertainment group name");
+                }
             }
 
-            return lightClient = new HueLightClient(hueClient, entertainmentGroupName);
+            if (lightClients.TryGetValue(entertainmentGroupName, out var client))
+            {
+                return client;
+            }
+
+            try
+            {
+                await connectEntertainmentGroupEvent.WaitAsync();
+
+                if (lightClients.TryGetValue(entertainmentGroupName, out client))
+                {
+                    return client;
+                }
+
+                return lightClients[entertainmentGroupName] =
+                    await Connect(hueClient, entertainmentGroupName);
+            }
+            finally
+            {
+                connectEntertainmentGroupEvent.Release();
+            }
         }
 
-        public void Dispose()
+        private async Task<HueLightClient> Connect(StreamingHueClient hueClient, string entertainmentGroupName)
         {
-            lightClient?.Dispose();
+            var entertainmentGroups = await hueClient.LocalHueClient.GetEntertainmentGroups();
+            var entertainmentGroup = entertainmentGroups.FirstOrDefault(g => g.Name == entertainmentGroupName);
+
+            if (entertainmentGroup == null)
+            {
+                throw new ArgumentException($"Cannot find entertainment group {entertainmentGroupName}");
+            }
+
+            var streamingGroup = new StreamingGroup(entertainmentGroup.Locations);
+
+            Console.WriteLine("Attempting to connect to entertainment group");
+            await hueClient.Connect(entertainmentGroup.Id).ConfigureAwait(false);
+            Console.WriteLine("Connected");
+
+            return new HueLightClient(hueClient, streamingGroup);
+        }
+
+        public override void Dispose()
+        {
+            base.Dispose();
+
             hueClient?.Dispose();
         }
 
@@ -59,7 +111,7 @@ namespace MTGAHue.LightClients
 
             Console.WriteLine($"Found bridge! IP: {bridge.IpAddress}");
 
-            var settings = await GetSettings();
+            var settings = GetSettings();
 
             var (appKey, entertainmentKey) = (settings.Value<string>("appKey"), settings.Value<string>("entertainmentKey"));
             if (appKey == null || entertainmentKey == null)
@@ -118,7 +170,7 @@ namespace MTGAHue.LightClients
         }
 
         //TODO make this strongly typed. And move this into a shared space
-        private static async Task<JObject> GetSettings()
+        private static JObject GetSettings()
         {
             var path = GetSettingsPath();
             if (!File.Exists(path))
@@ -126,7 +178,7 @@ namespace MTGAHue.LightClients
                 return new JObject();
             }
 
-            return JObject.Parse(await File.ReadAllTextAsync(path));
+            return JObject.Parse(File.ReadAllText(path));
         }
 
         private static string GetSettingsPath()
@@ -156,6 +208,11 @@ namespace MTGAHue.LightClients
 
             throw new InvalidOperationException(
                 "Please select entertainment group name with the -e option");
+        }
+
+        public class Configuration
+        {
+            public string? EntertainmentGroup { get; set; }
         }
     }
 }

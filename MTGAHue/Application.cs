@@ -2,45 +2,37 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using MTGAHue.LightClients;
+using Newtonsoft.Json;
+using System.IO;
+using MTGAHue.Configuration.Models;
 
 namespace MTGAHue
 {
     public class Application
     {
-        private readonly Game game;
+        private readonly LightsSetup lightsSetup;
 
         private readonly IMagicService magicService;
 
-        private readonly ILightClientFactory lightClientFactory;
-
         public Application(
-            Game game,
-            IMagicService magicService,
-            ILightClientFactory lightClientFactory)
+            LightsSetup lightsSetup,
+            IMagicService magicService)
         {
-            this.game = game;
+            this.lightsSetup = lightsSetup;
             this.magicService = magicService;
-            this.lightClientFactory = lightClientFactory;
         }
 
         public async Task Run()
         {
-            var lightClient = await lightClientFactory.Create();
+            var text = File.ReadAllText("config.json");
+            var config = JsonConvert.DeserializeObject<Config>(text);
 
-            await lightClient.Start(CancellationToken.None);
-
-            var layout = lightClient.GetLayout();
-
-            var flasher = new HueSpellFlasher(game, layout);
-            flasher.Start();
+            await lightsSetup.Start(config);
 
             magicService.Start();
 
             Console.WriteLine("Press enter to quit");
             Console.ReadLine();
-
-            await lightClient.Stop(CancellationToken.None);
         }
     }
 }

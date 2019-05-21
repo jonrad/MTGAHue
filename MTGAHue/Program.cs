@@ -5,9 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Castle.MicroKernel.Registration;
-
 using static System.Environment;
-using System;
 
 namespace MTGAHue
 {
@@ -40,17 +38,9 @@ namespace MTGAHue
                 return;
             }
 
-            if (!options.Chroma && !options.Hue)
-            {
-                Console.Error.WriteLine(
-                    "WARNING! You did not specify either [-h] Hue and/or [-c] Chroma");
-
-                Console.Error.WriteLine(
-                    "Running in Debug mode. This is boring, it will only print things to the console");
-            }
+            Game game = new Game();
 
             var path = MtgaOutputPath();
-            var game = new Game();
 
             var installers = new List<IWindsorInstaller>();
 
@@ -59,7 +49,6 @@ namespace MTGAHue
                 {
                     new MagicDispatcherInstaller(path, game),
                     new DebuggerInstaller(),
-                    new LightsInstaller(),
                     new ApplicationInstaller()
                 });
 
@@ -68,15 +57,8 @@ namespace MTGAHue
                 installers.Add(new DemoInstaller());
             }
 
-            if (options.Hue)
-            {
-                installers.Add(new HueInstaller(options.EntertainmentGroupName));
-            }
-
-            if (options.Chroma)
-            {
-                installers.Add(new ChromaInstaller());
-            }
+            installers.Add(new HueInstaller());
+            installers.Add(new ChromaInstaller());
 
             using (var container = new WindsorContainer())
             {

@@ -13,35 +13,39 @@ namespace LightsApi.Chroma
 {
     internal class KeyboardLayout : ILightLayout
     {
-        private const int ColumnCount = 16;
-
-        private const int RowCount = 6;
-
         private readonly IKeyboard keyboard;
 
         private readonly KeyboardPosition[] positions;
+
+        private readonly int columnCount;
+
+        private readonly int rowCount;
 
         private KeyboardCustom currentColors = KeyboardCustom.Create();
 
         private CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
-        public KeyboardLayout(IKeyboard keyboard)
+        public KeyboardLayout(IKeyboard keyboard, int? columnCount, int? rowCount)
         {
+            this.rowCount = rowCount ?? KeyboardConstants.MaxRows;
+            this.columnCount = columnCount ?? KeyboardConstants.MaxColumns;
             this.keyboard = keyboard;
+
+            //this does too much in the ctor
             positions = CalculatePositions().ToArray();
         }
 
         private IEnumerable<KeyboardPosition> CalculatePositions()
         {
-            var keyboardColumnStep = 2d / ColumnCount;
-            var keyboardRowStep = 2d / RowCount;
+            var keyboardColumnStep = 2d / columnCount;
+            var keyboardRowStep = 2d / rowCount;
 
             var startX = -1 + keyboardColumnStep / 2;
             var startY = 1 - keyboardRowStep / 2;
 
-            for (var column = 0; column < ColumnCount; column++)
+            for (var column = 0; column < columnCount; column++)
             {
-                for (var row = 0; row < RowCount; row++)
+                for (var row = 0; row < rowCount; row++)
                 {
                     yield return new KeyboardPosition(
                         column,

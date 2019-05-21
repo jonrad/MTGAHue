@@ -9,65 +9,58 @@ namespace LightsApi.Hue
 {
     public class HueLightClient : ILightClient, IDisposable
     {
+        private readonly object syncObject = new object();
+
         private readonly CancellationTokenSource stoppedSource = new CancellationTokenSource();
 
         private readonly StreamingHueClient hueClient;
 
-        private readonly string entertainmentGroupName;
+        private readonly StreamingGroup streamingGroup;
 
-        private StreamingGroup? streamingGroup;
-
-        private HueLight[]? lights;
+        private ILightLayout? layout;
 
         private Task? updatingTask;
 
-        public HueLightClient(StreamingHueClient hueClient, string entertainmentGroupName)
+        public HueLightClient(
+            StreamingHueClient hueClient,
+            StreamingGroup streamingGroup)
         {
             this.hueClient = hueClient;
-            this.entertainmentGroupName = entertainmentGroupName;
+            this.streamingGroup = streamingGroup;
         }
 
-        public ILightLayout GetLayout()
+        public Task<ILightLayout> GetLayout()
         {
-            if (lights == null)
+            return Task.FromResult(GetLayoutSync());
+        }
+
+        private ILightLayout GetLayoutSync()
+        {
+            if (layout != null)
             {
-                throw new InvalidOperationException("Must start client");
+                return layout;
             }
 
-            return new HueLightLayout(lights);
-        }
-
-        public async Task Start(CancellationToken token)
-        {
-            var entertainmentGroups = await hueClient.LocalHueClient.GetEntertainmentGroups();
-            var entertainmentGroup = entertainmentGroups.FirstOrDefault(g => g.Name == entertainmentGroupName);
-            if (entertainmentGroup == null)
+            lock (syncObject)
             {
-                throw new ArgumentException($"Cannot find entertainment group {entertainmentGroupName}");
+                if (layout != null)
+                {
+                    return layout;
+                }
+
+                var hueLayer = streamingGroup.GetNewLayer(true);
+
+                updatingTask = hueClient.AutoUpdate(streamingGroup, stoppedSource.Token, 50, onlySendDirtyStates: false);
+                var lights = hueLayer.Select(l => new HueLight(l)).ToArray();
+
+                return layout = new HueLightLayout(lights);
             }
-
-            streamingGroup = new StreamingGroup(entertainmentGroup.Locations);
-
-            Console.WriteLine("Attempting to connect to entertainment group");
-            await hueClient.Connect(entertainmentGroup.Id).ConfigureAwait(false);
-            Console.WriteLine("Connected");
-
-            var layer = streamingGroup.GetNewLayer(true);
-            lights = layer.Select(l => new HueLight(l)).ToArray();
-
-            updatingTask = hueClient.AutoUpdate(streamingGroup, stoppedSource.Token, 50, onlySendDirtyStates: false);
-        }
-
-        public Task Stop(CancellationToken token)
-        {
-            stoppedSource.Cancel();
-
-            return updatingTask ?? Task.FromResult(true);
         }
 
         public void Dispose()
         {
-            Stop(CancellationToken.None)?.Wait();
+            stoppedSource.Cancel();
+            updatingTask?.Wait();
         }
     }
 }

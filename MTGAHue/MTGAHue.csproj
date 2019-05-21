@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFrameworks>netcoreapp2.1;net461</TargetFrameworks>
     <LangVersion>8.0</LangVersion>
     <NullableContextOptions>enable</NullableContextOptions>
   </PropertyGroup>
@@ -20,6 +20,12 @@
     <ProjectReference Include="..\LightsApi.Hue\LightsApi.Hue.csproj" />
     <ProjectReference Include="..\LightsApi\LightsApi.csproj" />
     <ProjectReference Include="..\MTGADispatcher\MTGADispatcher.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="config.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
