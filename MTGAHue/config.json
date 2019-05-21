@@ -4,15 +4,15 @@
       "id": "hue",
       "enabled": false,
 
-      "config": [
-        { "key": "EntertainmentGroup", "value": "Entertainment area 2" }
-      ],
+      "config": {
+        "EntertainmentGroup": "Entertainment area 2"
+      },
 
       "events": [
         {
           "id": "CastSpell",
           "effect": {
-            "id": "flash"
+            "id": "multiflash"
           }
         }
       ]
@@ -21,15 +21,15 @@
       "id": "chroma",
       "enabled": true,
 
-      "config": [
-        { "key": "Columns", "value": 16 }
-      ],
+      "config": {
+        "Columns": 16
+      },
 
       "events": [
         {
           "id": "CastSpell",
           "effect": {
-            "id": "multiflash"
+            "id": "explosion"
           }
         }
       ]

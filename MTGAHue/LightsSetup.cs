@@ -132,25 +132,18 @@ namespace MTGAHue
 
         private object BuildClientArgs(
             ILightClientProvider provider,
-            JArray? config)
+            JObject? config)
         {
             // more reflection..
             var type = provider.ConfigurationType;
-            var ctor = type.GetConstructor(Array.Empty<Type>());
-
-            var instance = ctor.Invoke(Array.Empty<object>());
 
             if (config == null)
             {
-                return instance;
+                var ctor = type.GetConstructor(Array.Empty<Type>());
+                return ctor.Invoke(Array.Empty<object>());
             }
 
-            var jObect = new JObject(
-                config.Select(c => new JProperty(c.Value<string>("key"), c["value"])));
-
-            serializer.Populate(jObect.CreateReader(), instance);
-
-            return instance;
+            return config.ToObject(type);
         }
 
         private Dictionary<string, Action<ILightLayout, EffectConfiguration>> BuildRegisters()

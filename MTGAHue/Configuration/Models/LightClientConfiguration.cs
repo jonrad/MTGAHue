@@ -10,7 +10,7 @@ namespace MTGAHue.Configuration.Models
 
         public bool Enabled { get; set; }
 
-        public JArray? Config { get; set; }
+        public JObject? Config { get; set; }
 
         public EventConfiguration[]? Events { get; set; }
     }

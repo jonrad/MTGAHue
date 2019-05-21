@@ -112,20 +112,10 @@ namespace MagicLights.Specs
                             {
                                 Id = "id1",
                                 Enabled = true,
-                                Config = new JArray(new[]
+                                Config = new JObject(new[]
                                 {
-                                    new JObject(
-                                        new object[]
-                                        {
-                                            new JProperty("key", "Name"),
-                                            new JProperty("value", "Jon")
-                                        }),
-                                    new JObject(
-                                        new object[]
-                                        {
-                                            new JProperty("key", "Age"),
-                                            new JProperty("value", "42")
-                                        })
+                                    new JProperty("Name", "Jon"),
+                                    new JProperty("Age", 42)
                                 }),
                                 Events = new[]
                                 {
