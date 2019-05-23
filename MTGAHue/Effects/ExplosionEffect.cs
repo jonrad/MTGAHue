@@ -30,6 +30,7 @@ namespace MTGAHue.Effects
 
         public ITransition? OnMagicEvent(CastSpell magicEvent)
         {
+            var startAngle = 270;
             var colors = magicEvent.Instance.Colors.Select(c => colorMap[c]).ToArray();
             if (colors.Length == 0)
             {
@@ -45,7 +46,7 @@ namespace MTGAHue.Effects
                     var color = colors[i];
                     yield return new AngleFilterLightSource(
                         new FadedCircleLightSource(color, 0, 0, radius, Math.Min(radius, 0.5)),
-                        (270 + i * anglesEach) % 360,
+                        (startAngle + i * anglesEach) % 360,
                         anglesEach);
                 }
             }
