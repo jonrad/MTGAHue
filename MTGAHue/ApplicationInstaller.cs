@@ -5,6 +5,9 @@ using Castle.Facilities.TypedFactory;
 using MTGADispatcher.Events;
 using System.Reflection;
 using MTGAHue.Effects;
+using Castle.MicroKernel;
+using System;
+using Newtonsoft.Json.Linq;
 
 namespace MTGAHue
 {
@@ -39,6 +42,22 @@ namespace MTGAHue
                 object[] arguments)
             {
                 return (string)arguments[0];
+            }
+
+            protected override Func<IKernelInternal, IReleasePolicy, object> BuildFactoryComponent(MethodInfo method, string componentName, Type componentType, Arguments additionalArguments)
+            {
+                var configuration = (JObject?)additionalArguments["configuration"];
+                if (configuration != null)
+                {
+                    foreach (var parameter in configuration)
+                    {
+                        additionalArguments.AddNamed(
+                            parameter.Key,
+                            parameter.Value);
+                    }
+                }
+
+                return base.BuildFactoryComponent(method, componentName, componentType, additionalArguments);
             }
         }
     }

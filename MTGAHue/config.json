@@ -29,7 +29,10 @@
         {
           "id": "CastSpell",
           "effect": {
-            "id": "explosion"
+            "id": "explosion",
+            "config": {
+              "speedMs": 1000
+            }
           }
         }
       ]

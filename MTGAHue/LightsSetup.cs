@@ -121,7 +121,10 @@ namespace MTGAHue
                 return;
             }
 
-            var effect = effectFactory.Get<T>(effectConfiguration.Id);
+            var effect = effectFactory.Get<T>(
+                effectConfiguration.Id,
+                effectConfiguration.Config);
+
             var performer = new EffectPerformer<T>(
                 layout,
                 effect);
