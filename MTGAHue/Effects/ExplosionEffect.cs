@@ -21,8 +21,17 @@ namespace MTGAHue.Effects
             [MagicColor.Blue] = new RGB(0, 0, 255)
         };
 
-        private ITransition? BuildEffect(RGB[] colors)
+        private readonly int speedMs;
+
+        public ExplosionEffect(int speedMs = 2000)
         {
+            this.speedMs = speedMs;
+        }
+
+        public ITransition? OnMagicEvent(CastSpell magicEvent)
+        {
+            var startAngle = 270;
+            var colors = magicEvent.Instance.Colors.Select(c => colorMap[c]).ToArray();
             if (colors.Length == 0)
             {
                 return null;
@@ -37,14 +46,14 @@ namespace MTGAHue.Effects
                     var color = colors[i];
                     yield return new AngleFilterLightSource(
                         new FadedCircleLightSource(color, 0, 0, radius, Math.Min(radius, 0.5)),
-                        (270 + i * anglesEach) % 360,
+                        (startAngle + i * anglesEach) % 360,
                         anglesEach);
                 }
             }
 
             IEnumerable<ITransition> BuildTransitions()
             {
-                var totalTime = 2000;
+                var totalTime = speedMs;
                 var steps = 40;
                 var maxRadius = 2D;
 
@@ -61,12 +70,6 @@ namespace MTGAHue.Effects
             }
 
             return new CompositeTransition(BuildTransitions().ToArray());
-        }
-
-        public ITransition? OnMagicEvent(CastSpell magicEvent)
-        {
-            var rgbs = magicEvent.Instance.Colors.Select(c => colorMap[c]).ToArray();
-            return BuildEffect(rgbs);
         }
     }
 }

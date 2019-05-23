@@ -48,7 +48,7 @@ namespace MagicLights.Specs
                 .Return(The<ITransition>());
 
             The<IEffectFactory>()
-                .WhenToldTo(e => e.Get<CastSpell>(Param.IsAny<string>()))
+                .WhenToldTo(e => e.Get<CastSpell>(Param.IsAny<string>(), Param.IsAny<JObject>()))
                 .Return(The<IEffect<CastSpell>>());
 
             subject = new LightsSetup(
