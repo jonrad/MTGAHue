@@ -58,6 +58,9 @@ namespace MagicLights.Console
                 var application = container.Resolve<Application>();
 
                 await application.Run();
+
+                System.Console.WriteLine("Press enter to quit");
+                System.Console.ReadLine();
             }
         }
 

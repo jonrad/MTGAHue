@@ -1,10 +1,10 @@
 ﻿using MTGADispatcher;
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.IO;
 using MagicLights.Configuration.Models;
+using System.Threading;
 
 namespace MagicLights
 {
@@ -22,17 +22,24 @@ namespace MagicLights
             this.magicService = magicService;
         }
 
-        public async Task Run()
+        public async Task Run(Config config)
+        {
+            await lightsSetup.Start(config);
+
+            magicService.Start();
+        }
+
+        public Task Run()
         {
             var text = File.ReadAllText("config.json");
             var config = JsonConvert.DeserializeObject<Config>(text);
 
-            await lightsSetup.Start(config);
+            return Run(config);
+        }
 
-            magicService.Start();
-
-            Console.WriteLine("Press enter to quit");
-            Console.ReadLine();
+        public void Stop()
+        {
+            magicService.Stop();
         }
     }
 }
