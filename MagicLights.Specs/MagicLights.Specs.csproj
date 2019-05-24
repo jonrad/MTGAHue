@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MTGAHue\MTGAHue.csproj" />
+    <ProjectReference Include="..\MagicLights\MagicLights.csproj" />
   </ItemGroup>
 
 </Project>

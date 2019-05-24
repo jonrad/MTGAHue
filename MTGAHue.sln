@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28803.156
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MTGAHue", "MTGAHue\MTGAHue.csproj", "{1E33939E-817E-4F0D-A163-FDB88094654D}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MTGADispatcher", "MTGADispatcher\MTGADispatcher.csproj", "{BCC13AE8-1115-4C31-8867-48DE81640444}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MTGADispatcher.Specs", "MTGADispatcher.Specs\MTGADispatcher.Specs.csproj", "{E12484B8-1FE6-404F-8BAA-291CAE664EE0}"
@@ -21,7 +19,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LightsApi.Specs", "LightsAp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LightsApi.Chroma", "LightsApi.Chroma\LightsApi.Chroma.csproj", "{C4487C19-D9DC-49EA-8F3F-4BF7F4310DCB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MagicLights.Specs", "MagicLights.Specs\MagicLights.Specs.csproj", "{BC8CBEBB-9B57-44B4-BBA7-86E1DDE7C520}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MagicLights.Specs", "MagicLights.Specs\MagicLights.Specs.csproj", "{BC8CBEBB-9B57-44B4-BBA7-86E1DDE7C520}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MagicLights", "MagicLights\MagicLights.csproj", "{5DD11DDF-1373-4E87-BE09-3A73097DAE93}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +29,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{1E33939E-817E-4F0D-A163-FDB88094654D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1E33939E-817E-4F0D-A163-FDB88094654D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1E33939E-817E-4F0D-A163-FDB88094654D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1E33939E-817E-4F0D-A163-FDB88094654D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BCC13AE8-1115-4C31-8867-48DE81640444}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BCC13AE8-1115-4C31-8867-48DE81640444}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BCC13AE8-1115-4C31-8867-48DE81640444}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -69,6 +65,10 @@ Global
 		{BC8CBEBB-9B57-44B4-BBA7-86E1DDE7C520}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BC8CBEBB-9B57-44B4-BBA7-86E1DDE7C520}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BC8CBEBB-9B57-44B4-BBA7-86E1DDE7C520}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DD11DDF-1373-4E87-BE09-3A73097DAE93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DD11DDF-1373-4E87-BE09-3A73097DAE93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DD11DDF-1373-4E87-BE09-3A73097DAE93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DD11DDF-1373-4E87-BE09-3A73097DAE93}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
