@@ -185,7 +185,7 @@ namespace MagicLights.LightClients
         {
             return Path.Combine(
                 GetFolderPath(SpecialFolder.LocalApplicationData, SpecialFolderOption.DoNotVerify),
-                "MagicLights",
+                "MTGAHue",
                 "settings.json");
         }
 

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Castle.MicroKernel.Registration;
 using static System.Environment;
 
-namespace MagicLights
+namespace MagicLights.Console
 {
     class Program
     {
