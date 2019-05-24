@@ -13,17 +13,8 @@ namespace MagicLights.Console
     {
         public class Options
         {
-            [Option('e', "entertainment", Required = false, HelpText = "Entertainment Group Name (Hue Only)")]
-            public string? EntertainmentGroupName { get; set; }
-
             [Option('d', "demo", Required = false, HelpText = "Run demo")]
             public bool Demo { get; set; }
-
-            [Option('c', "chroma", Required = false, HelpText = "Use Chroma (Razer)")]
-            public bool Chroma { get; set; }
-
-            [Option('h', "hue", Required = false, HelpText = "Use Hue")]
-            public bool Hue { get; set; }
         }
 
         static async Task Main(string[] args)
