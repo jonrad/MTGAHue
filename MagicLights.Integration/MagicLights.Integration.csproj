@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net461</TargetFramework>
+    <LangVersion>8.0</LangVersion>
+    <NullableContextOptions>enable</NullableContextOptions>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Games\SimpleSpell.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Games\SimpleSpell.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MagicLights\MagicLights.csproj" />
+  </ItemGroup>
+
+</Project>
