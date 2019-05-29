@@ -26,9 +26,11 @@ namespace LightsApi
         {
             var totalMilliseconds = timeSpan.TotalMilliseconds;
 
-            var startingColors = Colors;
+            var colorCount = Colors.Length;
 
-            var endingColors = new RGB[startingColors.Length];
+            var startColors = Colors;
+
+            var endingColors = new RGB[colorCount];
 
             for (var i = 0; i < endingColors.Length; i++)
             {
@@ -41,12 +43,19 @@ namespace LightsApi
             long elapsed;
             while (!token.IsCancellationRequested && (elapsed = stopwatch.ElapsedMilliseconds) < totalMilliseconds)
             {
-                var nextColors = new RGB[startingColors.Length];
+
+                var nextColors = new RGB[colorCount];
                 var percentage = (float)(elapsed / totalMilliseconds);
 
                 for (var i = 0; i < nextColors.Length; i++)
                 {
-                    var rgb = endingColors[i] * percentage;
+                    var start = startColors[i];
+                    var end = endingColors[i];
+
+                    var rgb = new RGB(
+                        start.R + (end.R - start.R) * percentage,
+                        start.G + (end.G - start.G) * percentage,
+                        start.B + (end.B - start.B) * percentage);
 
                     nextColors[i] = rgb;
                 }
@@ -54,6 +63,7 @@ namespace LightsApi
                 var delay = Math.Min(msPerTransition, totalMilliseconds - elapsed);
 
                 Colors = nextColors;
+
                 await Task.Delay(TimeSpan.FromMilliseconds(delay), token);
             }
 

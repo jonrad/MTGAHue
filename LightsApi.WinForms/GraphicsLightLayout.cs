@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Threading;
@@ -10,20 +9,13 @@ namespace LightsApi.WinForms
 {
     public class GraphicsLightClient : ILightClient, IDisposable
     {
-        private readonly object syncObject = new object();
-
         private readonly Position[] positions;
 
         private readonly int count;
 
-        private CancellationTokenSource cancellationTokenSource =
-            new CancellationTokenSource();
-
-        private Task mainLoop = null;
-
-        private VirtualLightLayout[] layouts = new VirtualLightLayout[0];
-
         private BufferedGraphics buffer;
+
+        private LightClientLoop loop;
 
         public GraphicsLightClient(Graphics graphics, int count)
         {
@@ -35,6 +27,8 @@ namespace LightsApi.WinForms
                     (int)graphics.VisibleClipBounds.Y,
                     (int)graphics.VisibleClipBounds.Width,
                     (int)graphics.VisibleClipBounds.Height));
+
+            loop = new LightClientLoop(SetColors);
 
             // Transforms our coordinate system to make it -1 <= X <= 1, -1 <= Y <= 1
             // AKA a 2x2 grid starting at top left -1, 1 and ending at bottom right 1, -1
@@ -48,14 +42,7 @@ namespace LightsApi.WinForms
         public Task<ILightLayout> GetLayout()
         {
             var newLayout = new VirtualLightLayout(positions, 50);
-            lock (syncObject)
-            {
-                var newLayouts = new VirtualLightLayout[layouts.Length + 1];
-                Array.Copy(layouts, newLayouts, layouts.Length);
-                newLayouts[layouts.Length] = newLayout;
-                layouts = newLayouts;
-            }
-
+            loop.AddLayout(newLayout);
             return Task.FromResult<ILightLayout>(newLayout);
         }
 
@@ -84,47 +71,14 @@ namespace LightsApi.WinForms
             }, cancellationToken: token);
         }
 
-        public async Task MainLoop(CancellationToken token)
-        {
-            var stopwatch = Stopwatch.StartNew();
-            while (!token.IsCancellationRequested)
-            {
-                var elapsed = stopwatch.ElapsedMilliseconds;
-
-                if (layouts.Length == 0)
-                {
-                    await Task.Delay(TimeSpan.FromMilliseconds(200), token);
-                    continue;
-                }
-
-                var colors = layouts
-                    .Select(l => l.Colors)
-                    .Aggregate((colors1, colors2) =>
-                    {
-                        return colors1.Zip(colors2, (rgb1, rgb2) => rgb1 + rgb2).ToArray();
-                    });
-
-                await Task.WhenAll(new[]
-                {
-                    SetColors(colors, CancellationToken.None),
-                    Task.Delay(TimeSpan.FromMilliseconds(100))
-                });
-            }
-        }
-
         public void Start()
         {
-            if (mainLoop == null)
-            {
-                mainLoop = MainLoop(cancellationTokenSource.Token);
-            }
+            loop.Start();
         }
 
         public void Stop()
         {
-            cancellationTokenSource.Cancel();
-            cancellationTokenSource = new CancellationTokenSource();
-            mainLoop = null;
+            loop.Stop();
         }
 
         public void Dispose()
