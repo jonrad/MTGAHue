@@ -7,9 +7,9 @@ namespace LightsApi.WinForms
 {
     public partial class Demo : Form
     {
-        private GraphicsLightLayout layout;
+        private GraphicsLightClient client;
 
-        private Task transition;
+        private ILightLayout layout;
 
         public Demo()
         {
@@ -20,12 +20,7 @@ namespace LightsApi.WinForms
 
         private void Demo_Disposed(object sender, EventArgs e)
         {
-            if (transition != null)
-            {
-                transition.Wait();
-            }
-
-            layout.Dispose();
+            client?.Dispose();
         }
 
         private void Button1_Click(object sender, EventArgs e)
@@ -45,12 +40,15 @@ namespace LightsApi.WinForms
                     140)
                 );
 
-            transition = layout.Transition(lightSource, TimeSpan.FromMilliseconds(10));
+            layout.Transition(lightSource, TimeSpan.FromMilliseconds(2000));
         }
 
         private void Demo_Load(object sender, EventArgs e)
         {
-            layout = new GraphicsLightLayout(pictureBox1.CreateGraphics());
+            client = new GraphicsLightClient(pictureBox1.CreateGraphics(), 100);
+            layout = client.GetLayout().Result;
+
+            client.Start();
         }
     }
 }

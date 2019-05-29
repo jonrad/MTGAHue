@@ -16,5 +16,15 @@ namespace LightsApi.Chroma
         {
             return Task.FromResult<ILightLayout>(layout);
         }
+
+        public void Start()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void Stop()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

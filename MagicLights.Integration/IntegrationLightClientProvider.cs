@@ -40,6 +40,14 @@ namespace MagicLights.Integration
             {
                 return Task.FromResult<ILightLayout>(LightLayout);
             }
+
+            public void Start()
+            {
+            }
+
+            public void Stop()
+            {
+            }
         }
     }
 }

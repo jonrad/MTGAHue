@@ -21,5 +21,21 @@ namespace LightsApi
 
             return new CompositeLightLayout(await layouts);
         }
+
+        public void Start()
+        {
+            foreach (var client in lightClients)
+            {
+                client.Start();
+            }
+        }
+
+        public void Stop()
+        {
+            foreach (var client in lightClients)
+            {
+                client.Stop();
+            }
+        }
     }
 }

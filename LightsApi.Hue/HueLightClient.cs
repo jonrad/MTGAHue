@@ -62,5 +62,15 @@ namespace LightsApi.Hue
             stoppedSource.Cancel();
             updatingTask?.Wait();
         }
+
+        public void Start()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Stop()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
