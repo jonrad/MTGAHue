@@ -1,20 +1,18 @@
-﻿using LightsApi.Transitions;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace LightsApi
 {
-    public class LightClientLoop
+    public class Lights : ILights
     {
         private readonly object syncObject = new object();
 
         private readonly AutoResetEvent layoutsExistEvent =
             new AutoResetEvent(false);
 
-        private VirtualLightLayout[] layouts = new VirtualLightLayout[0];
+        private LightLayout[] layouts = new LightLayout[0];
 
         private readonly ILightClient lightClient;
 
@@ -25,19 +23,19 @@ namespace LightsApi
 
         private Task? mainLoop = null;
 
-        public LightClientLoop(ILightClient lightClient, TimeSpan? delay = null)
+        public Lights(ILightClient lightClient, TimeSpan? delay = null)
         {
             this.lightClient = lightClient;
             this.delay = delay ?? TimeSpan.FromMilliseconds(50);
         }
 
-        public VirtualLightLayout AddLayout()
+        public ILightLayout AddLayout()
         {
-            var layout = new VirtualLightLayout(lightClient.Lights.ToArray(), 50);
+            var layout = new LightLayout(lightClient.Lights.ToArray(), 50);
 
             lock (syncObject)
             {
-                var newLayouts = new VirtualLightLayout[layouts.Length + 1];
+                var newLayouts = new LightLayout[layouts.Length + 1];
                 Array.Copy(layouts, newLayouts, layouts.Length);
                 newLayouts[layouts.Length] = layout;
                 layouts = newLayouts;
@@ -47,19 +45,12 @@ namespace LightsApi
             return layout;
         }
 
-        public void RemoveLayout(VirtualLightLayout layout)
+        public void RemoveLayout(ILightLayout layout)
         {
             lock (syncObject)
             {
                 layouts = layouts.Where(l => l != layout).ToArray();
             }
-        }
-
-        public async Task Transition(ITransition transition)
-        {
-            var layout = AddLayout();
-            await transition.Transition(layout);
-            RemoveLayout(layout);
         }
 
         private Task MainLoop(CancellationToken token)

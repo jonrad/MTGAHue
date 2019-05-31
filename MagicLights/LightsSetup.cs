@@ -17,7 +17,7 @@ namespace MagicLights
     {
         private readonly Dictionary<string, ILightClientProvider> lightClientProviders;
 
-        private readonly Dictionary<string, Action<LightClientLoop, EffectConfiguration>> eventsById;
+        private readonly Dictionary<string, Action<Lights, EffectConfiguration>> eventsById;
 
         private readonly Game game;
 
@@ -35,7 +35,7 @@ namespace MagicLights
             eventsById = BuildRegisters();
         }
 
-        public async Task<LightClientLoop[]> Start(Config configuration)
+        public async Task<Lights[]> Start(Config configuration)
         {
             var clients = await BuildClients(
                 configuration.LightClients ?? new LightClientConfiguration[0]);
@@ -48,10 +48,10 @@ namespace MagicLights
             return clients;
         }
 
-        private async Task<LightClientLoop[]> BuildClients(
+        private async Task<Lights[]> BuildClients(
             LightClientConfiguration[] lightClients)
         {
-            List<LightClientLoop> clients = new List<LightClientLoop>();
+            List<Lights> clients = new List<Lights>();
 
             // Why does hue hate when I'm async here...
             foreach (var l in lightClients)
@@ -67,7 +67,7 @@ namespace MagicLights
             return clients.ToArray();
         }
 
-        private async Task<LightClientLoop> BuildClient(
+        private async Task<Lights> BuildClient(
             LightClientConfiguration lightClientConfiguration)
         {
             if (lightClientConfiguration.Id == null)
@@ -87,7 +87,7 @@ namespace MagicLights
 
             var client = await provider.Create(clientConfiguration);
 
-            var loop = new LightClientLoop(client);
+            var lights = new Lights(client);
 
             foreach (var eventConfiguration in 
                 lightClientConfiguration.Events ?? Enumerable.Empty<EventConfiguration>())
@@ -107,14 +107,14 @@ namespace MagicLights
                     continue;
                 }
 
-                register(loop, effectConfiguration);
+                register(lights, effectConfiguration);
             }
 
-            return loop;
+            return lights;
         }
 
         private void Register<T>(
-            LightClientLoop loop,
+            Lights loop,
             EffectConfiguration effectConfiguration)
             where T : IMagicEvent
         {
@@ -151,7 +151,7 @@ namespace MagicLights
             return config.ToObject(type);
         }
 
-        private Dictionary<string, Action<LightClientLoop, EffectConfiguration>> BuildRegisters()
+        private Dictionary<string, Action<Lights, EffectConfiguration>> BuildRegisters()
         {
             var register = GetType().GetMethod(nameof(Register), BindingFlags.Instance | BindingFlags.NonPublic);
             // Too much reflection here, but that's what refactoring is for :)
@@ -160,7 +160,7 @@ namespace MagicLights
                 .Where(t => typeof(IMagicEvent).IsAssignableFrom(t))
                 .ToDictionary(
                     t => t.Name,
-                    t => (Action<LightClientLoop, EffectConfiguration>)register.MakeGenericMethod(t).CreateDelegate(typeof(Action<LightClientLoop, EffectConfiguration>), this));
+                    t => (Action<Lights, EffectConfiguration>)register.MakeGenericMethod(t).CreateDelegate(typeof(Action<Lights, EffectConfiguration>), this));
         }
     }
 }

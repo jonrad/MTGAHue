@@ -1,21 +1,22 @@
 ﻿using LightsApi;
 using MTGADispatcher.Events;
 using MagicLights.Effects;
+using LightsApi.Transitions;
 
 namespace MagicLights
 {
     public class EffectPerformer<T>
         where T : IMagicEvent
     {
-        private readonly LightClientLoop loop;
+        private readonly ILights lights;
 
         private readonly IEffect<T> effect;
 
         public EffectPerformer(
-            LightClientLoop loop,
+            ILights loop,
             IEffect<T> effect)
         {
-            this.loop = loop;
+            this.lights = loop;
             this.effect = effect;
         }
 
@@ -28,7 +29,14 @@ namespace MagicLights
                 return;
             }
 
-            loop.Transition(transition);
+            RunTransition(transition);
+        }
+
+        private void RunTransition(ITransition transition)
+        {
+            var layout = lights.AddLayout();
+            transition.Transition(layout);
+            lights.RemoveLayout(layout);
         }
     }
 }

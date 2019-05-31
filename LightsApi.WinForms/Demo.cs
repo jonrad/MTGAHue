@@ -9,7 +9,7 @@ namespace LightsApi.WinForms
     {
         private GraphicsLightClient client;
 
-        private LightClientLoop loop;
+        private ILights lights;
 
         public Demo()
         {
@@ -20,7 +20,7 @@ namespace LightsApi.WinForms
 
         private void Demo_Disposed(object sender, EventArgs e)
         {
-            loop.Stop();
+            lights.Stop();
         }
 
         private void Button1_Click(object sender, EventArgs e)
@@ -40,15 +40,17 @@ namespace LightsApi.WinForms
                     140)
                 );
 
-            loop.Transition(new LightSourceTransition(lightSource, 2000));
+            var layout = lights.AddLayout();
+            new LightSourceTransition(lightSource, 2000).Transition(layout);
+            lights.RemoveLayout(layout);
         }
 
         private void Demo_Load(object sender, EventArgs e)
         {
             client = new GraphicsLightClient(pictureBox1.CreateGraphics(), 100);
-            loop = new LightClientLoop(client);
+            lights = new Lights(client);
 
-            loop.Start();
+            lights.Start();
         }
     }
 }

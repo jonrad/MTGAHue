@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace LightsApi
 {
-    public class VirtualLightLayout : ILightLayout
+    public class LightLayout : ILightLayout
     {
         private readonly Position[] positions;
 
         private readonly int msPerTransition;
 
-        public VirtualLightLayout(Position[] positions, int msPerTransition)
+        public LightLayout(Position[] positions, int msPerTransition)
         {
             this.positions = positions;
             this.msPerTransition = msPerTransition;
