@@ -1,6 +1,6 @@
 ﻿using LightsApi.LightSources;
+using LightsApi.Transitions;
 using System;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace LightsApi.WinForms
@@ -9,7 +9,7 @@ namespace LightsApi.WinForms
     {
         private GraphicsLightClient client;
 
-        private ILightLayout layout;
+        private LightClientLoop loop;
 
         public Demo()
         {
@@ -20,7 +20,7 @@ namespace LightsApi.WinForms
 
         private void Demo_Disposed(object sender, EventArgs e)
         {
-            client?.Dispose();
+            loop.Stop();
         }
 
         private void Button1_Click(object sender, EventArgs e)
@@ -40,15 +40,15 @@ namespace LightsApi.WinForms
                     140)
                 );
 
-            layout.Transition(lightSource, TimeSpan.FromMilliseconds(2000));
+            loop.Transition(new LightSourceTransition(lightSource, 2000));
         }
 
         private void Demo_Load(object sender, EventArgs e)
         {
             client = new GraphicsLightClient(pictureBox1.CreateGraphics(), 100);
-            layout = client.GetLayout().Result;
+            loop = new LightClientLoop(client);
 
-            client.Start();
+            loop.Start();
         }
     }
 }

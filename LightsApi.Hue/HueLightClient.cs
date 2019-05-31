@@ -1,25 +1,22 @@
-﻿using Q42.HueApi.Streaming;
+﻿using Q42.HueApi.ColorConverters;
+using Q42.HueApi.Streaming;
 using Q42.HueApi.Streaming.Models;
-using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace LightsApi.Hue
 {
-    public class HueLightClient : ILightClient, IDisposable
+    public class HueLightClient : ILightClient
     {
-        private readonly object syncObject = new object();
-
-        private readonly CancellationTokenSource stoppedSource = new CancellationTokenSource();
-
         private readonly StreamingHueClient hueClient;
 
         private readonly StreamingGroup streamingGroup;
 
-        private ILightLayout? layout;
+        private readonly EntertainmentLayer hueLayer;
 
-        private Task? updatingTask;
+        public IEnumerable<Position> Lights { get; private set; }
 
         public HueLightClient(
             StreamingHueClient hueClient,
@@ -27,50 +24,28 @@ namespace LightsApi.Hue
         {
             this.hueClient = hueClient;
             this.streamingGroup = streamingGroup;
+            hueLayer = streamingGroup.GetNewLayer(true);
+
+            Lights = hueLayer.Select(l => new Position((float)l.LightLocation.X, (float)l.LightLocation.Y)).ToArray();
         }
 
-        public Task<ILightLayout> GetLayout()
+        public Task SetColors(IEnumerable<RGB> colors, CancellationToken token)
         {
-            return Task.FromResult(GetLayoutSync());
-        }
-
-        private ILightLayout GetLayoutSync()
-        {
-            if (layout != null)
+            return Task.Run(() =>
             {
-                return layout;
-            }
-
-            lock (syncObject)
-            {
-                if (layout != null)
+                var i = 0;
+                foreach (var color in colors)
                 {
-                    return layout;
+                    var state = new EntertainmentState();
+                    state.SetRGBColor(new RGBColor((int)color.R, (int)color.G, (int)color.B));
+                    state.SetBrightness(1);
+                    hueLayer[i].State = state;
+
+                    i++;
                 }
 
-                var hueLayer = streamingGroup.GetNewLayer(true);
-
-                updatingTask = hueClient.AutoUpdate(streamingGroup, stoppedSource.Token, 50, onlySendDirtyStates: false);
-                var lights = hueLayer.Select(l => new HueLight(l)).ToArray();
-
-                return layout = new HueLightLayout(lights);
-            }
-        }
-
-        public void Dispose()
-        {
-            stoppedSource.Cancel();
-            updatingTask?.Wait();
-        }
-
-        public void Start()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Stop()
-        {
-            throw new NotImplementedException();
+                hueClient.ManualUpdate(streamingGroup);
+            });
         }
     }
 }

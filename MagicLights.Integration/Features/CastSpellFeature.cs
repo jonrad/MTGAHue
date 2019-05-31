@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using System;
+using Xunit;
 
 namespace MagicLights.Integration.Features
 {
@@ -15,8 +16,9 @@ namespace MagicLights.Integration.Features
             application.WriteContents(@"SimpleSpell.txt");
             application.WaitForGameEnd();
 
-            Assert.NotNull(
-                application.LightLayout.LastLightSource);
+            throw new NotImplementedException();
+            //Assert.NotNull(
+                //application.LightLayout.LastLightSource);
         }
     }
 }

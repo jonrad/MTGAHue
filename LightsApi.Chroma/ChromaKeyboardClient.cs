@@ -1,6 +1,5 @@
 ﻿using Colore;
 using Colore.Effects.Keyboard;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -14,8 +13,6 @@ namespace LightsApi.Chroma
 
         private readonly Position[] positions;
 
-        private readonly LightClientLoop loop;
-
         private readonly IKeyboard keyboard;
 
         public ChromaKeyboardClient(IChroma chroma, int? columnCount, int? rowCount)
@@ -23,13 +20,11 @@ namespace LightsApi.Chroma
             keyboard = chroma.Keyboard;
             keyboardPositions = CalculatePositions(columnCount ?? KeyboardConstants.MaxColumns, rowCount ?? KeyboardConstants.MaxRows).ToArray();
             positions = keyboardPositions.Select(k => new Position(k.X, k.Y)).ToArray();
-
-            loop = new LightClientLoop(SetColors, TimeSpan.FromMilliseconds(50));
-
-            loop.Start();
         }
 
-        private Task SetColors(IEnumerable<RGB> colors, CancellationToken token)
+        public IEnumerable<Position> Lights => positions;
+
+        public Task SetColors(IEnumerable<RGB> colors, CancellationToken token)
         {
             var nextColors = KeyboardCustom.Create();
 
@@ -44,23 +39,6 @@ namespace LightsApi.Chroma
             }
 
             return keyboard.SetCustomAsync(nextColors);
-        }
-
-        public Task<ILightLayout> GetLayout()
-        {
-            var layout = new VirtualLightLayout(positions, 50);
-            loop.AddLayout(layout);
-            return Task.FromResult<ILightLayout>(layout);
-        }
-
-        public void Start()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void Stop()
-        {
-            throw new System.NotImplementedException();
         }
 
         private IEnumerable<KeyboardPosition> CalculatePositions(int columnCount, int rowCount)

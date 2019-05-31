@@ -1,13 +1,13 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace LightsApi
 {
     public interface ILightClient
     {
-        Task<ILightLayout> GetLayout();
+        IEnumerable<Position> Lights { get; }
 
-        void Start();
-
-        void Stop();
+        Task SetColors(IEnumerable<RGB> colors, CancellationToken token);
     }
 }

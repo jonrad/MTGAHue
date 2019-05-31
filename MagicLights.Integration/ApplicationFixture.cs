@@ -36,10 +36,6 @@ namespace MagicLights.Integration
 
             var application = Container.Resolve<Application>();
 
-            LightLayout = Container.Resolve<IntegrationLightClientProvider>()
-                .LightClient
-                .LightLayout;
-
             lineReader = (LineReaderProxy)Container.Resolve<ILineReader>();
             application.Run(new Config()
             {
@@ -68,8 +64,6 @@ namespace MagicLights.Integration
         public Game Game { get; }
 
         public WindsorContainer Container { get; }
-
-        public IntegrationLightLayout LightLayout { get; }
 
         public void Dispose()
         {

@@ -7,15 +7,13 @@ using System.Threading.Tasks;
 
 namespace LightsApi.WinForms
 {
-    public class GraphicsLightClient : ILightClient, IDisposable
+    public class GraphicsLightClient : ILightClient
     {
         private readonly Position[] positions;
 
         private readonly int count;
 
-        private BufferedGraphics buffer;
-
-        private LightClientLoop loop;
+        private readonly BufferedGraphics buffer;
 
         public GraphicsLightClient(Graphics graphics, int count)
         {
@@ -28,8 +26,6 @@ namespace LightsApi.WinForms
                     (int)graphics.VisibleClipBounds.Width,
                     (int)graphics.VisibleClipBounds.Height));
 
-            loop = new LightClientLoop(SetColors);
-
             // Transforms our coordinate system to make it -1 <= X <= 1, -1 <= Y <= 1
             // AKA a 2x2 grid starting at top left -1, 1 and ending at bottom right 1, -1
             // AKA the cartesian coordinate system that we all know and love
@@ -39,14 +35,9 @@ namespace LightsApi.WinForms
             positions = InitializePositions().ToArray();
         }
 
-        public Task<ILightLayout> GetLayout()
-        {
-            var newLayout = new VirtualLightLayout(positions, 50);
-            loop.AddLayout(newLayout);
-            return Task.FromResult<ILightLayout>(newLayout);
-        }
+        public IEnumerable<Position> Lights => positions;
 
-        private Task SetColors(IEnumerable<RGB> colors, CancellationToken token)
+        public Task SetColors(IEnumerable<RGB> colors, CancellationToken token)
         {
             return Task.Run(() =>
             {
@@ -69,21 +60,6 @@ namespace LightsApi.WinForms
 
                 buffer.Render();
             }, cancellationToken: token);
-        }
-
-        public void Start()
-        {
-            loop.Start();
-        }
-
-        public void Stop()
-        {
-            loop.Stop();
-        }
-
-        public void Dispose()
-        {
-            Stop();
         }
 
         private IEnumerable<Position> InitializePositions()

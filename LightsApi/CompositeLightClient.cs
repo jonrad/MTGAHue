@@ -1,5 +1,8 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
+using LightsApi.Transitions;
 
 namespace LightsApi
 {
@@ -12,30 +15,11 @@ namespace LightsApi
             this.lightClients = lightClients;
         }
 
-        public async Task<ILightLayout> GetLayout()
-        {
-            var layouts = Task.WhenAll(
-                lightClients
-                    .Select(async l => await l.GetLayout())
-                    .ToArray());
+        public IEnumerable<Position> Lights => lightClients.First().Lights;
 
-            return new CompositeLightLayout(await layouts);
-        }
-
-        public void Start()
+        public Task SetColors(IEnumerable<RGB> colors, CancellationToken token)
         {
-            foreach (var client in lightClients)
-            {
-                client.Start();
-            }
-        }
-
-        public void Stop()
-        {
-            foreach (var client in lightClients)
-            {
-                client.Stop();
-            }
+            return lightClients.First().SetColors(colors, token);
         }
     }
 }

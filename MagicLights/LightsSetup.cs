@@ -17,7 +17,7 @@ namespace MagicLights
     {
         private readonly Dictionary<string, ILightClientProvider> lightClientProviders;
 
-        private readonly Dictionary<string, Action<ILightLayout, EffectConfiguration>> eventsById;
+        private readonly Dictionary<string, Action<LightClientLoop, EffectConfiguration>> eventsById;
 
         private readonly Game game;
 
@@ -35,18 +35,23 @@ namespace MagicLights
             eventsById = BuildRegisters();
         }
 
-        public async Task<CompositeLightClient> Start(Config configuration)
+        public async Task<LightClientLoop[]> Start(Config configuration)
         {
-            var clients = BuildClients(
+            var clients = await BuildClients(
                 configuration.LightClients ?? new LightClientConfiguration[0]);
+            
+            foreach (var client in clients)
+            {
+                client.Start();
+            }
 
-            return new CompositeLightClient((await clients).ToArray());
+            return clients;
         }
 
-        private async Task<ILightClient[]> BuildClients(
+        private async Task<LightClientLoop[]> BuildClients(
             LightClientConfiguration[] lightClients)
         {
-            List<ILightClient> clients = new List<ILightClient>();
+            List<LightClientLoop> clients = new List<LightClientLoop>();
 
             // Why does hue hate when I'm async here...
             foreach (var l in lightClients)
@@ -62,7 +67,7 @@ namespace MagicLights
             return clients.ToArray();
         }
 
-        private async Task<ILightClient> BuildClient(
+        private async Task<LightClientLoop> BuildClient(
             LightClientConfiguration lightClientConfiguration)
         {
             if (lightClientConfiguration.Id == null)
@@ -81,7 +86,8 @@ namespace MagicLights
                 BuildClientArgs(provider, lightClientConfiguration.Config);
 
             var client = await provider.Create(clientConfiguration);
-            var layout = await client.GetLayout();
+
+            var loop = new LightClientLoop(client);
 
             foreach (var eventConfiguration in 
                 lightClientConfiguration.Events ?? Enumerable.Empty<EventConfiguration>())
@@ -101,14 +107,14 @@ namespace MagicLights
                     continue;
                 }
 
-                register(layout, effectConfiguration);
+                register(loop, effectConfiguration);
             }
 
-            return client;
+            return loop;
         }
 
         private void Register<T>(
-            ILightLayout layout,
+            LightClientLoop loop,
             EffectConfiguration effectConfiguration)
             where T : IMagicEvent
         {
@@ -122,7 +128,7 @@ namespace MagicLights
                 effectConfiguration.Config);
 
             var performer = new EffectPerformer<T>(
-                layout,
+                loop,
                 effect);
 
             game.Events.Subscriptions.Subscribe<T>(
@@ -145,7 +151,7 @@ namespace MagicLights
             return config.ToObject(type);
         }
 
-        private Dictionary<string, Action<ILightLayout, EffectConfiguration>> BuildRegisters()
+        private Dictionary<string, Action<LightClientLoop, EffectConfiguration>> BuildRegisters()
         {
             var register = GetType().GetMethod(nameof(Register), BindingFlags.Instance | BindingFlags.NonPublic);
             // Too much reflection here, but that's what refactoring is for :)
@@ -154,7 +160,7 @@ namespace MagicLights
                 .Where(t => typeof(IMagicEvent).IsAssignableFrom(t))
                 .ToDictionary(
                     t => t.Name,
-                    t => (Action<ILightLayout, EffectConfiguration>)register.MakeGenericMethod(t).CreateDelegate(typeof(Action<ILightLayout, EffectConfiguration>), this));
+                    t => (Action<LightClientLoop, EffectConfiguration>)register.MakeGenericMethod(t).CreateDelegate(typeof(Action<LightClientLoop, EffectConfiguration>), this));
         }
     }
 }

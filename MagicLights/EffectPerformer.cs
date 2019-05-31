@@ -7,15 +7,15 @@ namespace MagicLights
     public class EffectPerformer<T>
         where T : IMagicEvent
     {
-        private readonly ILightLayout layout;
+        private readonly LightClientLoop loop;
 
         private readonly IEffect<T> effect;
 
         public EffectPerformer(
-            ILightLayout layout,
+            LightClientLoop loop,
             IEffect<T> effect)
         {
-            this.layout = layout;
+            this.loop = loop;
             this.effect = effect;
         }
 
@@ -28,7 +28,7 @@ namespace MagicLights
                 return;
             }
 
-            transition.Transition(layout);
+            loop.Transition(transition);
         }
     }
 }

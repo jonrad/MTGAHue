@@ -1,6 +1,9 @@
 ﻿using LightsApi;
 using MagicLights.LightClients;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MagicLights.Integration
@@ -29,24 +32,24 @@ namespace MagicLights.Integration
 
         public class IntegrationLightClient : ILightClient
         {
+            private readonly Position[] positions;
+
             public IntegrationLightClient()
             {
-                LightLayout = new IntegrationLightLayout();
+                positions = new[]
+                {
+                    new Position(0, 0)
+                };
             }
 
-            public IntegrationLightLayout LightLayout { get; }
+            public RGB[]? LastColors { get; private set; }
 
-            public Task<ILightLayout> GetLayout()
-            {
-                return Task.FromResult<ILightLayout>(LightLayout);
-            }
+            public IEnumerable<Position> Lights => positions;
 
-            public void Start()
+            public Task SetColors(IEnumerable<RGB> colors, CancellationToken token)
             {
-            }
-
-            public void Stop()
-            {
+                LastColors = colors.ToArray();
+                return Task.FromResult(true);
             }
         }
     }
