@@ -13,10 +13,10 @@ namespace MagicLights
         private readonly IEffect<T> effect;
 
         public EffectPerformer(
-            ILights loop,
+            ILights lights,
             IEffect<T> effect)
         {
-            this.lights = loop;
+            this.lights = lights;
             this.effect = effect;
         }
 

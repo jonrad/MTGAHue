@@ -114,7 +114,7 @@ namespace MagicLights
         }
 
         private void Register<T>(
-            Lights loop,
+            Lights lights,
             EffectConfiguration effectConfiguration)
             where T : IMagicEvent
         {
@@ -128,7 +128,7 @@ namespace MagicLights
                 effectConfiguration.Config);
 
             var performer = new EffectPerformer<T>(
-                loop,
+                lights,
                 effect);
 
             game.Events.Subscriptions.Subscribe<T>(
