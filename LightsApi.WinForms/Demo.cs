@@ -41,8 +41,8 @@ namespace LightsApi.WinForms
                 );
 
             var layout = lights.AddLayout();
-            new LightSourceTransition(lightSource, 2000).Transition(layout);
-            lights.RemoveLayout(layout);
+            new LightSourceTransition(lightSource, 2000).Transition(layout)
+                .ContinueWith(c => lights.RemoveLayout(layout));
         }
 
         private void Demo_Load(object sender, EventArgs e)

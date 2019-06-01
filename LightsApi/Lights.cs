@@ -55,7 +55,7 @@ namespace LightsApi
 
         private Task MainLoop(CancellationToken token)
         {
-            return Task.Run(async () =>
+            return Task.Factory.StartNew(async () =>
             {
                 while (!token.IsCancellationRequested)
                 {
@@ -80,7 +80,7 @@ namespace LightsApi
                         Task.Delay(delay, token)
                     });
                 };
-            });
+            }, TaskCreationOptions.LongRunning);
         }
 
         public void Start()
