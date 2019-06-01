@@ -2,6 +2,7 @@
 using MTGADispatcher.Events;
 using MagicLights.Effects;
 using LightsApi.Transitions;
+using System.Threading.Tasks;
 
 namespace MagicLights
 {
@@ -32,10 +33,10 @@ namespace MagicLights
             RunTransition(transition);
         }
 
-        private void RunTransition(ITransition transition)
+        private async Task RunTransition(ITransition transition)
         {
             var layout = lights.AddLayout();
-            transition.Transition(layout);
+            await transition.Transition(layout);
             lights.RemoveLayout(layout);
         }
     }
