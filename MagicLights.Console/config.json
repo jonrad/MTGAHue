@@ -2,7 +2,7 @@
   "LightClients": [
     {
       "id": "hue",
-      "enabled": true,
+      "enabled": false,
 
       "config": {
         "EntertainmentGroup": "Entertainment area 2"
@@ -42,6 +42,7 @@
       "enabled": true,
 
       "config": {
+        "topLed":  "Escape"
       },
 
       "events": [
