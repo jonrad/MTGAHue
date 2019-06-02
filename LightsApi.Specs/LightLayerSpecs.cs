@@ -8,16 +8,16 @@ using System.Threading.Tasks;
 
 namespace LightsApi.Specs
 {
-    [Subject(typeof(LightLayout))]
+    [Subject(typeof(Layer))]
     class LightLayerSpecs : WithFakes
     {
-        static LightLayout subject;
+        static Layer subject;
 
         static CancellationTokenSource cancellationTokenSource;
 
         Establish context = () =>
         {
-            subject = new LightLayout(
+            subject = new Layer(
                 The<IStopwatchBuilder>(),
                 The<IDelay>(),
                 new[]

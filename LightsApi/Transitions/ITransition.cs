@@ -5,6 +5,6 @@ namespace LightsApi.Transitions
 {
     public interface ITransition
     {
-        Task Transition(ILightLayout lightLayout, CancellationToken token = default);
+        Task Transition(ILayer layer, CancellationToken token = default);
     }
 }

@@ -15,7 +15,7 @@ namespace MagicLights
 
         private readonly IEffect<T> effect;
 
-        private readonly Lazy<ILightLayout> layout;
+        private readonly Lazy<ILayer> layer;
 
         private CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
 
@@ -25,7 +25,7 @@ namespace MagicLights
         {
             this.lights = lights;
             this.effect = effect;
-            layout = new Lazy<ILightLayout>(CreateLayout);
+            layer = new Lazy<ILayer>(() => lights.AddLayer());
         }
 
         public void Perform(T magicEvent)
@@ -42,13 +42,8 @@ namespace MagicLights
                 cancellationTokenSource.Cancel();
                 cancellationTokenSource = new CancellationTokenSource();
 
-                _ = transition.Transition(layout.Value, cancellationTokenSource.Token);
+                _ = transition.Transition(layer.Value, cancellationTokenSource.Token);
             }
-        }
-
-        private ILightLayout CreateLayout()
-        {
-            return lights.AddLayout();
         }
     }
 }

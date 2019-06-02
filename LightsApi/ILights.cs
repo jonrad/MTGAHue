@@ -6,8 +6,8 @@
 
         void Stop();
 
-        ILightLayout AddLayout();
+        ILayer AddLayer();
 
-        void RemoveLayout(ILightLayout layout);
+        void RemoveLayer(ILayer layer);
     }
 }
