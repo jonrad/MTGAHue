@@ -1,7 +1,8 @@
-﻿using MTGADispatcher.BlockProcessing;
+﻿using MTGADispatcher;
+using MTGADispatcher.BlockProcessing;
 using Newtonsoft.Json.Linq;
 
-namespace MTGADispatcher.Integration
+namespace MagicLights.Integration
 {
     public class GameEndedBlockHandler : IGameUpdater
     {

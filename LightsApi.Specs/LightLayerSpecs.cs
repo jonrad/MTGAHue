@@ -1,4 +1,5 @@
-﻿using LightsApi.LightSources;
+﻿using LightsApi.Injectables;
+using LightsApi.LightSources;
 using Machine.Fakes;
 using Machine.Specifications;
 using System;

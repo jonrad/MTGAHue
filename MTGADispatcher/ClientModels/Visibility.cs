@@ -6,8 +6,10 @@ namespace MTGADispatcher.ClientModels
     {
         [EnumMember(Value = "Visibility_Private")]
         Private,
+
         [EnumMember(Value = "Visibility_Public")]
         Public,
+
         [EnumMember(Value = "Visibility_Hidden")]
         Hidden
     }

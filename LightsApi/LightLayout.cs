@@ -1,4 +1,5 @@
-﻿using LightsApi.LightSources;
+﻿using LightsApi.Injectables;
+using LightsApi.LightSources;
 using System;
 using System.Linq;
 using System.Threading;

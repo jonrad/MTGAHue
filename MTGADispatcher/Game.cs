@@ -17,9 +17,9 @@ namespace MTGADispatcher
             Events = events;
         }
 
-        public readonly Dictionary<int, Instance> InstancesById 
+        public readonly Dictionary<int, Instance> InstancesById
             = new Dictionary<int, Instance>();
-        
+
         public IDispatcher<IMagicEvent> Events { get; }
     }
 }

@@ -6,7 +6,6 @@ using MagicLights.LightClients;
 using MTGADispatcher;
 using MTGADispatcher.BlockProcessing;
 using MTGADispatcher.Events;
-using MTGADispatcher.Integration;
 
 namespace MagicLights.Integration
 {

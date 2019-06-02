@@ -1,20 +1,15 @@
-﻿using Castle.Windsor;
+﻿using Castle.MicroKernel.Registration;
+using Castle.Windsor;
 using CommandLine;
 using MTGADispatcher;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using Castle.MicroKernel.Registration;
 using static System.Environment;
-using CUE.NET;
-using System.Drawing;
-using CUE.NET.Brushes;
-using CUE.NET.Groups;
-using CUE.NET.Gradients;
 
 namespace MagicLights.Console
 {
-    class Program
+    internal class Program
     {
         public class Options
         {
@@ -22,7 +17,7 @@ namespace MagicLights.Console
             public bool Demo { get; set; }
         }
 
-        static async Task Main(string[] args)
+        private static async Task Main(string[] args)
         {
             Options? options = null;
 

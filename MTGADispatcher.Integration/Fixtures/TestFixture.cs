@@ -48,7 +48,7 @@ namespace MTGADispatcher.Integration.Fixtures
             var assembly = Assembly.GetAssembly(GetType());
             var assemblyName = assembly.GetName().Name;
 
-            using (var stream = 
+            using (var stream =
                 assembly.GetManifestResourceStream($"{assemblyName}.Games.{resourceName}"))
             {
                 using (var reader = new StreamReader(stream))

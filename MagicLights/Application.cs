@@ -1,8 +1,8 @@
-﻿using MTGADispatcher;
-using System.Threading.Tasks;
+﻿using MagicLights.Configuration.Models;
+using MTGADispatcher;
 using Newtonsoft.Json;
 using System.IO;
-using MagicLights.Configuration.Models;
+using System.Threading.Tasks;
 
 namespace MagicLights
 {

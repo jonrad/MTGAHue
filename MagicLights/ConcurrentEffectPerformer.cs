@@ -1,7 +1,7 @@
 ﻿using LightsApi;
-using MTGADispatcher.Events;
-using MagicLights.Effects;
 using LightsApi.Transitions;
+using MagicLights.Effects;
+using MTGADispatcher.Events;
 using System.Threading.Tasks;
 
 namespace MagicLights

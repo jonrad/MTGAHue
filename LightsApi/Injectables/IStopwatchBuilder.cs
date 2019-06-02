@@ -1,4 +1,4 @@
-﻿namespace LightsApi
+﻿namespace LightsApi.Injectables
 {
     public interface IStopwatchBuilder
     {
