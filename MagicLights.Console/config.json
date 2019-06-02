@@ -2,7 +2,7 @@
   "LightClients": [
     {
       "id": "hue",
-      "enabled": true,
+      "enabled": false,
 
       "config": {
         "EntertainmentGroup": "Entertainment area 2"
@@ -37,5 +37,24 @@
         }
       ]
     },
+    {
+      "id": "cue",
+      "enabled": true,
+
+      "config": {
+      },
+
+      "events": [
+        {
+          "id": "CastSpell",
+          "effect": {
+            "id": "explosion",
+            "config": {
+              "speedMs": 1000
+            }
+          }
+        }
+      ]
+    }
   ]
 }
