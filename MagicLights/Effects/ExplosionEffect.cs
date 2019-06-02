@@ -32,6 +32,8 @@ namespace MagicLights.Effects
 
         public ITransition? OnMagicEvent(Instance instance)
         {
+            var centerX = 0;
+            var centerY = 0;
             var startAngle = 270;
             var colors = instance.Colors.Select(c => colorMap[c]).ToArray();
             if (colors.Length == 0)
@@ -47,7 +49,9 @@ namespace MagicLights.Effects
                 {
                     var color = colors[i];
                     yield return new AngleFilterLightSource(
-                        new FadedCircleLightSource(color, 0, 0, radius, Math.Min(radius, 0.5)),
+                        new FadedCircleLightSource(color, centerX, centerY, radius, Math.Min(radius, 0.5)),
+                        centerX,
+                        centerY,
                         (startAngle + i * anglesEach) % 360,
                         anglesEach);
                 }

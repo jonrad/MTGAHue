@@ -6,6 +6,10 @@ namespace LightsApi.LightSources
     {
         private const double TWO_PI = Math.PI * 2;
 
+        private readonly double centerX;
+
+        private readonly double centerY;
+
         private readonly double radiansStart;
 
         private readonly double radiansEnd;
@@ -14,18 +18,21 @@ namespace LightsApi.LightSources
 
         public AngleFilterLightSource(
             ILightSource baseLightSource,
+            double centerX,
+            double centerY,
             double angleStart,
             double degrees)
         {
             this.baseLightSource = baseLightSource;
-
+            this.centerX = centerX;
+            this.centerY = centerY;
             radiansStart = angleStart * Math.PI / 180D;
             radiansEnd = (angleStart + degrees) * Math.PI / 180D;
         }
 
         public RGB Calculate(double x, double y)
         {
-            var radians = CalculateRadians(x, y);
+            var radians = CalculateRadians(x - centerX, y - centerY);
 
             if (radians < radiansStart && (radiansEnd < TWO_PI || radians + TWO_PI > radiansEnd))
             {

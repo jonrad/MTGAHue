@@ -10,84 +10,115 @@ namespace LightsApi.Specs.LightSources
 
         static RGB[] results;
 
-        Because of = () =>
-            results = new[]
-            {
-                subject.Calculate(1, 1),
-                subject.Calculate(-1, 1),
-                subject.Calculate(-1, -1),
-                subject.Calculate(1, -1),
-            };
-
-        class when_angle_does_not_cross_360
+        class from_center
         {
+            Because of = () =>
+                results = new[]
+                {
+                    subject.Calculate(1, 1),
+                    subject.Calculate(-1, 1),
+                    subject.Calculate(-1, -1),
+                    subject.Calculate(1, -1),
+                };
 
-            class in_first_quadrant
+            class when_angle_does_not_cross_360
+            {
+
+                class in_first_quadrant
+                {
+                    Establish context = () =>
+                        subject = new AngleFilterLightSource(
+                            new SolidLightSource(RGB.Red),
+                            0,
+                            0,
+                            0,
+                            90);
+
+                    It should_match_quadrants = () =>
+                        results.ShouldEqual(new[]
+                        {
+                            RGB.Red,
+                            RGB.Black,
+                            RGB.Black,
+                            RGB.Black
+                        });
+                }
+
+                class in_second_quadrant
+                {
+                    Establish context = () =>
+                        subject = new AngleFilterLightSource(
+                            new SolidLightSource(RGB.Red),
+                            0,
+                            0,
+                            90,
+                            90);
+
+                    It should_match_quadrants = () =>
+                        results.ShouldEqual(new[]
+                        {
+                            RGB.Black,
+                            RGB.Red,
+                            RGB.Black,
+                            RGB.Black
+                        });
+                }
+
+                class in_third_quadrant
+                {
+                    Establish context = () =>
+                        subject = new AngleFilterLightSource(
+                            new SolidLightSource(RGB.Red),
+                            0,
+                            0,
+                            180,
+                            90);
+
+                    It should_match_quadrants = () =>
+                        results.ShouldEqual(new[]
+                        {
+                            RGB.Black,
+                            RGB.Black,
+                            RGB.Red,
+                            RGB.Black
+                        });
+                }
+
+                class in_fourth_quadrant
+                {
+                    Establish context = () =>
+                        subject = new AngleFilterLightSource(
+                            new SolidLightSource(RGB.Red),
+                            0,
+                            0,
+                            270,
+                            90);
+
+                    It should_match_quadrants = () =>
+                        results.ShouldEqual(new[]
+                        {
+                            RGB.Black,
+                            RGB.Black,
+                            RGB.Black,
+                            RGB.Red
+                        });
+                }
+            }
+
+            class when_angle_crosses_360
             {
                 Establish context = () =>
                     subject = new AngleFilterLightSource(
                         new SolidLightSource(RGB.Red),
                         0,
-                        90);
-
-                It should_match_quadrants = () =>
-                    results.ShouldEqual(new[]
-                    {
-                        RGB.Red,
-                        RGB.Black,
-                        RGB.Black,
-                        RGB.Black
-                    });
-            }
-
-            class in_second_quadrant
-            {
-                Establish context = () =>
-                    subject = new AngleFilterLightSource(
-                        new SolidLightSource(RGB.Red),
-                        90,
-                        90);
-
-                It should_match_quadrants = () =>
-                    results.ShouldEqual(new[]
-                    {
-                        RGB.Black,
-                        RGB.Red,
-                        RGB.Black,
-                        RGB.Black
-                    });
-            }
-
-            class in_third_quadrant
-            {
-                Establish context = () =>
-                    subject = new AngleFilterLightSource(
-                        new SolidLightSource(RGB.Red),
-                        180,
-                        90);
-
-                It should_match_quadrants = () =>
-                    results.ShouldEqual(new[]
-                    {
-                        RGB.Black,
-                        RGB.Black,
-                        RGB.Red,
-                        RGB.Black
-                    });
-            }
-
-            class in_fourth_quadrant
-            {
-                Establish context = () =>
-                    subject = new AngleFilterLightSource(
-                        new SolidLightSource(RGB.Red),
+                        0,
                         270,
-                        90);
+                        180);
 
                 It should_match_quadrants = () =>
                     results.ShouldEqual(new[]
                     {
-                        RGB.Black,
+                        RGB.Red,
                         RGB.Black,
                         RGB.Black,
                         RGB.Red
@@ -95,19 +126,28 @@ namespace LightsApi.Specs.LightSources
             }
         }
 
-        class when_angle_crosses_360
+        class when_angle_is_not_centered
         {
             Establish context = () =>
                 subject = new AngleFilterLightSource(
-                    new SolidLightSource(RGB.Red),
-                    270,
-                    180);
+                    new SolidCircleLightSource(RGB.Red, -1, 0, 1),
+                    -1,
+                    0,
+                    0,
+                    90);
 
-            It should_match_quadrants = () =>
+            Because of = () =>
+            {
+                results = new[]
+                {
+                    subject.Calculate(0, 1),
+                    subject.Calculate(-1, 1)
+                };
+            };
+
+            It should_calcuate_based_on_angles = () =>
                 results.ShouldEqual(new[]
                 {
-                    RGB.Red,
-                    RGB.Black,
                     RGB.Black,
                     RGB.Red
                 });

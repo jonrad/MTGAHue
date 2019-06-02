@@ -28,14 +28,20 @@ namespace LightsApi.WinForms
             var lightSource = new LayeredLightSource(
                 new AngleFilterLightSource(
                     new FadedCircleLightSource(RGB.Red, 0, 0, .5, .25),
+                    0,
+                    0,
                     20,
                     100),
                 new AngleFilterLightSource(
                     new FadedCircleLightSource(RGB.Green, 0, 0, .5, .25),
+                    0,
+                    0,
                     120,
                     120),
                 new AngleFilterLightSource(
                     new FadedCircleLightSource(RGB.Blue, 0, 0, .5, .25),
+                    0,
+                    0,
                     240,
                     140)
                 );
