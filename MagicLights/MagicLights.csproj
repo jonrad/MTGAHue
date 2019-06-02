@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LightsApi.Chroma\LightsApi.Chroma.csproj" />
+    <ProjectReference Include="..\LightsApi.Cue\LightsApi.Cue.csproj" />
     <ProjectReference Include="..\LightsApi.Hue\LightsApi.Hue.csproj" />
     <ProjectReference Include="..\LightsApi\LightsApi.csproj" />
     <ProjectReference Include="..\MTGADispatcher\MTGADispatcher.csproj" />

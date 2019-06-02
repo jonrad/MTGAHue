@@ -6,6 +6,11 @@ using System.IO;
 using System.Threading.Tasks;
 using Castle.MicroKernel.Registration;
 using static System.Environment;
+using CUE.NET;
+using System.Drawing;
+using CUE.NET.Brushes;
+using CUE.NET.Groups;
+using CUE.NET.Gradients;
 
 namespace MagicLights.Console
 {
@@ -50,6 +55,7 @@ namespace MagicLights.Console
 
             installers.Add(new HueInstaller());
             installers.Add(new ChromaInstaller());
+            installers.Add(new CueInstaller());
 
             using (var container = new WindsorContainer())
             {

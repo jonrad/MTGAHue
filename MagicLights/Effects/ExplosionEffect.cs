@@ -10,7 +10,7 @@ using System.Linq;
 namespace MagicLights.Effects
 {
     public class ExplosionEffect
-        : IEffect<CastSpell>
+        : IEffect<CastSpell>, IEffect<PlayLand>
     {
         private Dictionary<MagicColor, RGB> colorMap = new Dictionary<MagicColor, RGB>
         {
@@ -28,10 +28,12 @@ namespace MagicLights.Effects
             this.speedMs = speedMs;
         }
 
-        public ITransition? OnMagicEvent(CastSpell magicEvent)
+        public EffectMode Mode { get; } = EffectMode.Concurrent;
+
+        public ITransition? OnMagicEvent(Instance instance)
         {
             var startAngle = 270;
-            var colors = magicEvent.Instance.Colors.Select(c => colorMap[c]).ToArray();
+            var colors = instance.Colors.Select(c => colorMap[c]).ToArray();
             if (colors.Length == 0)
             {
                 return null;
@@ -70,6 +72,16 @@ namespace MagicLights.Effects
             }
 
             return new CompositeTransition(BuildTransitions().ToArray());
+        }
+
+        public ITransition? OnMagicEvent(CastSpell magicEvent)
+        {
+            return OnMagicEvent(magicEvent.Instance);
+        }
+
+        public ITransition? OnMagicEvent(PlayLand magicEvent)
+        {
+            return OnMagicEvent(magicEvent.Instance);
         }
     }
 }

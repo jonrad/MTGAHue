@@ -19,7 +19,7 @@
     },
     {
       "id": "chroma",
-      "enabled": true,
+      "enabled": false,
 
       "config": {
         "Columns": 16
@@ -37,5 +37,33 @@
         }
       ]
     },
+    {
+      "id": "cue",
+      "enabled": false,
+
+      "config": {
+      },
+
+      "events": [
+        {
+          "id": "CastSpell",
+          "effect": {
+            "id": "explosion",
+            "config": {
+              "speedMs": 1000
+            }
+          }
+        },
+        {
+          "id": "PlayLand",
+          "effect": {
+            "id": "explosion",
+            "config": {
+              "speedMs": 200
+            }
+          }
+        }
+      ]
+    }
   ]
 }

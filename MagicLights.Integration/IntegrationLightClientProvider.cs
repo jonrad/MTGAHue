@@ -7,9 +7,9 @@ namespace MagicLights.Integration
 {
     public class IntegrationLightClientProvider : ILightClientProvider
     {
-        public IntegrationLightClientProvider()
+        public IntegrationLightClientProvider(IntegrationLightClient lightClient)
         {
-            LightClient = new IntegrationLightClient();
+            LightClient = lightClient;
         }
 
         public string Id => "integration";
@@ -25,21 +25,6 @@ namespace MagicLights.Integration
 
         public void Dispose()
         {
-        }
-
-        public class IntegrationLightClient : ILightClient
-        {
-            public IntegrationLightClient()
-            {
-                LightLayout = new IntegrationLightLayout();
-            }
-
-            public IntegrationLightLayout LightLayout { get; }
-
-            public Task<ILightLayout> GetLayout()
-            {
-                return Task.FromResult<ILightLayout>(LightLayout);
-            }
         }
     }
 }

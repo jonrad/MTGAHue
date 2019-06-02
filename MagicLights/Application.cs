@@ -1,10 +1,8 @@
 ﻿using MTGADispatcher;
-using System;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.IO;
 using MagicLights.Configuration.Models;
-using System.Threading;
 
 namespace MagicLights
 {

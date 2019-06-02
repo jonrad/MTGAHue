@@ -1,4 +1,6 @@
-﻿using Xunit;
+﻿using LightsApi;
+using System.Threading;
+using Xunit;
 
 namespace MagicLights.Integration.Features
 {
@@ -15,8 +17,13 @@ namespace MagicLights.Integration.Features
             application.WriteContents(@"SimpleSpell.txt");
             application.WaitForGameEnd();
 
-            Assert.NotNull(
-                application.LightLayout.LastLightSource);
+            //TODO: this is a big bag of nope
+            //Need to inject the delayable of 0
+            Thread.Sleep(500);
+
+            Assert.Equal(
+                RGB.White,
+                application.LightClient.LastColors?[0]);
         }
     }
 }

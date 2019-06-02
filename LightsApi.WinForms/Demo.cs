@@ -1,15 +1,15 @@
 ﻿using LightsApi.LightSources;
+using LightsApi.Transitions;
 using System;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace LightsApi.WinForms
 {
     public partial class Demo : Form
     {
-        private GraphicsLightLayout layout;
+        private GraphicsLightClient client;
 
-        private Task transition;
+        private ILights lights;
 
         public Demo()
         {
@@ -20,12 +20,7 @@ namespace LightsApi.WinForms
 
         private void Demo_Disposed(object sender, EventArgs e)
         {
-            if (transition != null)
-            {
-                transition.Wait();
-            }
-
-            layout.Dispose();
+            lights.Stop();
         }
 
         private void Button1_Click(object sender, EventArgs e)
@@ -45,12 +40,17 @@ namespace LightsApi.WinForms
                     140)
                 );
 
-            transition = layout.Transition(lightSource, TimeSpan.FromMilliseconds(10));
+            var layout = lights.AddLayout();
+            new LightSourceTransition(lightSource, 2000).Transition(layout)
+                .ContinueWith(c => lights.RemoveLayout(layout));
         }
 
         private void Demo_Load(object sender, EventArgs e)
         {
-            layout = new GraphicsLightLayout(pictureBox1.CreateGraphics());
+            client = new GraphicsLightClient(pictureBox1.CreateGraphics(), 100);
+            lights = new Lights(client);
+
+            lights.Start();
         }
     }
 }

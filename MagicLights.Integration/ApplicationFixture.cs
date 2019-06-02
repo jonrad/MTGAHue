@@ -15,6 +15,8 @@ namespace MagicLights.Integration
     {
         private readonly LineReaderProxy lineReader;
 
+        public IntegrationLightClient LightClient { get; private set; }
+
         public ApplicationFixture()
         {
             Game = new Game();
@@ -36,10 +38,6 @@ namespace MagicLights.Integration
 
             var application = Container.Resolve<Application>();
 
-            LightLayout = Container.Resolve<IntegrationLightClientProvider>()
-                .LightClient
-                .LightLayout;
-
             lineReader = (LineReaderProxy)Container.Resolve<ILineReader>();
             application.Run(new Config()
             {
@@ -56,20 +54,20 @@ namespace MagicLights.Integration
                                 Id = "CastSpell",
                                 Effect = new EffectConfiguration
                                 {
-                                    Id = "flash"
+                                    Id = "solid"
                                 }
                             }
                         }
                     }
                 }
             }).Wait();
+
+            LightClient = Container.Resolve<IntegrationLightClient>();
         }
 
         public Game Game { get; }
 
         public WindsorContainer Container { get; }
-
-        public IntegrationLightLayout LightLayout { get; }
 
         public void Dispose()
         {
