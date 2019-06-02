@@ -1,7 +1,6 @@
 ﻿using LightsApi;
 using LightsApi.LightSources;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace MagicLights.LightSources
@@ -13,7 +12,7 @@ namespace MagicLights.LightSources
     // Then each side has one or more colors. If we imagine the light coming from the LINE of where the player sits
     // (Eg for Opponent where Y = 1 or for the player Y = -1)
     // We can color that line based on the colors specified (For a single color it would be just a line of that color,
-    // for two colors we'd split the line where the left is the first color, the right is the second color, 
+    // for two colors we'd split the line where the left is the first color, the right is the second color,
     // and the middle is a mix of the two, etc). As we get closer to the middle, the brightness gets lower
     // until the middle where it's dull
     public class ArenaLightSource : ILightSource
@@ -41,7 +40,7 @@ namespace MagicLights.LightSources
 
                 var areaLightSourceRadius = 2D / colors.Length;
 
-                var areaLightSources = 
+                var areaLightSources =
                     colors.Select((color, i) =>
                     {
                         var position = -1D + step * (i + 1);

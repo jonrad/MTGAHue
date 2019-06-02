@@ -1,6 +1,6 @@
 ﻿using MTGADispatcher.Events;
 
-namespace MTGADispatcher.Integration
+namespace MagicLights.Integration
 {
     public class GameEnded : IMagicEvent
     {

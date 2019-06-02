@@ -60,7 +60,7 @@ namespace MTGADispatcher
 
             reader = new StreamReader(stream, Encoding.UTF8, true, 1024, false);
         }
- 
+
         public void Dispose()
         {
             reader?.Close();

@@ -1,9 +1,9 @@
 ﻿using LightsApi;
-using MTGADispatcher;
-using MTGADispatcher.Events;
 using MagicLights.Configuration.Models;
 using MagicLights.Effects;
 using MagicLights.LightClients;
+using MTGADispatcher;
+using MTGADispatcher.Events;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -39,7 +39,7 @@ namespace MagicLights
         {
             var clients = await BuildClients(
                 configuration.LightClients ?? new LightClientConfiguration[0]);
-            
+
             foreach (var client in clients)
             {
                 client.Start();
@@ -89,7 +89,7 @@ namespace MagicLights
 
             var lights = new Lights(client);
 
-            foreach (var eventConfiguration in 
+            foreach (var eventConfiguration in
                 lightClientConfiguration.Events ?? Enumerable.Empty<EventConfiguration>())
             {
                 var eventId = eventConfiguration.Id;

@@ -1,8 +1,7 @@
-﻿using Castle.Windsor;
-using MTGADispatcher;
+﻿using Castle.Facilities.Startable;
 using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Configuration;
-using Castle.Facilities.Startable;
+using Castle.Windsor;
 
 namespace MagicLights
 {
@@ -12,8 +11,8 @@ namespace MagicLights
         {
             container.Register(
                 Component.For<Debugger>().Start());
-                    //.ImplementedBy<Debugger>()
-                    //.Start());
+            //.ImplementedBy<Debugger>()
+            //.Start());
         }
     }
 }

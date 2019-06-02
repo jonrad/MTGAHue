@@ -1,13 +1,13 @@
-﻿using Castle.Windsor;
+﻿using Castle.Facilities.TypedFactory;
+using Castle.MicroKernel;
 using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Configuration;
-using Castle.Facilities.TypedFactory;
-using MTGADispatcher.Events;
-using System.Reflection;
+using Castle.Windsor;
 using MagicLights.Effects;
-using Castle.MicroKernel;
-using System;
+using MTGADispatcher.Events;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Reflection;
 
 namespace MagicLights
 {

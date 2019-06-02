@@ -92,7 +92,7 @@ namespace MTGADispatcher
                 return null;
             }
 
-            if (line.StartsWith("[UnityCrossThreadLogger]") || line.StartsWith("[Client GRE]")) 
+            if (line.StartsWith("[UnityCrossThreadLogger]") || line.StartsWith("[Client GRE]"))
             {
                 blockBuilder.Clear();
                 blockBuilder.Append(line);

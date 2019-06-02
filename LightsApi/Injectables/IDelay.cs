@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace LightsApi
+namespace LightsApi.Injectables
 {
     public interface IDelay
     {

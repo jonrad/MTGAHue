@@ -1,7 +1,7 @@
-﻿using System;
+﻿using MTGADispatcher;
+using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
-using MTGADispatcher;
 
 namespace MagicLights.Integration
 {

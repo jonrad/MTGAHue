@@ -6,7 +6,7 @@ namespace MagicLights.Integration.Features
 {
     public class CastSpellFeature : BaseFeature
     {
-        public CastSpellFeature(ApplicationFixture application) 
+        public CastSpellFeature(ApplicationFixture application)
             : base(application)
         {
         }

@@ -15,7 +15,7 @@ namespace MTGADispatcher.Integration.Features
 
             Assert.Collection(
                 fixture.SpellsCast,
-                s => 
+                s =>
                 {
                     Assert.Equal(s.Instance.Colors.OrderBy(c => c), new[] { MagicColor.Black, MagicColor.White });
                 });

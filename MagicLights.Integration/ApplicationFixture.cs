@@ -2,7 +2,6 @@
 using Castle.Windsor;
 using MagicLights.Configuration.Models;
 using MTGADispatcher;
-using MTGADispatcher.Integration;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -99,7 +98,7 @@ namespace MagicLights.Integration
             var assembly = Assembly.GetAssembly(GetType());
             var assemblyName = assembly.GetName().Name;
 
-            using (var stream = 
+            using (var stream =
                 assembly.GetManifestResourceStream($"{assemblyName}.Games.{resourceName}"))
             {
                 using (var reader = new StreamReader(stream))
