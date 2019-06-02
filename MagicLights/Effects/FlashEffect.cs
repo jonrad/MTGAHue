@@ -20,6 +20,8 @@ namespace MagicLights.Effects
             [MagicColor.Blue] = new RGB(0, 0, 255)
         };
 
+        public EffectMode Mode { get; } = EffectMode.Single;
+
         public ITransition? OnMagicEvent(CastSpell magicEvent)
         {
             var colors = magicEvent.Instance.Colors;

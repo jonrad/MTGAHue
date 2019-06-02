@@ -53,6 +53,15 @@
               "speedMs": 1000
             }
           }
+        },
+        {
+          "id": "PlayLand",
+          "effect": {
+            "id": "explosion",
+            "config": {
+              "speedMs": 200
+            }
+          }
         }
       ]
     }

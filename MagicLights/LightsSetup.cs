@@ -127,12 +127,30 @@ namespace MagicLights
                 effectConfiguration.Id,
                 effectConfiguration.Config);
 
-            var performer = new EffectPerformer<T>(
-                lights,
-                effect);
+            var performer = BuildPerformer(lights, effect);
 
             game.Events.Subscriptions.Subscribe<T>(
                 performer.Perform);
+        }
+
+        private IEffectPerformer<T> BuildPerformer<T>(Lights lights, IEffect<T> effect)
+            where T : IMagicEvent
+        {
+            // this will likely need to be updated to not be a giant case statement
+            if (effect.Mode == EffectMode.Concurrent)
+            {
+                return new ConcurrentEffectPerformer<T>(
+                    lights,
+                    effect);
+            }
+            else if (effect.Mode == EffectMode.Single)
+            {
+                return new SingleEffectPerformer<T>(
+                    lights,
+                    effect);
+            }
+
+            throw new NotImplementedException($"What is {effect.Mode}");
         }
 
         private object BuildClientArgs(

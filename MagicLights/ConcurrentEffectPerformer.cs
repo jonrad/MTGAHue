@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace MagicLights
 {
-    public class EffectPerformer<T>
+    public class ConcurrentEffectPerformer<T> : IEffectPerformer<T>
         where T : IMagicEvent
     {
         private readonly ILights lights;
 
         private readonly IEffect<T> effect;
 
-        public EffectPerformer(
+        public ConcurrentEffectPerformer(
             ILights lights,
             IEffect<T> effect)
         {
@@ -30,7 +30,7 @@ namespace MagicLights
                 return;
             }
 
-            RunTransition(transition);
+            _ = RunTransition(transition);
         }
 
         private async Task RunTransition(ITransition transition)

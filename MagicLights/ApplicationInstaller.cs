@@ -20,13 +20,16 @@ namespace MagicLights
             container.Register(
                 Component.For<IEffect<CastSpell>>()
                     .ImplementedBy<FlashEffect>()
-                    .Named("flash"),
+                    .Named("flash")
+                    .LifestyleTransient(),
                 Component.For<IEffect<CastSpell>>()
                     .ImplementedBy<MultiColorFlash>()
-                    .Named("multiflash"),
+                    .Named("multiflash")
+                    .LifestyleTransient(),
                 Component.For<IEffect<CastSpell>>()
                     .ImplementedBy<ExplosionEffect>()
-                    .Named("explosion"),
+                    .Named("explosion")
+                    .LifestyleTransient(),
 
                 Component.For<IEffectFactory>().AsFactory(f =>
                     f.SelectedWith(new NamedCustomSelector())),
