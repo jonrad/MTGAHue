@@ -4,7 +4,7 @@ using MTGADispatcher.Events;
 using System;
 using System.Threading;
 
-namespace MagicLights
+namespace MagicLights.Effects
 {
     public class SingleEffectPerformer<T> : IEffectPerformer<T>
         where T : IMagicEvent

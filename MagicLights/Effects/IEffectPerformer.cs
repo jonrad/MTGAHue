@@ -1,6 +1,6 @@
 ﻿using MTGADispatcher.Events;
 
-namespace MagicLights
+namespace MagicLights.Effects
 {
     public interface IEffectPerformer<T>
         where T : IMagicEvent
