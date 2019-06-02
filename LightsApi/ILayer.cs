@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace LightsApi
 {
-    public interface ILightLayout
+    public interface ILayer
     {
         RGB[] Colors { get; }
 

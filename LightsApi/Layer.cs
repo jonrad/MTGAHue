@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace LightsApi
 {
-    public class LightLayout : ILightLayout
+    public class Layer : ILayer
     {
         private readonly IStopwatchBuilder stopwatchBuilder;
 
@@ -17,7 +17,7 @@ namespace LightsApi
 
         private readonly int msPerTransition;
 
-        public LightLayout(
+        public Layer(
             IStopwatchBuilder stopwatchBuilder,
             IDelay delay,
             Position[] positions,
@@ -30,7 +30,7 @@ namespace LightsApi
             Colors = positions.Select(_ => RGB.Black).ToArray();
         }
 
-        public LightLayout(Position[] positions, TimeSpan transitionDelay)
+        public Layer(Position[] positions, TimeSpan transitionDelay)
             : this(new StopwatchBuilder(), new Delay(), positions, transitionDelay)
         {
         }

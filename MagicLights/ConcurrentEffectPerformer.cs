@@ -35,9 +35,9 @@ namespace MagicLights
 
         private async Task RunTransition(ITransition transition)
         {
-            var layout = lights.AddLayout();
-            await transition.Transition(layout);
-            lights.RemoveLayout(layout);
+            var layer = lights.AddLayer();
+            await transition.Transition(layer);
+            lights.RemoveLayer(layer);
         }
     }
 }

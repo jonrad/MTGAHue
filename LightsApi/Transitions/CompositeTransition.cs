@@ -12,7 +12,7 @@ namespace LightsApi.Transitions
             this.transitions = transitions;
         }
 
-        public async Task Transition(ILightLayout lightLayout, CancellationToken token = default)
+        public async Task Transition(ILayer layer, CancellationToken token = default)
         {
             foreach (var transition in transitions)
             {
@@ -21,7 +21,7 @@ namespace LightsApi.Transitions
                     return;
                 }
 
-                await transition.Transition(lightLayout, token);
+                await transition.Transition(layer, token);
             }
         }
     }

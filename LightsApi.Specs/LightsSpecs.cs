@@ -19,7 +19,7 @@ namespace LightsApi.Specs
             subject = new Lights(The<IDelay>(), The<ILayerBuilder>(), The<ILightClient>(), TimeSpan.FromMilliseconds(1));
 
             The<ILayerBuilder>().WhenToldTo(l => l.Build(Param.IsAny<Position[]>(), Param.IsAny<TimeSpan>()))
-                .Return(() => An<ILightLayout>());
+                .Return(() => An<ILayer>());
 
             The<ILightClient>().WhenToldTo(c => c.Lights).Return(new[]
             {
@@ -60,7 +60,7 @@ namespace LightsApi.Specs
             {
                 Establish context = () =>
                 {
-                    var layer = subject.AddLayout();
+                    var layer = subject.AddLayer();
                     layer.WhenToldTo(l => l.Colors).Return(new[] { RGB.Red });
                 };
 
@@ -92,10 +92,10 @@ namespace LightsApi.Specs
                             }
                         });
 
-                    var layer = subject.AddLayout();
+                    var layer = subject.AddLayer();
                     layer.WhenToldTo(l => l.Colors).Return(new[] { RGB.Red });
 
-                    layer = subject.AddLayout();
+                    layer = subject.AddLayer();
                     layer.WhenToldTo(l => l.Colors).Return(new[] { RGB.Blue });
 
                     setupComplete.SetResult(true);

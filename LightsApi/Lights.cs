@@ -8,12 +8,12 @@ namespace LightsApi
 {
     public class Lights : ILights
     {
-        private readonly object layoutSync = new object();
+        private readonly object layerSync = new object();
 
-        private readonly AutoResetEvent layoutsExistEvent =
+        private readonly AutoResetEvent layersExistEvent =
             new AutoResetEvent(false);
 
-        private ILightLayout[] layouts = new ILightLayout[0];
+        private ILayer[] layers = new ILayer[0];
 
         private readonly IDelay delayProvider;
 
@@ -47,30 +47,30 @@ namespace LightsApi
         {
         }
 
-        public ILightLayout AddLayout()
+        public ILayer AddLayer()
         {
-            var layout = layerBuilder.Build(
+            var layer = layerBuilder.Build(
                 lightClient.Lights.ToArray(),
                 TimeSpan.FromMilliseconds(50));
 
-            lock (layoutSync)
+            lock (layerSync)
             {
-                var newLayouts = new ILightLayout[layouts.Length + 1];
-                Array.Copy(layouts, newLayouts, layouts.Length);
-                newLayouts[layouts.Length] = layout;
-                layouts = newLayouts;
-                layoutsExistEvent.Set();
+                var newLayers = new ILayer[layers.Length + 1];
+                Array.Copy(layers, newLayers, layers.Length);
+                newLayers[layers.Length] = layer;
+                layers = newLayers;
+                layersExistEvent.Set();
             }
 
-            return layout;
+            return layer;
         }
 
-        public void RemoveLayout(ILightLayout layout)
+        public void RemoveLayer(ILayer layer)
         {
-            lock (layoutSync)
+            lock (layerSync)
             {
                 //note this assumes small amount of layers
-                layouts = layouts.Where(l => l != layout).ToArray();
+                layers = layers.Where(l => l != layer).ToArray();
             }
         }
 
@@ -80,13 +80,13 @@ namespace LightsApi
             {
                 while (!token.IsCancellationRequested)
                 {
-                    var currentLayouts = layouts;
+                    var currentLayers = layers;
 
-                    while (currentLayouts.Length == 0)
+                    while (currentLayers.Length == 0)
                     {
                         WaitHandle.WaitAny(new[]
                         {
-                            layoutsExistEvent,
+                            layersExistEvent,
                             token.WaitHandle
                         });
 
@@ -95,10 +95,10 @@ namespace LightsApi
                             return;
                         }
 
-                        currentLayouts = layouts;
+                        currentLayers = layers;
                     }
 
-                    var colors = currentLayouts
+                    var colors = currentLayers
                         .Select(l => l.Colors)
                         .Aggregate((colors1, colors2) =>
                         {

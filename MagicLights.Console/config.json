@@ -39,7 +39,7 @@
     },
     {
       "id": "cue",
-      "enabled": false,
+      "enabled": true,
 
       "config": {
       },

@@ -20,10 +20,10 @@ namespace LightsApi.Specs.Transitions
         class when_transitioning
         {
             Because of = () =>
-                result = subject.Transition(The<ILightLayout>());
+                result = subject.Transition(The<ILayer>());
 
-            It told_light_layout_to_transition = () =>
-                The<ILightLayout>().WasToldTo(l => l.Transition(The<ILightSource>(), TimeSpan.FromMilliseconds(100), default));
+            It told_light_layer_to_transition = () =>
+                The<ILayer>().WasToldTo(l => l.Transition(The<ILightSource>(), TimeSpan.FromMilliseconds(100), default));
         }
     }
 }

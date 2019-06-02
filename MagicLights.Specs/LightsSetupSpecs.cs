@@ -140,8 +140,8 @@ namespace MagicLights.Specs
                     //Is there a race condition here...?
                     The<IEffect<CastSpell>>().WasToldTo(e => e.OnMagicEvent(Param.IsAny<CastSpell>()));
 
-                It told_transitioned_layout = () =>
-                    The<ITransition>().WasToldTo(l => l.Transition(Param.IsAny<ILightLayout>(), Param.IsAny<CancellationToken>()));
+                It told_transitioned_layer = () =>
+                    The<ITransition>().WasToldTo(l => l.Transition(Param.IsAny<ILayer>(), Param.IsAny<CancellationToken>()));
             }
         }
 
