@@ -3,18 +3,18 @@ Integrate MTG Arena with Philips Hue Lights
 
 ![Demo](Docs/demo.gif)
 
-## Current Limitations
+## To-do:
 
-*Things I plan on updating*
-* No UI. Everything is from the command line
-* Only flashes a single color (No multi color card support. Just uses the first color)
+* No UI. Customization is done using the `config.json` file
 * No artifact support
-* No customization whatsoever
+* A base effect based on the current state of the game (Eg. Make the keyboard show life totals?)
 
 ## Other Related Projects
 
 [MTGA Tracker](https://mtgatracker.com/) - MTG Arena Deck/Game Tracker application. A lot of logic was borrowed from here
 
-[Q42.HueApi](https://github.com/Q42/Q42.HueApi) - Philips Hue API used in this project
+[Q42.HueApi](https://github.com/Q42/Q42.HueApi) - Philips Hue API
 
 [Colore](https://github.com/chroma-sdk/Colore/) - Razer Chroma SDK
+
+[CUE.Net](https://github.com/DarthAffe/CUE.NET) - Corsair CUE SDK
