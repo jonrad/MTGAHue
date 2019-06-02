@@ -91,7 +91,6 @@ namespace LightsApi.Specs
             }
         }
 
-        // in case I change this to a class :)
         class when_comparing
         {
             static bool result;
@@ -131,6 +130,15 @@ namespace LightsApi.Specs
 
                 It multiplied = () =>
                     result.ShouldEqual(new RGB(4, 8, 12));
+            }
+
+            class when_adding
+            {
+                Because of = () =>
+                    result = subject + new RGB(1, 10, 0);
+
+                It took_largest_values = () =>
+                    result.ShouldEqual(new RGB(2, 10, 6));
             }
         }
     }

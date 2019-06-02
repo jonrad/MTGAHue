@@ -7,12 +7,16 @@ namespace LightsApi
 {
     public class Lights : ILights
     {
-        private readonly object syncObject = new object();
+        private readonly object layoutSync = new object();
 
         private readonly AutoResetEvent layoutsExistEvent =
             new AutoResetEvent(false);
 
-        private LightLayout[] layouts = new LightLayout[0];
+        private ILightLayout[] layouts = new ILightLayout[0];
+
+        private readonly IDelay delayProvider;
+
+        private readonly ILayerBuilder layerBuilder;
 
         private readonly ILightClient lightClient;
 
@@ -23,19 +27,34 @@ namespace LightsApi
 
         private Task? mainLoop = null;
 
-        public Lights(ILightClient lightClient, TimeSpan? delay = null)
+        public Lights(
+            IDelay delayProvider,
+            ILayerBuilder layerBuilder,
+            ILightClient lightClient,
+            TimeSpan? delay = null)
         {
+            this.delayProvider = delayProvider;
+            this.layerBuilder = layerBuilder;
             this.lightClient = lightClient;
             this.delay = delay ?? TimeSpan.FromMilliseconds(50);
         }
 
+        public Lights(
+            ILightClient lightClient,
+            TimeSpan? delay = null)
+            : this(new Delay(), new LayerBuilder(), lightClient, delay)
+        {
+        }
+
         public ILightLayout AddLayout()
         {
-            var layout = new LightLayout(lightClient.Lights.ToArray(), 50);
+            var layout = layerBuilder.Build(
+                lightClient.Lights.ToArray(),
+                TimeSpan.FromMilliseconds(50));
 
-            lock (syncObject)
+            lock (layoutSync)
             {
-                var newLayouts = new LightLayout[layouts.Length + 1];
+                var newLayouts = new ILightLayout[layouts.Length + 1];
                 Array.Copy(layouts, newLayouts, layouts.Length);
                 newLayouts[layouts.Length] = layout;
                 layouts = newLayouts;
@@ -47,8 +66,9 @@ namespace LightsApi
 
         public void RemoveLayout(ILightLayout layout)
         {
-            lock (syncObject)
+            lock (layoutSync)
             {
+                //note this assumes small amount of layers
                 layouts = layouts.Where(l => l != layout).ToArray();
             }
         }
@@ -63,7 +83,17 @@ namespace LightsApi
 
                     while (currentLayouts.Length == 0)
                     {
-                        layoutsExistEvent.WaitOne();
+                        WaitHandle.WaitAny(new[]
+                        {
+                            layoutsExistEvent,
+                            token.WaitHandle
+                        });
+
+                        if (token.IsCancellationRequested)
+                        {
+                            return;
+                        }
+
                         currentLayouts = layouts;
                     }
 
@@ -77,7 +107,7 @@ namespace LightsApi
                     await Task.WhenAll(new[]
                     {
                         lightClient.SetColors(colors, token),
-                        Task.Delay(delay, token)
+                        delayProvider.Wait(delay, token)
                     });
                 };
             }, TaskCreationOptions.LongRunning);

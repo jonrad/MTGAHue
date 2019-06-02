@@ -41,6 +41,7 @@ namespace LightsApi.Chroma
             return keyboard.SetCustomAsync(nextColors);
         }
 
+        //TODO move to factory
         private IEnumerable<KeyboardPosition> CalculatePositions(int columnCount, int rowCount)
         {
             var keyboardColumnStep = 2f / columnCount;

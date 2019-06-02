@@ -1,6 +1,5 @@
 ﻿using LightsApi.LightSources;
 using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -9,15 +8,30 @@ namespace LightsApi
 {
     public class LightLayout : ILightLayout
     {
+        private readonly IStopwatchBuilder stopwatchBuilder;
+
+        private readonly IDelay delay;
+
         private readonly Position[] positions;
 
         private readonly int msPerTransition;
 
-        public LightLayout(Position[] positions, int msPerTransition)
+        public LightLayout(
+            IStopwatchBuilder stopwatchBuilder,
+            IDelay delay,
+            Position[] positions,
+            TimeSpan transitionDelay)
         {
+            this.stopwatchBuilder = stopwatchBuilder;
+            this.delay = delay;
             this.positions = positions;
-            this.msPerTransition = msPerTransition;
+            this.msPerTransition = (int)transitionDelay.TotalMilliseconds;
             Colors = positions.Select(_ => RGB.Black).ToArray();
+        }
+
+        public LightLayout(Position[] positions, TimeSpan transitionDelay)
+            : this(new StopwatchBuilder(), new Delay(), positions, transitionDelay)
+        {
         }
 
         public RGB[] Colors { get; private set; }
@@ -38,12 +52,11 @@ namespace LightsApi
                 endingColors[i] = lightSource.Calculate(position.X, position.Y);
             }
 
-            var stopwatch = Stopwatch.StartNew();
+            var stopwatch = stopwatchBuilder.StartNew();
 
             long elapsed;
             while (!token.IsCancellationRequested && (elapsed = stopwatch.ElapsedMilliseconds) < totalMilliseconds)
             {
-
                 var nextColors = new RGB[colorCount];
                 var percentage = (float)(elapsed / totalMilliseconds);
 
@@ -60,14 +73,17 @@ namespace LightsApi
                     nextColors[i] = rgb;
                 }
 
-                var delay = Math.Min(msPerTransition, totalMilliseconds - elapsed);
+                var delayMs = Math.Min(msPerTransition, totalMilliseconds - elapsed);
 
                 Colors = nextColors;
 
-                await Task.Delay(TimeSpan.FromMilliseconds(delay), token);
+                await delay.Wait(TimeSpan.FromMilliseconds(delayMs), token);
             }
 
-            Colors = endingColors;
+            if (!token.IsCancellationRequested)
+            {
+                Colors = endingColors;
+            }
         }
     }
 }

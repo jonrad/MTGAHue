@@ -14,7 +14,6 @@ using CUE.NET.Gradients;
 
 namespace MagicLights.Console
 {
-
     class Program
     {
         public class Options

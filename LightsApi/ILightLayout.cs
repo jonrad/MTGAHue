@@ -7,6 +7,8 @@ namespace LightsApi
 {
     public interface ILightLayout
     {
+        RGB[] Colors { get; }
+
         Task Transition(ILightSource lightSource, TimeSpan timeSpan, CancellationToken token = default);
     }
 }

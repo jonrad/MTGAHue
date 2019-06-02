@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace LightsApi.Cue
 {
+    //TODO refactor this whole thing
     public class CueLightClient : ILightClient
     {
         private KeyboardPosition[] keyboardPositions;

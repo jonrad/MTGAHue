@@ -8,10 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="CUE.NET" Version="1.2.0.1" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\MagicLights\MagicLights.csproj" />
   </ItemGroup>
 
