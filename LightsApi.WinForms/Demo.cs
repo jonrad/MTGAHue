@@ -47,7 +47,7 @@ namespace LightsApi.WinForms
                 );
 
             var layer = lights.AddLayer();
-            new LightSourceTransition(lightSource, 2000).Transition(layer)
+            layer.Transition(new LightSourceTransition(lightSource, 2000))
                 .ContinueWith(c => lights.RemoveLayer(layer));
         }
 

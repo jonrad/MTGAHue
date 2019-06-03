@@ -47,7 +47,7 @@ namespace MagicLights.Effects
                 .Concat(new[] { new LightSourceTransition(new SolidLightSource(color * .6), new SolidLightSource(color * .3), 5000) })
                 .ToArray();
 
-            return new CompositeTransition(transitions);
+            return new SequenceTransition(transitions);
         }
     }
 }

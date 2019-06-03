@@ -48,8 +48,6 @@ namespace LightsApi
             {
                 Colors = GetColors(transition, elapsed);
 
-                Console.WriteLine(elapsed + ": " + Colors[0]);
-
                 var delayMs = Math.Min(msPerTransition, totalMilliseconds - elapsed);
 
                 await delay.Wait(TimeSpan.FromMilliseconds(delayMs), token);

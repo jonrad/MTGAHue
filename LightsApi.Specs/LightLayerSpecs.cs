@@ -1,5 +1,6 @@
 ﻿using LightsApi.Injectables;
 using LightsApi.LightSources;
+using LightsApi.Transitions;
 using Machine.Fakes;
 using Machine.Specifications;
 using System;
@@ -41,10 +42,10 @@ namespace LightsApi.Specs
 
         class when_transitioning_from_black_to_red_in_4_ms
         {
-            private static SolidLightSource lightSource;
+            static ITransition transition;
 
             Establish context = () =>
-                lightSource = new SolidLightSource(RGB.Red);
+                transition = new LightSourceTransition(new SolidLightSource(RGB.Red), 4);
 
             class second_0
             {
@@ -52,7 +53,7 @@ namespace LightsApi.Specs
                     The<IStopwatch>().WhenToldTo(s => s.ElapsedMilliseconds).Return(0);
 
                 Because of = () =>
-                    subject.Transition(lightSource, TimeSpan.FromMilliseconds(4), cancellationTokenSource.Token).Await();
+                    subject.Transition(transition, cancellationTokenSource.Token).Await();
 
                 It set_color = () =>
                     subject.Colors[0].ShouldEqual(RGB.Black);
@@ -64,7 +65,7 @@ namespace LightsApi.Specs
                     The<IStopwatch>().WhenToldTo(s => s.ElapsedMilliseconds).Return(1);
 
                 Because of = () =>
-                    subject.Transition(lightSource, TimeSpan.FromMilliseconds(4), cancellationTokenSource.Token).Await();
+                    subject.Transition(transition, cancellationTokenSource.Token).Await();
 
                 It set_color = () =>
                     subject.Colors[0].ShouldEqual(RGB.Red * (1f / 4f));
@@ -76,7 +77,7 @@ namespace LightsApi.Specs
                     The<IStopwatch>().WhenToldTo(s => s.ElapsedMilliseconds).Return(10);
 
                 Because of = () =>
-                    subject.Transition(lightSource, TimeSpan.FromMilliseconds(4), cancellationTokenSource.Token).Await();
+                    subject.Transition(transition, cancellationTokenSource.Token).Await();
 
                 It set_color = () =>
                     subject.Colors[0].ShouldEqual(RGB.Red);

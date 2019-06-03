@@ -31,9 +31,11 @@ namespace LightsApi.Transitions
             var start = previous.Calculate(x, y);
             var end = lightSource.Calculate(x, y);
 
-            var percentage = ms > totalMs 
+            var percentage = totalMs == 0 || ms > totalMs 
                 ? 1 
                 : ms / totalMs;
+
+            var r = start.R + (end.R - start.R) * percentage;
 
             return new RGB(
                 start.R + (end.R - start.R) * percentage,

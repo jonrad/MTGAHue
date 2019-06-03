@@ -1,5 +1,4 @@
 ﻿using LightsApi;
-using LightsApi.LightSources;
 using LightsApi.Transitions;
 using MTGADispatcher;
 using MTGADispatcher.Events;
@@ -32,50 +31,28 @@ namespace MagicLights.Effects
 
         public ITransition? OnMagicEvent(Instance instance)
         {
-            var centerX = 0;
-            var centerY = 0;
-            var startAngle = 270;
-            var colors = instance.Colors.Select(c => colorMap[c]).ToArray();
-            if (colors.Length == 0)
+            if (!instance.Colors.Any())
             {
                 return null;
             }
 
-            var anglesEach = 360 / colors.Length;
+            var rgbs = instance.Colors.Select(c => colorMap[c]).ToArray();
 
-            IEnumerable<ILightSource> BuildLightSources(double radius)
-            {
-                for (var i = 0; i < colors.Length; i++)
+            var angleStep = 360f / rgbs.Length;
+            var startAngle = 270;
+
+            var transitions =
+                rgbs.Select((rgb, i) =>
                 {
-                    var color = colors[i];
-                    yield return new AngleFilterLightSource(
-                        new FadedCircleLightSource(color, centerX, centerY, radius, Math.Min(radius, 0.5)),
-                        centerX,
-                        centerY,
-                        (startAngle + i * anglesEach) % 360,
-                        anglesEach);
-                }
-            }
+                    return new AngleFilterTransition(
+                        new ExplositionTransition(TimeSpan.FromMilliseconds(speedMs), rgb, .5f),
+                        0,
+                        0,
+                        (startAngle + i * angleStep) % 360,
+                        angleStep);
+                });
 
-            IEnumerable<ITransition> BuildTransitions()
-            {
-                var totalTime = speedMs;
-                var steps = 40;
-                var maxRadius = 2D;
-
-                var stepTime = totalTime / steps;
-                var radiusStep = maxRadius / (float)steps;
-
-                for (var i = 0; i < steps; i++)
-                {
-                    var radius = (i + 1) * radiusStep;
-                    yield return new LightSourceTransition(
-                        new LayeredLightSource(BuildLightSources(radius).ToArray()),
-                        stepTime);
-                }
-            }
-
-            return new CompositeTransition(BuildTransitions().ToArray());
+            return new CompositeTransition(transitions.ToArray());
         }
 
         public ITransition? OnMagicEvent(CastSpell magicEvent)
@@ -86,6 +63,55 @@ namespace MagicLights.Effects
         public ITransition? OnMagicEvent(PlayLand magicEvent)
         {
             return OnMagicEvent(magicEvent.Instance);
+        }
+
+        private class ExplositionTransition : ITransition
+        {
+            private readonly double totalMs;
+
+            private readonly RGB color;
+
+            private readonly float radius;
+
+            private readonly double movementPerMs;
+
+            public ExplositionTransition(
+                TimeSpan time,
+                RGB color,
+                float radius)
+            {
+                this.color = color;
+                this.radius = radius;
+                TotalLength = time;
+
+                var maxRadius = radius + Math.Sqrt(2);
+
+                totalMs = time.TotalMilliseconds;
+                movementPerMs = maxRadius / totalMs;
+            }
+
+            public TimeSpan TotalLength { get; }
+
+            public RGB Get(float x, float y, long ms)
+            {
+                if (ms >= totalMs)
+                {
+                    return RGB.Black;
+                }
+
+                var currentRadius = ms * movementPerMs;
+
+                var distanceFromCenter = Math.Sqrt(x * x + y * y);
+
+                var diff = Math.Abs(currentRadius - distanceFromCenter);
+
+                if (diff > radius)
+                {
+                    return RGB.Black;
+                }
+
+                return color * ((radius - diff) / radius);
+            }
         }
     }
 }

@@ -39,6 +39,9 @@ namespace MagicLights.Specs
             provider1.WhenToldTo(p => p.Create(Param.IsAny<object>()))
                 .Return(Task.FromResult(The<ILightClient>()));
 
+            The<IEffect<CastSpell>>().WhenToldTo(t => t.Mode)
+                .Return(EffectMode.Single);
+
             The<IEffect<CastSpell>>().WhenToldTo(t => t.OnMagicEvent(Param.IsAny<CastSpell>()))
                 .Return(The<ITransition>());
 
@@ -139,9 +142,6 @@ namespace MagicLights.Specs
                 It dispatched = () =>
                     //Is there a race condition here...?
                     The<IEffect<CastSpell>>().WasToldTo(e => e.OnMagicEvent(Param.IsAny<CastSpell>()));
-
-                It told_transitioned_layer = () =>
-                    The<ITransition>().WasToldTo(l => l.Transition(Param.IsAny<ILayer>(), Param.IsAny<CancellationToken>()));
             }
         }
 

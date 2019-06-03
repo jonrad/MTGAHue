@@ -51,7 +51,7 @@ namespace MagicLights.Effects
                 .Concat(new[] { new LightSourceTransition(new MappedLightSource(coordinateMap, .4f), new MappedLightSource(coordinateMap, .1f), 1000) })
                 .ToArray();
 
-            return new CompositeTransition(transitions);
+            return new SequenceTransition(transitions);
         }
 
         private class MappedLightSource : ILightSource
