@@ -26,6 +26,7 @@ namespace LightsApi
             this.stopwatchBuilder = stopwatchBuilder;
             this.delay = delay;
             this.positions = positions;
+
             msPerTransition = (int)transitionDelay.TotalMilliseconds;
             Colors = positions.Select(_ => RGB.Black).ToArray();
         }

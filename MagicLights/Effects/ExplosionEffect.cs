@@ -45,7 +45,7 @@ namespace MagicLights.Effects
                 rgbs.Select((rgb, i) =>
                 {
                     return new AngleFilterTransition(
-                        new ExplositionTransition(TimeSpan.FromMilliseconds(speedMs), rgb, .5f),
+                        new ExplositionTransition(TimeSpan.FromMilliseconds(speedMs), rgb, .25f),
                         0,
                         0,
                         (startAngle + i * angleStep) % 360,
