@@ -12,18 +12,48 @@ namespace LightsApi.Specs.Transitions
     {
         static LightSourceTransition subject;
 
-        static Task result;
+        static RGB result;
 
         Establish context = () =>
-            subject = new LightSourceTransition(The<ILightSource>(), 100);
+            subject = new LightSourceTransition(new SolidLightSource(RGB.Red), 100);
 
-        class when_transitioning
+        class when_calculating
         {
-            Because of = () =>
-                result = subject.Transition(The<ILayer>());
+            class at_time_0
+            {
+                Because of = () =>
+                    result = subject.Get(0f, 0f, 0L);
 
-            It told_light_layer_to_transition = () =>
-                The<ILayer>().WasToldTo(l => l.Transition(The<ILightSource>(), TimeSpan.FromMilliseconds(100), default));
+                It calcuted_starting_color = () =>
+                    result.ShouldEqual(RGB.Black);
+            }
+
+            class at_half_way
+            {
+                Because of = () =>
+                    result = subject.Get(0f, 0f, 50L);
+
+                It calcuted_half_color = () =>
+                    result.ShouldEqual(RGB.Red * .5);
+            }
+
+            class at_end_time
+            {
+                Because of = () =>
+                    result = subject.Get(0f, 0f, 100L);
+
+                It calcuted_end_color = () =>
+                    result.ShouldEqual(RGB.Red);
+            }
+
+            class after_end_time
+            {
+                Because of = () =>
+                    result = subject.Get(0f, 0f, 999L);
+
+                It calcuted_end_color = () =>
+                    result.ShouldEqual(RGB.Red);
+            }
         }
     }
 }

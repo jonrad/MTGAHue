@@ -51,7 +51,7 @@
           "effect": {
             "id": "explosion",
             "config": {
-              "speedMs": 1000
+              "speedMs": 2000
             }
           }
         },
@@ -60,7 +60,7 @@
           "effect": {
             "id": "explosion",
             "config": {
-              "speedMs": 200
+              "speedMs": 750
             }
           }
         }

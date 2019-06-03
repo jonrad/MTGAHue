@@ -35,19 +35,19 @@ namespace MagicLights.Effects
 
             var flash = new ITransition[]
             {
-                new LightSourceTransition(new SolidLightSource(color), 500),
-                new LightSourceTransition(new SolidLightSource(color * .6), 500)
+                new LightSourceTransition(new SolidLightSource(color * .6), new SolidLightSource(color), 500),
+                new LightSourceTransition(new SolidLightSource(color), new SolidLightSource(color * .6), 500)
             };
 
             var flashCount = 5;
 
             var transitions =
-                new[] { new LightSourceTransition(new SolidLightSource(color * .1), 50) }
+                new[] { new LightSourceTransition(new SolidLightSource(color * .6), 50) }
                 .Concat(Enumerable.Repeat(flash, flashCount).SelectMany(s => s))
-                .Concat(new[] { new LightSourceTransition(new SolidLightSource(color * .3), 5000) })
+                .Concat(new[] { new LightSourceTransition(new SolidLightSource(color * .6), new SolidLightSource(color * .3), 5000) })
                 .ToArray();
 
-            return new CompositeTransition(transitions);
+            return new SequenceTransition(transitions);
         }
     }
 }

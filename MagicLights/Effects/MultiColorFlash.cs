@@ -39,19 +39,19 @@ namespace MagicLights.Effects
 
             var flash = new ITransition[]
             {
-                new LightSourceTransition(new MappedLightSource(coordinateMap, .8f), 500),
-                new LightSourceTransition(new MappedLightSource(coordinateMap, .4f), 500)
+                new LightSourceTransition(new MappedLightSource(coordinateMap, .4f), new MappedLightSource(coordinateMap, .8f), 500),
+                new LightSourceTransition(new MappedLightSource(coordinateMap, .8f), new MappedLightSource(coordinateMap, .4f), 500)
             };
 
             var flashCount = 3;
 
             var transitions =
-                new[] { new LightSourceTransition(new MappedLightSource(coordinateMap, .1f), 50) }
+                new[] { new LightSourceTransition(new MappedLightSource(coordinateMap, .4f), 50) }
                 .Concat(Enumerable.Repeat(flash, flashCount).SelectMany(s => s))
-                .Concat(new[] { new LightSourceTransition(new MappedLightSource(coordinateMap, .1f), 1000) })
+                .Concat(new[] { new LightSourceTransition(new MappedLightSource(coordinateMap, .4f), new MappedLightSource(coordinateMap, .1f), 1000) })
                 .ToArray();
 
-            return new CompositeTransition(transitions);
+            return new SequenceTransition(transitions);
         }
 
         private class MappedLightSource : ILightSource

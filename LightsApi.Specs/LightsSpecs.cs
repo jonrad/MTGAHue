@@ -49,8 +49,11 @@ namespace LightsApi.Specs
 
             class with_no_layers
             {
-                It did_not_set_colors = () =>
-                    The<ILightClient>().WasNotToldTo(c => c.SetColors(Param.IsAny<IEnumerable<RGB>>(), Param.IsAny<CancellationToken>()));
+                It set_colors_to_black = () =>
+                    The<ILightClient>().WasToldTo(
+                        t => t.SetColors(
+                            Param<IEnumerable<RGB>>.Matches(rgb => rgb.First().Equals(RGB.Black)),
+                            Param.IsAny<CancellationToken>()));
 
                 It did_not_delay = () =>
                     The<IDelay>().WasNotToldTo(d => d.Wait(Param.IsAny<TimeSpan>(), Param.IsAny<CancellationToken>()));

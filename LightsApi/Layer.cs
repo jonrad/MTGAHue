@@ -1,5 +1,5 @@
 ﻿using LightsApi.Injectables;
-using LightsApi.LightSources;
+using LightsApi.Transitions;
 using System;
 using System.Linq;
 using System.Threading;
@@ -26,7 +26,8 @@ namespace LightsApi
             this.stopwatchBuilder = stopwatchBuilder;
             this.delay = delay;
             this.positions = positions;
-            this.msPerTransition = (int)transitionDelay.TotalMilliseconds;
+
+            msPerTransition = (int)transitionDelay.TotalMilliseconds;
             Colors = positions.Select(_ => RGB.Black).ToArray();
         }
 
@@ -37,54 +38,39 @@ namespace LightsApi
 
         public RGB[] Colors { get; private set; }
 
-        public async Task Transition(ILightSource lightSource, TimeSpan timeSpan, CancellationToken token = default)
+        public async Task Transition(ITransition transition, CancellationToken token = default)
         {
-            var totalMilliseconds = timeSpan.TotalMilliseconds;
-
-            var colorCount = Colors.Length;
-
-            var startColors = Colors;
-
-            var endingColors = new RGB[colorCount];
-
-            for (var i = 0; i < endingColors.Length; i++)
-            {
-                var position = positions[i];
-                endingColors[i] = lightSource.Calculate(position.X, position.Y);
-            }
+            var totalMilliseconds = transition.TotalLength.TotalMilliseconds;
 
             var stopwatch = stopwatchBuilder.StartNew();
 
-            long elapsed;
+            long elapsed = 0;
             while (!token.IsCancellationRequested && (elapsed = stopwatch.ElapsedMilliseconds) < totalMilliseconds)
             {
-                var nextColors = new RGB[colorCount];
-                var percentage = (float)(elapsed / totalMilliseconds);
-
-                for (var i = 0; i < nextColors.Length; i++)
-                {
-                    var start = startColors[i];
-                    var end = endingColors[i];
-
-                    var rgb = new RGB(
-                        start.R + (end.R - start.R) * percentage,
-                        start.G + (end.G - start.G) * percentage,
-                        start.B + (end.B - start.B) * percentage);
-
-                    nextColors[i] = rgb;
-                }
+                Colors = GetColors(transition, elapsed);
 
                 var delayMs = Math.Min(msPerTransition, totalMilliseconds - elapsed);
-
-                Colors = nextColors;
 
                 await delay.Wait(TimeSpan.FromMilliseconds(delayMs), token);
             }
 
             if (!token.IsCancellationRequested)
             {
-                Colors = endingColors;
+                Colors = GetColors(transition, elapsed);
             }
+        }
+
+        private RGB[] GetColors(ITransition transition, long ms)
+        {
+            var nextColors = new RGB[positions.Length];
+
+            for (var i = 0; i < nextColors.Length; i++)
+            {
+                var position = positions[i];
+                nextColors[i] = transition.Get(position.X, position.Y, ms);
+            }
+
+            return nextColors;
         }
     }
 }

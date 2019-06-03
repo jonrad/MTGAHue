@@ -1,5 +1,5 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
+﻿using System;
+using System.Linq;
 
 namespace LightsApi.Transitions
 {
@@ -10,19 +10,16 @@ namespace LightsApi.Transitions
         public CompositeTransition(params ITransition[] transitions)
         {
             this.transitions = transitions;
+            TotalLength = transitions.Max(t => t.TotalLength);
         }
 
-        public async Task Transition(ILayer layer, CancellationToken token = default)
-        {
-            foreach (var transition in transitions)
-            {
-                if (token.IsCancellationRequested)
-                {
-                    return;
-                }
+        public TimeSpan TotalLength { get; }
 
-                await transition.Transition(layer, token);
-            }
+        public RGB Get(float x, float y, long ms)
+        {
+            return transitions
+                .Select(t => t.Get(x, y, ms))
+                .Aggregate((rgb1, rgb2) => rgb1 + rgb2);
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using LightsApi;
 using LightsApi.Transitions;
-using MagicLights.Effects;
 using MTGADispatcher.Events;
 using System.Threading.Tasks;
 
@@ -36,7 +35,7 @@ namespace MagicLights.Effects
         private async Task RunTransition(ITransition transition)
         {
             var layer = lights.AddLayer();
-            await transition.Transition(layer);
+            await layer.Transition(transition);
             lights.RemoveLayer(layer);
         }
     }

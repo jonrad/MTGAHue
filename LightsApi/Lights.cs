@@ -84,6 +84,10 @@ namespace LightsApi
 
                     while (currentLayers.Length == 0)
                     {
+                        await lightClient.SetColors(
+                            lightClient.Lights.Select(l => RGB.Black),
+                            token);
+
                         WaitHandle.WaitAny(new[]
                         {
                             layersExistEvent,
