@@ -42,7 +42,7 @@ namespace MagicLights.Effects
                 cancellationTokenSource.Cancel();
                 cancellationTokenSource = new CancellationTokenSource();
 
-                _ = transition.Transition(layer.Value, cancellationTokenSource.Token);
+                _ = layer.Value.Transition(transition, cancellationTokenSource.Token);
             }
         }
     }

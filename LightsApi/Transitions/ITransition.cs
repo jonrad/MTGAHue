@@ -1,10 +1,11 @@
-﻿using System.Threading;
-using System.Threading.Tasks;
+﻿using System;
 
 namespace LightsApi.Transitions
 {
     public interface ITransition
     {
-        Task Transition(ILayer layer, CancellationToken token = default);
+        TimeSpan TotalLength { get; }
+
+        RGB Get(float x, float y, long ms);
     }
 }

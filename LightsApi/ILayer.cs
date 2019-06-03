@@ -1,5 +1,4 @@
-﻿using LightsApi.LightSources;
-using System;
+﻿using LightsApi.Transitions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -9,6 +8,6 @@ namespace LightsApi
     {
         RGB[] Colors { get; }
 
-        Task Transition(ILightSource lightSource, TimeSpan timeSpan, CancellationToken token = default);
+        Task Transition(ITransition transition, CancellationToken token = default);
     }
 }
