@@ -2,20 +2,18 @@
 using LightsApi.Transitions;
 using Machine.Fakes;
 using Machine.Specifications;
-using System;
-using System.Threading.Tasks;
 
 namespace LightsApi.Specs.Transitions
 {
-    [Subject(typeof(LightSourceTransition))]
-    class LightSourceTransitionSpecs : WithFakes
+    [Subject(typeof(FadeInTransition))]
+    class FadeInTransitionSpecs : WithFakes
     {
-        static LightSourceTransition subject;
+        static FadeInTransition subject;
 
         static RGB result;
 
         Establish context = () =>
-            subject = new LightSourceTransition(new SolidLightSource(RGB.Red), 100);
+            subject = new FadeInTransition(new SolidLightSource(RGB.Red), 100);
 
         class when_calculating
         {

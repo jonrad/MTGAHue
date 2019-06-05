@@ -42,14 +42,14 @@
       "enabled": true,
 
       "config": {
-        "topLed":  "Escape"
+        "topLed": "Escape"
       },
 
       "events": [
         {
           "id": "CastSpell",
           "effect": {
-            "id": "explosion",
+            "id": "boxOut",
             "config": {
               "speedMs": 2000
             }

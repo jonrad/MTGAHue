@@ -3,7 +3,7 @@ using System;
 
 namespace LightsApi.Transitions
 {
-    public class LightSourceTransition : ITransition
+    public class FadeInTransition : ITransition
     {
         private readonly ILightSource previous;
 
@@ -11,12 +11,12 @@ namespace LightsApi.Transitions
 
         private readonly float totalMs;
 
-        public LightSourceTransition(ILightSource lightSource, double ms)
+        public FadeInTransition(ILightSource lightSource, double ms)
             : this(new SolidLightSource(RGB.Black), lightSource, (float)ms)
         {
         }
 
-        public LightSourceTransition(ILightSource previous, ILightSource lightSource, float totalMs)
+        public FadeInTransition(ILightSource previous, ILightSource lightSource, float totalMs)
         {
             this.previous = previous;
             this.lightSource = lightSource;
