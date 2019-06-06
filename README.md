@@ -9,6 +9,12 @@ Integrate MTG Arena with Philips Hue Lights
 * No artifact support
 * A base effect based on the current state of the game (Eg. Make the keyboard show life totals?)
 
+## Development:
+
+ * Compiles in C# 8.0, so you'll need VS2019 or equivalent (I really like nullable reference types)
+ * The start up application should be `MagicLights.Console`
+ * You may need to download the CUE SDK if using Corsair and NuGet doesn't automatically download it 
+
 ## Other Related Projects
 
 [MTGA Tracker](https://mtgatracker.com/) - MTG Arena Deck/Game Tracker application. A lot of logic was borrowed from here
