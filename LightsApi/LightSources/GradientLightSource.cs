@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace LightsApi.LightSources
 {
@@ -9,7 +8,7 @@ namespace LightsApi.LightSources
 
         private readonly RGB endColor;
 
-        private readonly float totalDistance;
+        private readonly double totalDistance;
 
         private readonly float A, B, CStart;
 
@@ -27,7 +26,7 @@ namespace LightsApi.LightSources
             B = end.Y - start.Y;
             CStart = -start.X * A - start.Y * B;
             CEnd = -end.X * A - end.Y * B;
-            totalDistance = (float)Math.Sqrt(Math.Pow(end.Y - start.Y, 2) + Math.Pow(end.X - start.X, 2));
+            totalDistance = Math.Sqrt(Math.Pow(end.Y - start.Y, 2) + Math.Pow(end.X - start.X, 2));
         }
 
         public RGB Calculate(double x, double y)
@@ -35,7 +34,7 @@ namespace LightsApi.LightSources
             var axBy = A * x + B * y;
 
             var distance = (float)Math.Abs(axBy + CStart) / (Math.Sqrt(A * A + B * B));
-            var distanceEnd = (float)Math.Abs(axBy + CEnd) / (Math.Sqrt(A * A + B * B));
+            var distanceEnd = (double)Math.Abs(axBy + CEnd) / (Math.Sqrt(A * A + B * B));
             if (distance < 0 || distance > totalDistance || distanceEnd > totalDistance)
             {
                 return RGB.Black;
