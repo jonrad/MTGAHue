@@ -1,5 +1,5 @@
 # MTGAHue
-Integrate MTG Arena with Philips Hue Lights
+Integrate MTG Arena with LEDs (Philips Hue Lights, Razer Keyboards and Corsair Keyboards)
 
 ![Demo](Docs/demo.gif)
 
