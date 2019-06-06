@@ -12,6 +12,8 @@ namespace MagicLights.Effects
     public class BoxOutEffect
         : IEffect<CastSpell>, IEffect<PlayLand>
     {
+        private readonly int speedMs;
+
         private Dictionary<MagicColor, RGB> colorMap = new Dictionary<MagicColor, RGB>
         {
             [MagicColor.Black] = new RGB(100, 0, 100),
@@ -20,6 +22,11 @@ namespace MagicLights.Effects
             [MagicColor.Green] = new RGB(0, 255, 0),
             [MagicColor.Blue] = new RGB(0, 0, 255)
         };
+
+        public BoxOutEffect(int speedMs)
+        {
+            this.speedMs = speedMs;
+        }
 
         public EffectMode Mode => EffectMode.Concurrent;
 
@@ -37,7 +44,7 @@ namespace MagicLights.Effects
                 ? colors[1]
                 : color1;
 
-            var time = TimeSpan.FromMilliseconds(1000);
+            var time = TimeSpan.FromMilliseconds(speedMs);
 
             //var lightSource = new GradientLightSource(colorMap[color1], RGB.Black, new Position(0, 0), new Position(1, 0));
             //return new FadeInTransition(lightSource, lightSource, 2000);

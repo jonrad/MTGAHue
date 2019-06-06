@@ -10,9 +10,7 @@ namespace LightsApi.LightSources
 
         private readonly double totalDistance;
 
-        private readonly float A, B, CStart;
-
-        public readonly float CEnd;
+        private readonly float a, b, c;
 
         public GradientLightSource(
             RGB startColor,
@@ -22,20 +20,23 @@ namespace LightsApi.LightSources
         {
             this.startColor = startColor;
             this.endColor = endColor;
-            A = end.X - start.X;
-            B = end.Y - start.Y;
-            CStart = -start.X * A - start.Y * B;
-            CEnd = -end.X * A - end.Y * B;
-            totalDistance = Math.Sqrt(Math.Pow(end.Y - start.Y, 2) + Math.Pow(end.X - start.X, 2));
+
+            //Ax + By + C = 0
+            a = end.X - start.X;
+            b = end.Y - start.Y;
+            c = -start.X * a - start.Y * b;
+
+            var denominator = Math.Sqrt(a * a + b * b);
+            totalDistance = Math.Sqrt(Math.Pow(end.Y - start.Y, 2) + Math.Pow(end.X - start.X, 2)) * denominator;
         }
 
         public RGB Calculate(double x, double y)
         {
-            var axBy = A * x + B * y;
-
-            var distance = (float)Math.Abs(axBy + CStart) / (Math.Sqrt(A * A + B * B));
-            var distanceEnd = (double)Math.Abs(axBy + CEnd) / (Math.Sqrt(A * A + B * B));
-            if (distance < 0 || distance > totalDistance || distanceEnd > totalDistance)
+            // Note that this has been optimized to not perform powers and sqrts
+            // in the calculate function. So this isn't the traditional distance
+            // from a line formula
+            var distance = a * x + b * y + c;
+            if (distance < 0 || distance > totalDistance)
             {
                 return RGB.Black;
             }

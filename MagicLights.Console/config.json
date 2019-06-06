@@ -19,7 +19,7 @@
     },
     {
       "id": "chroma",
-      "enabled": true,
+      "enabled": false,
 
       "config": {
         "Columns": 16
@@ -29,9 +29,18 @@
         {
           "id": "CastSpell",
           "effect": {
-            "id": "boxOut",
+            "id": "explosion",
             "config": {
               "speedMs": 2000
+            }
+          }
+        },
+        {
+          "id": "PlayLand",
+          "effect": {
+            "id": "boxOut",
+            "config": {
+              "speedMs": 500
             }
           }
         }
@@ -39,7 +48,7 @@
     },
     {
       "id": "cue",
-      "enabled": false,
+      "enabled": true,
 
       "config": {
         "topLed": "Escape"
@@ -49,18 +58,18 @@
         {
           "id": "CastSpell",
           "effect": {
-            "id": "boxOut",
+            "id": "explosion",
             "config": {
-              "speedMs": 2000
+              "speedMs": 1000
             }
           }
         },
         {
           "id": "PlayLand",
           "effect": {
-            "id": "explosion",
+            "id": "boxOut",
             "config": {
-              "speedMs": 750
+              "speedMs": 500
             }
           }
         }
