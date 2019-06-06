@@ -49,20 +49,33 @@ namespace MagicLights
         }
 
         private async Task<Lights[]> BuildClients(
-            LightClientConfiguration[] lightClients)
+            LightClientConfiguration[] configurations)
         {
-            List<Lights> clients = new List<Lights>();
+            var clients = new List<Lights>();
 
             // Why does hue hate when I'm async here...
-            foreach (var l in lightClients)
+            foreach (var configuration in configurations)
             {
-                if (!l.Enabled)
+                if (!configuration.Enabled)
                 {
                     continue;
                 }
 
-                clients.Add(await BuildClient(l));
+                try
+                {
+                    var client = await BuildClient(configuration);
+                    clients.Add(client);
+                }
+                catch (Exception ex)
+                {
+                    Console.Error.WriteLine(
+                        $"Could not connect to {configuration.Id}");
+
+                    Console.Error.WriteLine($"Received the following error: {ex.Message}");
+                }
             }
+
+            Console.WriteLine($"Connected to {clients.Count} light clients");
 
             return clients.ToArray();
         }

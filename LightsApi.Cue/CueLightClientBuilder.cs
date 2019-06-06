@@ -21,8 +21,8 @@ namespace LightsApi.Cue
             float left = float.MaxValue, top = float.MaxValue;
             float right = float.MinValue, bottom = float.MinValue;
 
-            left = leftLed == null 
-                ? keyboard.Min(l => l.LedRectangle.Left) 
+            left = leftLed == null
+                ? keyboard.Min(l => l.LedRectangle.Left)
                 : keyboard[leftLed.Value].LedRectangle.Left;
 
             right = rightLed == null
