@@ -2,10 +2,7 @@
 using Machine.Fakes;
 using Machine.Specifications;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace LightsApi.Specs.LightSources
 {
@@ -13,7 +10,6 @@ namespace LightsApi.Specs.LightSources
     class GradientLightSourceSpecs : WithFakes
     {
         static GradientLightSource subject;
-
 
         static TestCase[] testCases;
 

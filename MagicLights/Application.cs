@@ -1,7 +1,4 @@
-﻿using LightsApi;
-using LightsApi.LightSources;
-using LightsApi.Transitions;
-using MagicLights.Configuration.Models;
+﻿using MagicLights.Configuration.Models;
 using MTGADispatcher;
 using Newtonsoft.Json;
 using System.IO;
@@ -25,12 +22,7 @@ namespace MagicLights
 
         public async Task Run(Config config)
         {
-            var lights = await lightsSetup.Start(config);
-
-            foreach (var light in lights)
-            {
-                var layer = light.AddLayer();
-            }
+            await lightsSetup.Start(config);
 
             magicService.Start();
         }
