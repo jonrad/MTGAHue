@@ -32,7 +32,7 @@ namespace MagicLights.Integration
 
             var color = colors.FirstOrDefault();
 
-            return new LightSourceTransition(
+            return new FadeInTransition(
                 new SolidLightSource(colorMap[color]),
                 0);
         }

@@ -19,6 +19,10 @@ namespace MagicLights
 
             container.Register(
                 Component.For<IEffect<CastSpell>>()
+                    .ImplementedBy<BoxOutEffect>()
+                    .Named("boxOut")
+                    .LifestyleTransient(),
+                Component.For<IEffect<CastSpell>>()
                     .ImplementedBy<FlashEffect>()
                     .Named("flash")
                     .LifestyleTransient(),

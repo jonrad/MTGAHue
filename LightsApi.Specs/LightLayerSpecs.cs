@@ -45,7 +45,7 @@ namespace LightsApi.Specs
             static ITransition transition;
 
             Establish context = () =>
-                transition = new LightSourceTransition(new SolidLightSource(RGB.Red), 4);
+                transition = new FadeInTransition(new SolidLightSource(RGB.Red), 4);
 
             class second_0
             {

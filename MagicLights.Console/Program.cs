@@ -1,6 +1,8 @@
 ﻿using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using CommandLine;
+using LightsApi;
+using LightsApi.LightSources;
 using MTGADispatcher;
 using System.Collections.Generic;
 using System.IO;
