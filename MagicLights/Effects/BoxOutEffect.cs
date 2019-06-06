@@ -46,9 +46,6 @@ namespace MagicLights.Effects
 
             var time = TimeSpan.FromMilliseconds(speedMs);
 
-            //var lightSource = new GradientLightSource(colorMap[color1], RGB.Black, new Position(0, 0), new Position(1, 0));
-            //return new FadeInTransition(lightSource, lightSource, 2000);
-
             return new CompositeTransition(
                     new FilteredTransition(
                         (x, y, _) => x >= 0,
