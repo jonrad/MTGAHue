@@ -19,7 +19,7 @@
     },
     {
       "id": "chroma",
-      "enabled": false,
+      "enabled": true,
 
       "config": {
         "Columns": 16
@@ -29,7 +29,7 @@
         {
           "id": "CastSpell",
           "effect": {
-            "id": "explosion",
+            "id": "boxOut",
             "config": {
               "speedMs": 2000
             }
@@ -39,7 +39,7 @@
     },
     {
       "id": "cue",
-      "enabled": true,
+      "enabled": false,
 
       "config": {
         "topLed": "Escape"

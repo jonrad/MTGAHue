@@ -1,4 +1,7 @@
-﻿namespace LightsApi.LightSources
+﻿using System;
+using System.Collections.Generic;
+
+namespace LightsApi.LightSources
 {
     public class GradientLightSource : ILightSource
     {
@@ -6,33 +9,39 @@
 
         private readonly RGB endColor;
 
-        private readonly float start;
+        private readonly float totalDistance;
 
-        private readonly float end;
+        private readonly float A, B, CStart;
 
-        private readonly float width;
+        public readonly float CEnd;
 
         public GradientLightSource(
             RGB startColor,
             RGB endColor,
-            float start,
-            float end)
+            Position start,
+            Position end)
         {
             this.startColor = startColor;
             this.endColor = endColor;
-            this.start = start;
-            this.end = end;
-            width = end - start;
+            A = end.X - start.X;
+            B = end.Y - start.Y;
+            CStart = -start.X * A - start.Y * B;
+            CEnd = -end.X * A - end.Y * B;
+            totalDistance = (float)Math.Sqrt(Math.Pow(end.Y - start.Y, 2) + Math.Pow(end.X - start.X, 2));
         }
 
         public RGB Calculate(double x, double y)
         {
-            if (x < start || x > end)
+            var axBy = A * x + B * y;
+
+            var distance = (float)Math.Abs(axBy + CStart) / (Math.Sqrt(A * A + B * B));
+            var distanceEnd = (float)Math.Abs(axBy + CEnd) / (Math.Sqrt(A * A + B * B));
+            if (distance < 0 || distance > totalDistance || distanceEnd > totalDistance)
             {
                 return RGB.Black;
             }
 
-            var percentage = (float)((x - start) / width);
+            var percentage = (float)(distance / totalDistance);
 
             return new RGB(
                 (endColor.R - startColor.R) * percentage + startColor.R,
