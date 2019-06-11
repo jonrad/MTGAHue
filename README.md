@@ -3,6 +3,8 @@ Integrate MTG Arena with LEDs (Philips Hue Lights, Razer Keyboards and Corsair K
 
 ![Demo](Docs/demo.gif)
 
+![Keyboard Demo](Docs/keyboard.gif)
+
 ## To-do:
 
 * No UI. Customization is done using the `config.json` file
