@@ -27,7 +27,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MagicLights", "MagicLights\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MagicLights.Integration", "MagicLights.Integration\MagicLights.Integration.csproj", "{77A00A5B-8BDE-40AE-8098-096E80D19A2D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LightsApi.Cue", "LightsApi.Cue\LightsApi.Cue.csproj", "{9521BBFB-274E-446E-8D64-27C68ACEFB50}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LightsApi.Cue", "LightsApi.Cue\LightsApi.Cue.csproj", "{9521BBFB-274E-446E-8D64-27C68ACEFB50}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MagicLights.Api", "MagicLights.Api\MagicLights.Api.csproj", "{5F1059E9-298A-437C-9DBD-5E2D9F0DAC49}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -87,6 +89,10 @@ Global
 		{9521BBFB-274E-446E-8D64-27C68ACEFB50}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9521BBFB-274E-446E-8D64-27C68ACEFB50}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9521BBFB-274E-446E-8D64-27C68ACEFB50}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F1059E9-298A-437C-9DBD-5E2D9F0DAC49}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F1059E9-298A-437C-9DBD-5E2D9F0DAC49}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F1059E9-298A-437C-9DBD-5E2D9F0DAC49}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F1059E9-298A-437C-9DBD-5E2D9F0DAC49}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
