@@ -24,6 +24,11 @@ namespace LightsApi.Chroma
 
         public IEnumerable<Position> Lights => positions;
 
+        public void Dispose()
+        {
+            throw new System.NotImplementedException();
+        }
+
         public Task SetColors(IEnumerable<RGB> colors, CancellationToken token)
         {
             var nextColors = KeyboardCustom.Create();

@@ -26,6 +26,11 @@ namespace MagicLights.LightClients
                     configuration.BottomLed));
         }
 
+        public override void Dispose()
+        {
+            builder.Dispose();
+        }
+
         public class CueConfiguration
         {
             public CorsairLedId? LeftLed { get; set; }

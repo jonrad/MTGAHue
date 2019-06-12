@@ -14,12 +14,12 @@ using System.Threading.Tasks;
 
 namespace MagicLights.Specs
 {
-    [Subject(typeof(LightsSetup))]
+    [Subject(typeof(LightClientManager))]
     class LightsSetupSpecs : WithFakes
     {
         static Config config;
 
-        static LightsSetup subject;
+        static LightClientManager subject;
 
         static ILightClientProvider provider1;
 
@@ -49,13 +49,9 @@ namespace MagicLights.Specs
                 .WhenToldTo(e => e.Get<CastSpell>(Param.IsAny<string>(), Param.IsAny<JObject>()))
                 .Return(The<IEffect<CastSpell>>());
 
-            subject = new LightsSetup(
+            subject = new LightClientManager(
                 game = new Game(),
-                new[]
-                {
-                    provider1,
-                    provider2
-                },
+                The<ILightClientProviderFactory>(),
                 The<IEffectFactory>());
         };
 

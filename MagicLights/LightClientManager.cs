@@ -13,39 +13,70 @@ using System.Threading.Tasks;
 
 namespace MagicLights
 {
-    public class LightsSetup
+    public class LightClientManager
     {
-        private readonly Dictionary<string, ILightClientProvider> lightClientProviders;
-
         private readonly Dictionary<string, Action<Lights, EffectConfiguration>> eventsById;
 
         private readonly Game game;
 
+        private readonly ILightClientProviderFactory lightClientProviderFactory;
+
         private readonly IEffectFactory effectFactory;
 
-        public LightsSetup(
+        private Dictionary<string, ILightClientProvider>? lightClientProviders;
+
+        private Lights[]? clients;
+
+        public LightClientManager(
             Game game,
-            ILightClientProvider[] lightClientProviders,
+            ILightClientProviderFactory lightClientProviderFactory,
             IEffectFactory effectFactory)
         {
-            this.lightClientProviders =
-                lightClientProviders.ToDictionary(l => l.Id);
             this.game = game;
+            this.lightClientProviderFactory = lightClientProviderFactory;
             this.effectFactory = effectFactory;
             eventsById = BuildRegisters();
         }
 
-        public async Task<Lights[]> Start(Config configuration)
+        public async Task Start(Config configuration)
         {
-            var clients = await BuildClients(
+            lightClientProviders = lightClientProviderFactory.Get()
+                .ToDictionary(l => l.Id);
+
+            clients = await BuildClients(
                 configuration.LightClients ?? new LightClientConfiguration[0]);
 
             foreach (var client in clients)
             {
                 client.Start();
             }
+        }
 
-            return clients;
+        public void Stop()
+        {
+            if (clients == null)
+            {
+                return;
+            }
+
+            foreach (var client in clients)
+            {
+                client.Stop();
+            }
+
+            clients = null;
+
+            if (lightClientProviders == null)
+            {
+                return;
+            }
+
+            foreach (var lightClientProvider in lightClientProviders!.Values)
+            {
+                lightClientProvider.Dispose();
+            }
+
+            lightClientProviders = null;
         }
 
         private async Task<Lights[]> BuildClients(
@@ -83,6 +114,11 @@ namespace MagicLights
         private async Task<Lights> BuildClient(
             LightClientConfiguration lightClientConfiguration)
         {
+            if (lightClientProviders == null)
+            {
+                throw new ArgumentException(); //TODO
+            }
+
             if (lightClientConfiguration.Id == null)
             {
                 throw new ArgumentException("Must set id for light client");

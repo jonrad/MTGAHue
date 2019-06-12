@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace MagicLights.LightClients
 {
-    public class ChromaLightClientProvider : AbstractLightClientProvider<ChromaLightClientProvider.ChromaConfiguration>
+    public class ChromaLightClientProvider
+        : AbstractLightClientProvider<ChromaLightClientProvider.ChromaConfiguration>
     {
         private readonly Lazy<Task<IChroma>> chromaTask =
             new Lazy<Task<IChroma>>(() => ColoreProvider.CreateNativeAsync());
@@ -23,6 +24,18 @@ namespace MagicLights.LightClients
             }
 
             return new ChromaKeyboardClient(chroma, configuration.Columns, configuration.Rows);
+        }
+
+        public override void Dispose()
+        {
+            if (!chromaTask.IsValueCreated)
+            {
+                return;
+            }
+
+            var value = chromaTask.Value.Result;
+
+            value.UninitializeAsync().Wait();
         }
 
         public class ChromaConfiguration

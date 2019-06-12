@@ -19,8 +19,6 @@ namespace LightsApi
 
         private readonly ILayerBuilder layerBuilder;
 
-        private readonly ILightClient lightClient;
-
         private readonly TimeSpan delay;
 
         private CancellationTokenSource cancellationTokenSource =
@@ -36,7 +34,7 @@ namespace LightsApi
         {
             this.delayProvider = delayProvider;
             this.layerBuilder = layerBuilder;
-            this.lightClient = lightClient;
+            LightClient = lightClient;
             this.delay = delay ?? TimeSpan.FromMilliseconds(50);
         }
 
@@ -47,10 +45,12 @@ namespace LightsApi
         {
         }
 
+        public ILightClient LightClient { get; }
+
         public ILayer AddLayer()
         {
             var layer = layerBuilder.Build(
-                lightClient.Lights.ToArray(),
+                LightClient.Lights.ToArray(),
                 TimeSpan.FromMilliseconds(50));
 
             lock (layerSync)
@@ -84,8 +84,8 @@ namespace LightsApi
 
                     while (currentLayers.Length == 0)
                     {
-                        await lightClient.SetColors(
-                            lightClient.Lights.Select(l => RGB.Black),
+                        await LightClient.SetColors(
+                            LightClient.Lights.Select(l => RGB.Black),
                             token);
 
                         WaitHandle.WaitAny(new[]
@@ -111,7 +111,7 @@ namespace LightsApi
 
                     await Task.WhenAll(new[]
                     {
-                        lightClient.SetColors(colors, token),
+                        LightClient.SetColors(colors, token),
                         delayProvider.Wait(delay, token)
                     });
                 };
@@ -130,7 +130,7 @@ namespace LightsApi
         {
             cancellationTokenSource.Cancel();
             cancellationTokenSource = new CancellationTokenSource();
-            mainLoop = null;
+            mainLoop?.Wait();
         }
     }
 }

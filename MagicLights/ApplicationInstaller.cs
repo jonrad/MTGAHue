@@ -5,6 +5,7 @@ using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
 using MagicLights.Configuration;
 using MagicLights.Effects;
+using MagicLights.LightClients;
 using MTGADispatcher.Events;
 using Newtonsoft.Json.Linq;
 using System;
@@ -44,7 +45,8 @@ namespace MagicLights
                     .DependsOn(
                         Dependency.OnValue<string>("config.json")),
 
-                Component.For<LightsSetup>(),
+                Component.For<ILightClientProviderFactory>().AsFactory(),
+                Component.For<LightClientManager>(),
                 Component.For<MagicLightsApplication>());
         }
 

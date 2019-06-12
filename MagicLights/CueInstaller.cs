@@ -10,7 +10,9 @@ namespace MagicLights
         public void Install(IWindsorContainer container, IConfigurationStore store)
         {
             container.Register(
-                Component.For<ILightClientProvider>().ImplementedBy<CueLightClientProvider>());
+                Component.For<ILightClientProvider>()
+                    .ImplementedBy<CueLightClientProvider>()
+                    .LifestyleTransient());
         }
     }
 }
