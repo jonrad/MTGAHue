@@ -1,5 +1,6 @@
 ﻿using Castle.MicroKernel.Registration;
 using Castle.Windsor;
+using MagicLights.Configuration;
 using MagicLights.Configuration.Models;
 using MTGADispatcher;
 using System;
@@ -35,10 +36,11 @@ namespace MagicLights.Integration
             Container = new WindsorContainer();
             Container.Install(installers.ToArray());
 
-            var application = Container.Resolve<Application>();
+            var application = Container.Resolve<MagicLightsApplication>();
 
-            lineReader = (LineReaderProxy)Container.Resolve<ILineReader>();
-            application.Run(new Config()
+            var configuration = (ConfigurationProviderProxy)Container.Resolve<ILightsConfigurationProvider>();
+
+            configuration.Save(new Config()
             {
                 LightClients = new[]
                 {
@@ -59,7 +61,10 @@ namespace MagicLights.Integration
                         }
                     }
                 }
-            }).Wait();
+            });
+
+            lineReader = (LineReaderProxy)Container.Resolve<ILineReader>();
+            application.Start().Wait();
 
             LightClient = Container.Resolve<IntegrationLightClient>();
         }
