@@ -58,9 +58,9 @@ namespace MagicLights.Console
             {
                 container.Install(installers.ToArray());
 
-                var application = container.Resolve<Application>();
+                var application = container.Resolve<MagicLightsApplication>();
 
-                await application.Run();
+                await application.Start();
 
                 System.Console.WriteLine("Press enter to quit");
                 System.Console.ReadLine();

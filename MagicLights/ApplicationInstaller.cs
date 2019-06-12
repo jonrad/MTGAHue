@@ -3,6 +3,7 @@ using Castle.MicroKernel;
 using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
+using MagicLights.Configuration;
 using MagicLights.Effects;
 using MTGADispatcher.Events;
 using Newtonsoft.Json.Linq;
@@ -38,8 +39,13 @@ namespace MagicLights
                 Component.For<IEffectFactory>().AsFactory(f =>
                     f.SelectedWith(new NamedCustomSelector())),
 
+                Component.For<ILightsConfigurationProvider>()
+                    .ImplementedBy<FileConfigurationProvider>()
+                    .DependsOn(
+                        Dependency.OnValue<string>("config.json")),
+
                 Component.For<LightsSetup>(),
-                Component.For<Application>());
+                Component.For<MagicLightsApplication>());
         }
 
         internal class NamedCustomSelector : DefaultTypedFactoryComponentSelector

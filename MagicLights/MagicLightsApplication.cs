@@ -1,38 +1,34 @@
-﻿using MagicLights.Configuration.Models;
+﻿using MagicLights.Configuration;
 using MTGADispatcher;
-using Newtonsoft.Json;
-using System.IO;
 using System.Threading.Tasks;
 
 namespace MagicLights
 {
-    public class Application
+    public class MagicLightsApplication
     {
         private readonly LightsSetup lightsSetup;
 
         private readonly IMagicService magicService;
 
-        public Application(
+        private readonly ILightsConfigurationProvider configurationProvider;
+
+        public MagicLightsApplication(
             LightsSetup lightsSetup,
-            IMagicService magicService)
+            IMagicService magicService,
+            ILightsConfigurationProvider configurationProvider)
         {
             this.lightsSetup = lightsSetup;
             this.magicService = magicService;
+            this.configurationProvider = configurationProvider;
         }
 
-        public async Task Run(Config config)
+        public async Task Start()
         {
+            var config = configurationProvider.Get();
+
             await lightsSetup.Start(config);
 
             magicService.Start();
-        }
-
-        public Task Run()
-        {
-            var text = File.ReadAllText("config.json");
-            var config = JsonConvert.DeserializeObject<Config>(text);
-
-            return Run(config);
         }
 
         public void Stop()
