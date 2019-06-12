@@ -18,7 +18,7 @@ namespace MagicLights.Specs
     [Subject(typeof(LightClientManager))]
     class LightClientManagerSpecs : WithFakes
     {
-        static Config config;
+        static Configuration.Models.Config config;
 
         static LightClientManager subject;
 
@@ -67,7 +67,7 @@ namespace MagicLights.Specs
             class when_empty
             {
                 Establish context = () =>
-                    config = new Config();
+                    config = new Configuration.Models.Config();
 
                 It did_not_call_provider1 = () =>
                     provider1.WasNotToldTo(p => p.Create(Param.IsAny<object>()));
@@ -79,7 +79,7 @@ namespace MagicLights.Specs
             class when_not_enabled
             {
                 Establish context = () =>
-                    config = new Config
+                    config = new Configuration.Models.Config
                     {
                         LightClients = new[]
                         {
@@ -102,7 +102,7 @@ namespace MagicLights.Specs
             {
                 Establish context = () =>
                 {
-                    config = new Config
+                    config = new Configuration.Models.Config
                     {
                         LightClients = new[]
                         {
