@@ -2,8 +2,6 @@
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
 using MagicLights.Api.Controllers;
-using MagicLights.Configuration;
-using MagicLights.Configuration.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;

@@ -47,10 +47,6 @@ namespace MagicLights.Integration
 
         public WindsorContainer Container { get; }
 
-        public void Dispose()
-        {
-        }
-
         public void Stop()
         {
             var application = Container.Resolve<MagicLightsApplication>();
@@ -128,6 +124,10 @@ namespace MagicLights.Integration
                     lineReader.AddText(contents);
                 }
             }
+        }
+
+        public void Dispose()
+        {
         }
     }
 }

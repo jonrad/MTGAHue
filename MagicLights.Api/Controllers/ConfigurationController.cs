@@ -3,6 +3,7 @@ using MagicLights.Configuration;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace MagicLights.Api.Controllers
 {
@@ -10,10 +11,14 @@ namespace MagicLights.Api.Controllers
     public class ConfigurationController : Controller
     {
         private readonly ILightsConfigurationProvider configurationProvider;
+        private readonly MagicLightsApplication application;
 
-        public ConfigurationController(ILightsConfigurationProvider configurationProvider)
+        public ConfigurationController(
+            ILightsConfigurationProvider configurationProvider,
+            MagicLightsApplication application)
         {
             this.configurationProvider = configurationProvider;
+            this.application = application;
         }
 
         [HttpGet()]
@@ -23,7 +28,7 @@ namespace MagicLights.Api.Controllers
         }
 
         [HttpPost()]
-        public IActionResult Post([FromBody]ConfigurationModel? configuration)
+        public async Task<IActionResult> Post([FromBody]ConfigurationModel? configuration)
         {
             if (configuration == null)
             {
@@ -31,6 +36,10 @@ namespace MagicLights.Api.Controllers
             }
 
             Save(configuration);
+
+            application.Stop();
+
+            await application.Start();
 
             return Ok(new
             {
