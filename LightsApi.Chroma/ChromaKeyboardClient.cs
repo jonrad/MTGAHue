@@ -26,7 +26,6 @@ namespace LightsApi.Chroma
 
         public void Dispose()
         {
-            throw new System.NotImplementedException();
         }
 
         public Task SetColors(IEnumerable<RGB> colors, CancellationToken token)

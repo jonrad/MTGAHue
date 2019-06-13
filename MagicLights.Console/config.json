@@ -2,7 +2,7 @@
   "LightClients": [
     {
       "id": "hue",
-      "enabled": true,
+      "enabled": false,
 
       "config": {
         "EntertainmentGroup": "Entertainment area 2"
@@ -19,7 +19,7 @@
     },
     {
       "id": "chroma",
-      "enabled": true,
+      "enabled": false,
 
       "config": {
         "Columns": 16

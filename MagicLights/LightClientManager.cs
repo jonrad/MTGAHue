@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace MagicLights
 {
-    public class LightClientManager
+    public class LightClientManager //TODO this is doing way too much
     {
         private readonly Dictionary<string, Action<Lights, EffectConfiguration>> eventsById;
 
@@ -116,7 +116,7 @@ namespace MagicLights
         {
             if (lightClientProviders == null)
             {
-                throw new ArgumentException(); //TODO
+                throw new ArgumentException("Light client providers not created. This is likely a threading issue");
             }
 
             if (lightClientConfiguration.Id == null)

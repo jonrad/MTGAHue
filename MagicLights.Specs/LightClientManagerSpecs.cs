@@ -9,13 +9,12 @@ using MTGADispatcher;
 using MTGADispatcher.Events;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace MagicLights.Specs
 {
     [Subject(typeof(LightClientManager))]
-    class LightsSetupSpecs : WithFakes
+    class LightClientManagerSpecs : WithFakes
     {
         static Config config;
 
