@@ -43,6 +43,11 @@ namespace MTGADispatcher
 
         public void Stop()
         {
+            StopAsync().Wait();
+        }
+
+        private async Task StopAsync()
+        {
             if (task == null)
             {
                 return;
@@ -51,7 +56,10 @@ namespace MTGADispatcher
             try
             {
                 cancellationTokenSource.Cancel();
-                task.Wait();
+                await task;
+            }
+            catch (TaskCanceledException)
+            {
             }
             finally
             {

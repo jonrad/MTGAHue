@@ -14,6 +14,7 @@ namespace MagicLights.Integration.Features
         [Fact]
         public void WhenRun()
         {
+            application.Start();
             application.WriteContents(@"SimpleSpell.txt");
             application.WaitForGameEnd();
 
