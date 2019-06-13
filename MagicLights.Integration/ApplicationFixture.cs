@@ -84,7 +84,7 @@ namespace MagicLights.Integration
                                 {
                                     Id = "solid"
                                 }
-}
+                            }
                         }
                     }
                 }
