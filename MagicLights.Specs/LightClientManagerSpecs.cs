@@ -6,9 +6,11 @@ using MagicLights.Configuration.Models;
 using MagicLights.Effects;
 using MagicLights.LightClients;
 using MTGADispatcher;
+using MTGADispatcher.Dispatcher;
 using MTGADispatcher.Events;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace MagicLights.Specs
@@ -37,6 +39,9 @@ namespace MagicLights.Specs
 
             provider1.WhenToldTo(p => p.Create(Param.IsAny<object>()))
                 .Return(Task.FromResult(The<ILightClient>()));
+
+            The<ILightClientProviderFactory>().WhenToldTo(p => p.Get())
+                .Return(new[] { provider1, provider2 });
 
             The<IEffect<CastSpell>>().WhenToldTo(t => t.Mode)
                 .Return(EffectMode.Single);
@@ -135,7 +140,6 @@ namespace MagicLights.Specs
                     provider1.WasToldTo(c => c.Create(Param<Args1>.Matches(p => p.Name == "Jon" && p.Age == 42)));
 
                 It dispatched = () =>
-                    //Is there a race condition here...?
                     The<IEffect<CastSpell>>().WasToldTo(e => e.OnMagicEvent(Param.IsAny<CastSpell>()));
             }
         }

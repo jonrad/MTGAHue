@@ -130,6 +130,7 @@ namespace LightsApi
         {
             cancellationTokenSource.Cancel();
             cancellationTokenSource = new CancellationTokenSource();
+
             mainLoop?.Wait();
         }
     }
