@@ -26,10 +26,14 @@ namespace LightsApi.Specs
                 new Position(0, 0)
             });
 
+            The<ILightClient>().WhenToldTo(l => l.SetColors(Param.IsAny<IEnumerable<RGB>>(), Param.IsAny<CancellationToken>()))
+                .Return<IEnumerable<RGB>, CancellationToken>((_, token) => Task.Delay(1000, token));
+
             The<IDelay>().WhenToldTo(d => d.Wait(Param.IsAny<TimeSpan>(), Param.IsAny<CancellationToken>()))
                 .Return(() =>
                 {
-                    subject.Stop();
+                    Task.Run(() => subject.Stop());
+
                     return Task.FromResult(0);
                 });
         };

@@ -1,12 +1,13 @@
 ﻿using CUE.NET;
 using CUE.NET.Brushes;
 using CUE.NET.Devices.Generic.Enums;
+using System;
 using System.Drawing;
 using System.Linq;
 
 namespace LightsApi.Cue
 {
-    public class CueLightClientBuilder
+    public class CueLightClientBuilder : IDisposable
     {
         public CueLightClient Build(
             CorsairLedId? leftLed,
@@ -14,7 +15,16 @@ namespace LightsApi.Cue
             CorsairLedId? topLed,
             CorsairLedId? bottomLed)
         {
-            CueSDK.Initialize(true);
+            if (!CueSDK.IsInitialized)
+            {
+                CueSDK.Initialize(true);
+            }
+
+            if (!CueSDK.HasExclusiveAccess)
+            {
+                CueSDK.Reinitialize(true);
+            }
+
             var keyboard = CueSDK.KeyboardSDK;
             keyboard.Brush = (SolidColorBrush)Color.Transparent;
 
@@ -58,6 +68,21 @@ namespace LightsApi.Cue
             .ToArray();
 
             return new CueLightClient(keyboard, ledPositions);
+        }
+
+        public void Dispose()
+        {
+            try
+            {
+                if (CueSDK.IsInitialized)
+                {
+                    CueSDK.Reinitialize(false);
+                    CueSDK.Reset();
+                }
+            }
+            catch (Exception)
+            {
+            }
         }
     }
 }

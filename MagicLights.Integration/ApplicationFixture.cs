@@ -28,7 +28,10 @@ namespace MagicLights.Integration
                 {
                     new MagicDispatcherInstaller(string.Empty, Game),
                     new DebuggerInstaller(),
-                    new ApplicationInstaller()
+                    new ApplicationInstaller(),
+                    new HueInstaller(),
+                    new CueInstaller(),
+                    new ChromaInstaller()
                 });
 
             installers.Add(new IntegrationInstaller());
@@ -36,11 +39,37 @@ namespace MagicLights.Integration
             Container = new WindsorContainer();
             Container.Install(installers.ToArray());
 
-            var application = Container.Resolve<MagicLightsApplication>();
+            lineReader = (LineReaderProxy)Container.Resolve<ILineReader>();
+            LightClient = Container.Resolve<IntegrationLightClient>();
+        }
 
+        public Game Game { get; }
+
+        public WindsorContainer Container { get; }
+
+        public void Dispose()
+        {
+        }
+
+        public void Stop()
+        {
+            var application = Container.Resolve<MagicLightsApplication>();
+            application.Stop();
+        }
+
+        public void Start(Config config)
+        {
+            var application = Container.Resolve<MagicLightsApplication>();
             var configuration = (ConfigurationProviderProxy)Container.Resolve<ILightsConfigurationProvider>();
 
-            configuration.Save(new Config()
+            configuration.Save(config);
+
+            application.Start().Wait();
+        }
+
+        public void Start()
+        {
+            Start(new Config
             {
                 LightClients = new[]
                 {
@@ -62,19 +91,6 @@ namespace MagicLights.Integration
                     }
                 }
             });
-
-            lineReader = (LineReaderProxy)Container.Resolve<ILineReader>();
-            application.Start().Wait();
-
-            LightClient = Container.Resolve<IntegrationLightClient>();
-        }
-
-        public Game Game { get; }
-
-        public WindsorContainer Container { get; }
-
-        public void Dispose()
-        {
         }
 
         public void WaitForGameEnd()

@@ -96,6 +96,8 @@ namespace MagicLights.LightClients
             base.Dispose();
 
             hueClient?.Dispose();
+
+            hueClient = null;
         }
 
         private static async Task<StreamingHueClient> GetClient()

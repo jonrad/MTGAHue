@@ -14,4 +14,18 @@
     <ProjectReference Include="..\LightsApi\LightsApi.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="x86\" />
+    <Folder Include="x64\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="x64\CUESDK_2015.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="x86\CUESDK_2015.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

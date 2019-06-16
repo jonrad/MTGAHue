@@ -11,7 +11,8 @@ namespace MagicLights
         {
             container.Register(
                 Component.For<ILightClientProvider>()
-                    .ImplementedBy<HueLightClientProvider>());
+                    .ImplementedBy<HueLightClientProvider>()
+                    .LifestyleTransient());
         }
     }
 }

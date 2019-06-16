@@ -6,6 +6,7 @@ using MagicLights.Configuration.Models;
 using MagicLights.Effects;
 using MagicLights.LightClients;
 using MTGADispatcher;
+using MTGADispatcher.Dispatcher;
 using MTGADispatcher.Events;
 using Newtonsoft.Json.Linq;
 using System;
@@ -14,12 +15,12 @@ using System.Threading.Tasks;
 
 namespace MagicLights.Specs
 {
-    [Subject(typeof(LightsSetup))]
-    class LightsSetupSpecs : WithFakes
+    [Subject(typeof(LightClientManager))]
+    class LightClientManagerSpecs : WithFakes
     {
         static Config config;
 
-        static LightsSetup subject;
+        static LightClientManager subject;
 
         static ILightClientProvider provider1;
 
@@ -39,6 +40,9 @@ namespace MagicLights.Specs
             provider1.WhenToldTo(p => p.Create(Param.IsAny<object>()))
                 .Return(Task.FromResult(The<ILightClient>()));
 
+            The<ILightClientProviderFactory>().WhenToldTo(p => p.Get())
+                .Return(new[] { provider1, provider2 });
+
             The<IEffect<CastSpell>>().WhenToldTo(t => t.Mode)
                 .Return(EffectMode.Single);
 
@@ -49,13 +53,9 @@ namespace MagicLights.Specs
                 .WhenToldTo(e => e.Get<CastSpell>(Param.IsAny<string>(), Param.IsAny<JObject>()))
                 .Return(The<IEffect<CastSpell>>());
 
-            subject = new LightsSetup(
+            subject = new LightClientManager(
                 game = new Game(),
-                new[]
-                {
-                    provider1,
-                    provider2
-                },
+                The<ILightClientProviderFactory>(),
                 The<IEffectFactory>());
         };
 
@@ -140,7 +140,6 @@ namespace MagicLights.Specs
                     provider1.WasToldTo(c => c.Create(Param<Args1>.Matches(p => p.Name == "Jon" && p.Age == 42)));
 
                 It dispatched = () =>
-                    //Is there a race condition here...?
                     The<IEffect<CastSpell>>().WasToldTo(e => e.OnMagicEvent(Param.IsAny<CastSpell>()));
             }
         }

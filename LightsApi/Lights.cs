@@ -15,11 +15,11 @@ namespace LightsApi
 
         private ILayer[] layers = new ILayer[0];
 
+        private readonly ILightClient lightClient;
+
         private readonly IDelay delayProvider;
 
         private readonly ILayerBuilder layerBuilder;
-
-        private readonly ILightClient lightClient;
 
         private readonly TimeSpan delay;
 
@@ -130,7 +130,8 @@ namespace LightsApi
         {
             cancellationTokenSource.Cancel();
             cancellationTokenSource = new CancellationTokenSource();
-            mainLoop = null;
+
+            mainLoop?.Wait();
         }
     }
 }
