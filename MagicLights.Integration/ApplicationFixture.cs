@@ -29,7 +29,9 @@ namespace MagicLights.Integration
                     new MagicDispatcherInstaller(string.Empty, Game),
                     new DebuggerInstaller(),
                     new ApplicationInstaller(),
-                    new HueInstaller()
+                    new HueInstaller(),
+                    new CueInstaller(),
+                    new ChromaInstaller()
                 });
 
             installers.Add(new IntegrationInstaller());

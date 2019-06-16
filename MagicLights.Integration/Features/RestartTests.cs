@@ -14,9 +14,63 @@ namespace MagicLights.Integration.Features
         }
 
         [RunnableInDebugOnly]
+        public void RestartChroma()
+        {
+            RunTest(new Config
+            {
+                LightClients = new[]
+                {
+                    new LightClientConfiguration
+                    {
+                        Id = "chroma",
+                        Enabled = true,
+                        Events = new[]
+                        {
+                            new EventConfiguration
+                            {
+                                Id = "CastSpell",
+                                Effect = new EffectConfiguration
+                                {
+                                    Id = "solid"
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        [RunnableInDebugOnly]
+        public void RestartCue()
+        {
+            RunTest(new Config
+            {
+                LightClients = new[]
+                {
+                    new LightClientConfiguration
+                    {
+                        Id = "cue",
+                        Enabled = true,
+                        Events = new[]
+                        {
+                            new EventConfiguration
+                            {
+                                Id = "CastSpell",
+                                Effect = new EffectConfiguration
+                                {
+                                    Id = "solid"
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        [RunnableInDebugOnly]
         public void RestartHue()
         {
-            var config = new Config
+            RunTest(new Config
             {
                 LightClients = new[]
                 {
@@ -41,8 +95,11 @@ namespace MagicLights.Integration.Features
                         }
                     }
                 }
-            };
+            });
+        }
 
+        private void RunTest(Config config)
+        {
             application.Start(config);
             application.Game.Events.Dispatch(new CastSpell(
                 new Instance(0, 0, 0, new[] { MagicColor.Red })));

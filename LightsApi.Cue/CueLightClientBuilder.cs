@@ -72,8 +72,17 @@ namespace LightsApi.Cue
 
         public void Dispose()
         {
-            CueSDK.Reinitialize(false);
-            CueSDK.Reset();
+            try
+            {
+                if (CueSDK.IsInitialized)
+                {
+                    CueSDK.Reinitialize(false);
+                    CueSDK.Reset();
+                }
+            }
+            catch (Exception)
+            {
+            }
         }
     }
 }
