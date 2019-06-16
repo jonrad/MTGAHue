@@ -15,6 +15,8 @@ namespace LightsApi
 
         private ILayer[] layers = new ILayer[0];
 
+        private readonly ILightClient lightClient;
+
         private readonly IDelay delayProvider;
 
         private readonly ILayerBuilder layerBuilder;
@@ -34,7 +36,7 @@ namespace LightsApi
         {
             this.delayProvider = delayProvider;
             this.layerBuilder = layerBuilder;
-            LightClient = lightClient;
+            this.lightClient = lightClient;
             this.delay = delay ?? TimeSpan.FromMilliseconds(50);
         }
 
@@ -45,12 +47,10 @@ namespace LightsApi
         {
         }
 
-        public ILightClient LightClient { get; }
-
         public ILayer AddLayer()
         {
             var layer = layerBuilder.Build(
-                LightClient.Lights.ToArray(),
+                lightClient.Lights.ToArray(),
                 TimeSpan.FromMilliseconds(50));
 
             lock (layerSync)
@@ -84,8 +84,8 @@ namespace LightsApi
 
                     while (currentLayers.Length == 0)
                     {
-                        await LightClient.SetColors(
-                            LightClient.Lights.Select(l => RGB.Black),
+                        await lightClient.SetColors(
+                            lightClient.Lights.Select(l => RGB.Black),
                             token);
 
                         WaitHandle.WaitAny(new[]
@@ -111,7 +111,7 @@ namespace LightsApi
 
                     await Task.WhenAll(new[]
                     {
-                        LightClient.SetColors(colors, token),
+                        lightClient.SetColors(colors, token),
                         delayProvider.Wait(delay, token)
                     });
                 };
