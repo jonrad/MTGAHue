@@ -1,6 +1,3 @@
-import React from 'react';
-import Setting from './Setting';
-
 class Configuration extends React.Component {
   constructor(props) {
     super(props);
@@ -50,5 +47,3 @@ class Configuration extends React.Component {
     );
   }
 }
-
-export default Configuration;

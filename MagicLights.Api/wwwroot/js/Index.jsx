@@ -1,9 +1,5 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import LightClientSetup from './LightClientSetup';
-
-let server = "https://localhost:5001/api/"
+console.log("Hello");
+let server = "./api/";
 
 function cast() {
   fetch(server + "demo/cast_spell?colors=Red&colors=Green", {
@@ -48,6 +44,7 @@ function onChange(value) {
   clients = value;
 }
 
+console.log("Here");
 fetch(server + "configuration", {
   method: 'GET',
   headers: {

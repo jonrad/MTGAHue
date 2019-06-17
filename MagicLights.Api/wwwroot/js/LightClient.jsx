@@ -1,6 +1,3 @@
-import React from 'react';
-import Configuration from "./Configuration"
-
 class LightClient extends React.Component {
   constructor(props) {
     super(props);
@@ -51,5 +48,3 @@ class LightClient extends React.Component {
     );
   };
 }
-
-export default LightClient;

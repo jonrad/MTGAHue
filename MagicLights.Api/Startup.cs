@@ -15,6 +15,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using static System.Environment;
+using React.AspNet;
+using JavaScriptEngineSwitcher.ChakraCore;
+using JavaScriptEngineSwitcher.Extensions.MsDependencyInjection;
 
 namespace MagicLights.Api
 {
@@ -38,6 +41,11 @@ namespace MagicLights.Api
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
+
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddReact();
+            services.AddJsEngineSwitcher(options => options.DefaultEngineName = ChakraCoreJsEngine.EngineName)
+                .AddChakraCore();
 
             services
                 .AddCors(options =>
@@ -96,6 +104,16 @@ namespace MagicLights.Api
 
             app.UseCors();
             app.UseHttpsRedirection();
+            app.UseReact(config =>
+            {
+                config.AddScript("~/js/Configuration.jsx");
+                config.AddScript("~/js/Effect.jsx");
+                config.AddScript("~/js/Event.jsx");
+                config.AddScript("~/js/Index.jsx");
+                config.AddScript("~/js/LightClient.jsx");
+                config.AddScript("~/js/LightClientSetup.jsx");
+                config.AddScript("~/js/Setting.jsx");
+            });
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
@@ -103,7 +121,7 @@ namespace MagicLights.Api
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "api/{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=Home}/{action=Index}/{id?}");
             });
 
             var application = container.Resolve<MagicLightsApplication>();
