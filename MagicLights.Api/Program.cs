@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore;
+﻿using ElectronNET.API;
+using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 
 namespace MagicLights.Api
@@ -13,6 +14,7 @@ namespace MagicLights.Api
         public static IWebHostBuilder CreateWebHostBuilder(string[] args)
         {
             return WebHost.CreateDefaultBuilder(args)
+                .UseElectron(args)
                 .UseStartup<Startup>();
         }
     }

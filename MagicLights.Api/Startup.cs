@@ -1,6 +1,7 @@
 ﻿using Castle.Facilities.AspNetCore;
 using Castle.MicroKernel.Registration;
 using Castle.Windsor;
+using ElectronNET.API;
 using MagicLights.Api.Controllers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,6 +13,7 @@ using MTGADispatcher;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 using static System.Environment;
 
 namespace MagicLights.Api
@@ -85,6 +87,7 @@ namespace MagicLights.Api
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                //app.UseBrowserLink();
             }
             else
             {
@@ -111,6 +114,8 @@ namespace MagicLights.Api
             {
                 application.Stop();
             });
+
+            Task.Run(async () => await Electron.WindowManager.CreateWindowAsync());
         }
 
         private static string MtgaOutputPath()
