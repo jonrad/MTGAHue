@@ -16,7 +16,7 @@ namespace MagicLights.Api.Controllers
         }
 
         [HttpPost("cast_spell")]
-        public void CastSpell(MagicColor[]? colors)
+        public IActionResult CastSpell(MagicColor[]? colors)
         {
             if (colors == null)
             {
@@ -25,6 +25,8 @@ namespace MagicLights.Api.Controllers
 
             game.Events.Dispatch<CastSpell>(new CastSpell(
                 new Instance(1, 1, 1, colors)));
+
+            return Ok();
         }
     }
 }

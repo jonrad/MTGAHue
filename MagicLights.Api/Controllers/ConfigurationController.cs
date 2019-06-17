@@ -1,5 +1,6 @@
 ﻿using MagicLights.Api.Models;
 using MagicLights.Configuration;
+using MagicLights.Configuration.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
@@ -11,6 +12,7 @@ namespace MagicLights.Api.Controllers
     public class ConfigurationController : Controller
     {
         private readonly ILightsConfigurationProvider configurationProvider;
+
         private readonly MagicLightsApplication application;
 
         public ConfigurationController(
@@ -24,7 +26,7 @@ namespace MagicLights.Api.Controllers
         [HttpGet()]
         public IActionResult Get()
         {
-            throw new NotImplementedException();
+            return Ok(GetConfiguration());
         }
 
         [HttpPost()]
@@ -45,6 +47,28 @@ namespace MagicLights.Api.Controllers
             {
                 configuration
             });
+        }
+
+        private object GetConfiguration()
+        {
+            var configuration = configurationProvider.Get();
+
+            return new
+            {
+                LightClients = configuration.LightClients.Select(ToModel).ToArray()
+            };
+        }
+
+        private object ToModel(LightClientConfiguration configuration)
+        {
+            return new
+            {
+                configuration.Id,
+                Value = new
+                {
+                    configuration.Enabled
+                }
+            };
         }
 
         private void Save(ConfigurationModel model)

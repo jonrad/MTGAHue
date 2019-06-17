@@ -3,7 +3,9 @@ using CUE.NET.Brushes;
 using CUE.NET.Devices.Generic.Enums;
 using System;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 
 namespace LightsApi.Cue
 {
@@ -15,14 +17,26 @@ namespace LightsApi.Cue
             CorsairLedId? topLed,
             CorsairLedId? bottomLed)
         {
-            if (!CueSDK.IsInitialized)
-            {
-                CueSDK.Initialize(true);
-            }
+            var currentWorkingDirectory = Directory.GetCurrentDirectory();
 
-            if (!CueSDK.HasExclusiveAccess)
+            try
             {
-                CueSDK.Reinitialize(true);
+                Directory.SetCurrentDirectory(
+                    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+
+                if (!CueSDK.IsInitialized)
+                {
+                    CueSDK.Initialize(true);
+                }
+
+                if (!CueSDK.HasExclusiveAccess)
+                {
+                    CueSDK.Reinitialize(true);
+                }
+            }
+            finally
+            {
+                //Directory.SetCurrentDirectory(currentWorkingDirectory);
             }
 
             var keyboard = CueSDK.KeyboardSDK;
