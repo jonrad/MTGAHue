@@ -66,6 +66,7 @@ namespace MagicLights.UI
 
         private void BtnSave_Click(object sender, EventArgs e)
         {
+            model.Save();
         }
     }
 }
