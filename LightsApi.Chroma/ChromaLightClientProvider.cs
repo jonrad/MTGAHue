@@ -1,10 +1,8 @@
 ﻿using Colore;
-using LightsApi;
-using LightsApi.Chroma;
 using System;
 using System.Threading.Tasks;
 
-namespace MagicLights.LightClients
+namespace LightsApi.Chroma
 {
     public class ChromaLightClientProvider
         : AbstractLightClientProvider<ChromaLightClientProvider.ChromaConfiguration>

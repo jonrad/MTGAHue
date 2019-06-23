@@ -43,7 +43,13 @@ namespace MTGADispatcher
 
         public void Stop()
         {
-            StopAsync().Wait();
+            try
+            {
+                StopAsync().Wait();
+            }
+            catch (Exception)
+            {
+            }
         }
 
         private async Task StopAsync()

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LightsApi;
+using System;
 
 namespace MagicLights.LightClients
 {

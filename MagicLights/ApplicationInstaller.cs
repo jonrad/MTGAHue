@@ -1,4 +1,5 @@
-﻿using Castle.Facilities.TypedFactory;
+﻿using Castle.Facilities.Logging;
+using Castle.Facilities.TypedFactory;
 using Castle.MicroKernel;
 using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Configuration;
@@ -18,6 +19,7 @@ namespace MagicLights
         public void Install(IWindsorContainer container, IConfigurationStore store)
         {
             container.AddFacility<TypedFactoryFacility>();
+            container.AddFacility<LoggingFacility>();
 
             container.Register(
                 Component.For<IEffect<CastSpell>>()

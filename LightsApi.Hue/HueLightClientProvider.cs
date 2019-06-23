@@ -1,6 +1,4 @@
-﻿using LightsApi;
-using LightsApi.Hue;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using Q42.HueApi;
 using Q42.HueApi.Streaming;
 using Q42.HueApi.Streaming.Models;
@@ -12,7 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using static System.Environment;
 
-namespace MagicLights.LightClients
+namespace LightsApi.Hue
 {
     public class HueLightClientProvider :
         AbstractLightClientProvider<HueLightClientProvider.Configuration>

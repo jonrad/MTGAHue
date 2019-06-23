@@ -1,9 +1,8 @@
 ﻿using CUE.NET.Devices.Generic.Enums;
-using LightsApi;
-using LightsApi.Cue;
+using System;
 using System.Threading.Tasks;
 
-namespace MagicLights.LightClients
+namespace LightsApi.Cue
 {
     public class CueLightClientProvider : AbstractLightClientProvider<CueLightClientProvider.CueConfiguration>
     {
