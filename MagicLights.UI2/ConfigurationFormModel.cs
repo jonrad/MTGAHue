@@ -1,12 +1,11 @@
-﻿using Castle.Core.Logging;
-using LightsApi;
+﻿using LightsApi;
 using MagicLights.Configuration;
 using MagicLights.Configuration.Models;
 using System;
 using System.Linq;
 using System.Windows.Input;
 
-namespace MagicLights.UI
+namespace MagicLights.UI2
 {
     public class ConfigurationFormModel : Model
     {
@@ -18,7 +17,7 @@ namespace MagicLights.UI
 
         public ConfigurationFormModel()
             : this(
-                  new FileConfigurationProvider(@"config.json"),
+                  new NullConfigurationProvider(),
                   new ILightClientProvider[] { new NullLightClientProvider() })
         {
         }
@@ -27,6 +26,9 @@ namespace MagicLights.UI
             ILightsConfigurationProvider configurationProvider,
             ILightClientProvider[] lightClientProviders)
         {
+            SaveCommand = new RelayCommand(Save);
+            ResetCommand = new RelayCommand(Reset);
+
             this.configurationProvider = configurationProvider;
             this.lightClientProviders = lightClientProviders;
 
@@ -39,14 +41,16 @@ namespace MagicLights.UI
             Reset();
         }
 
-        public ILogger Logger { get; set; } = NullLogger.Instance;
-
         public int Count
         {
             get => Configurations.Length;
         }
 
         public ClientConfigurationModel[] Configurations { get; }
+
+        public ICommand SaveCommand { get; }
+
+        public ICommand ResetCommand { get; }
 
         public void Save()
         {
@@ -56,13 +60,62 @@ namespace MagicLights.UI
         public void Reset()
         {
             configuration = configurationProvider.Get();
+
             var clients = configuration.LightClients.ToLookup(l => l.Id);
 
             foreach (var configurationUiModel in Configurations)
             {
                 configurationUiModel.Configuration =
-                    clients[configurationUiModel.Id].FirstOrDefault();
+                    clients[configurationUiModel.Id].FirstOrDefault() ?? new LightClientConfiguration
+                    {
+                        Id = configurationUiModel.Id
+                    };
             }
+
+            //TODO this should be part of configurationprovider maybe?
+            configuration.LightClients = Configurations.Select(c => c.Configuration).ToArray();
+        }
+
+        private class NullConfigurationProvider : ILightsConfigurationProvider
+        {
+            public Config Get()
+            {
+                return new Config
+                {
+                    LightClients = new LightClientConfiguration[0]
+                };
+            }
+
+            public void Save(Config config)
+            {
+            }
+        }
+    }
+
+    public class RelayCommand : ICommand
+    {
+        private readonly Action<object> execute;
+
+        public RelayCommand(Action<object> execute)
+        {
+            this.execute = execute;
+        }
+
+        public RelayCommand(Action execute)
+            : this(_ => execute())
+        {
+        }
+
+        public event EventHandler CanExecuteChanged;
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+
+        public void Execute(object parameter)
+        {
+            execute(parameter);
         }
     }
 }
