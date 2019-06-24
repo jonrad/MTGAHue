@@ -1,6 +1,5 @@
 ﻿using Castle.MicroKernel.Registration;
 using Castle.Windsor;
-using LightsApi;
 using MTGADispatcher;
 using System;
 using System.Collections.Generic;
