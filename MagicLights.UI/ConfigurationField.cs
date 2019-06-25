@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MagicLights.UI2
+namespace MagicLights.UI
 {
     public class ConfigurationField
     {

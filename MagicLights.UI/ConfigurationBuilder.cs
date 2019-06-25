@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace MagicLights.UI2
+namespace MagicLights.UI
 {
     public class ConfigurationBuilder : IConfigurationBuilder
     {

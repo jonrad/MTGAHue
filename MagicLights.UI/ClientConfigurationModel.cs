@@ -2,7 +2,7 @@
 using MagicLights.Configuration.Models;
 using System;
 
-namespace MagicLights.UI2
+namespace MagicLights.UI
 {
     public class ClientConfigurationModel : Model
     {

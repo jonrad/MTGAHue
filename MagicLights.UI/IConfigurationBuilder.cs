@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace MagicLights.UI2
+namespace MagicLights.UI
 {
     public interface IConfigurationBuilder
     {

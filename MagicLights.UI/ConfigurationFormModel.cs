@@ -8,7 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace MagicLights.UI2
+namespace MagicLights.UI
 {
     public class ConfigurationFormModel : Model
     {

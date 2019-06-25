@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace MagicLights.UI2
+namespace MagicLights.UI
 {
     public class Model : INotifyPropertyChanged
     {

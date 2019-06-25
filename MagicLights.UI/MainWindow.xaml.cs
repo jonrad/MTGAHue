@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace MagicLights.UI2
+namespace MagicLights.UI
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml

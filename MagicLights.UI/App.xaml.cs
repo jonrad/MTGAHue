@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace MagicLights.UI2
+namespace MagicLights.UI
 {
     /// <summary>
     /// Interaction logic for App.xaml
