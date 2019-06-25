@@ -6,6 +6,6 @@ namespace MagicLights
     {
         public Task Start();
 
-        public void Stop();
+        public Task Stop();
     }
 }

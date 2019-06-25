@@ -3,6 +3,7 @@ using MTGADispatcher.Events;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace MagicLights
 {
@@ -46,8 +47,9 @@ namespace MagicLights
             }
         }
 
-        public void Stop()
+        public Task Stop()
         {
+            return Task.CompletedTask;
         }
 
         private IEnumerable<MagicColor> ParseColors(string input)

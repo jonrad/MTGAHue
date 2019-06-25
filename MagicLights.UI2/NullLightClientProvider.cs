@@ -14,8 +14,9 @@ namespace MagicLights.UI2
             return Task.CompletedTask;
         }
 
-        public void Stop()
+        public Task Stop()
         {
+            return Task.CompletedTask;
         }
     }
 

@@ -31,9 +31,9 @@ namespace MagicLights
             magicService.Start();
         }
 
-        public void Stop()
+        public async Task Stop()
         {
-            magicService.Stop();
+            await magicService.Stop();
             lightClientManager.Stop();
         }
     }

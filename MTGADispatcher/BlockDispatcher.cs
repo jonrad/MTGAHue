@@ -41,18 +41,7 @@ namespace MTGADispatcher
                 .ContinueWith(t => { }, TaskContinuationOptions.OnlyOnCanceled);
         }
 
-        public void Stop()
-        {
-            try
-            {
-                StopAsync().Wait();
-            }
-            catch (Exception)
-            {
-            }
-        }
-
-        private async Task StopAsync()
+        public async Task Stop()
         {
             if (task == null)
             {
@@ -130,7 +119,7 @@ namespace MTGADispatcher
 
         public void Dispose()
         {
-            Stop();
+            var _ = Stop();
         }
     }
 }

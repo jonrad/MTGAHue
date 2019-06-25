@@ -5,6 +5,7 @@ using MTGADispatcher;
 using MTGADispatcher.Events;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace MagicLights.UI2
@@ -38,7 +39,7 @@ namespace MagicLights.UI2
             IMagicLights magicLights,
             Game game)
         {
-            SaveCommand = new RelayCommand(Save);
+            SaveCommand = new AsyncRelayCommand(Save);
             ResetCommand = new RelayCommand(Reset);
 
             this.configurationProvider = configurationProvider;
@@ -93,23 +94,23 @@ namespace MagicLights.UI2
             }
         }
 
-        public void Save()
+        public async Task Save()
         {
             configurationProvider.Save(configuration);
 
             IsDirty = false;
 
-            magicLights.Stop();
-            var _ = magicLights
+            await magicLights.Stop();
+            await magicLights
                 .Start()
                 .ContinueWith(__ =>
                 {
-                    game.Events.Dispatch(new CastSpell(
+                    /*game.Events.Dispatch(new CastSpell(
                         new Instance(1, 1, 1, new[]
                         {
                             MagicColor.Red,
                             MagicColor.Blue
-                        })));
+                        })));*/
                 });
         }
 
@@ -146,6 +147,68 @@ namespace MagicLights.UI2
 
             public void Save(Config config)
             {
+            }
+        }
+    }
+
+    public class AsyncRelayCommand : ICommand
+    {
+        private readonly object syncObject = new object();
+
+        private bool isExecuting = false;
+
+        private readonly Func<object, Task> execute;
+
+        public AsyncRelayCommand(Func<object, Task> execute)
+        {
+            this.execute = execute;
+        }
+
+        public AsyncRelayCommand(Func<Task> execute)
+            : this(_ => execute())
+        {
+        }
+
+        public event EventHandler CanExecuteChanged;
+
+        public bool IsExecuting
+        {
+            get => isExecuting;
+            set
+            {
+                isExecuting = value;
+                CanExecuteChanged?.Invoke(this, new EventArgs());
+            }
+        }
+
+        public bool CanExecute(object parameter)
+        {
+            return !isExecuting;
+        }
+
+        public void Execute(object parameter)
+        {
+            lock (syncObject)
+            {
+                if (isExecuting)
+                {
+                    return;
+                }
+
+                execute(parameter);
+            }
+        }
+
+        public async Task ExecuteAsync(object parameter)
+        {
+            try
+            {
+                isExecuting = true;
+                await execute(parameter);
+            }
+            finally
+            {
+                isExecuting = false;
             }
         }
     }
