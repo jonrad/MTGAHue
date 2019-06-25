@@ -29,8 +29,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MagicLights.Integration", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LightsApi.Cue", "LightsApi.Cue\LightsApi.Cue.csproj", "{9521BBFB-274E-446E-8D64-27C68ACEFB50}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MagicLights.UI", "MagicLights.UI\MagicLights.UI.csproj", "{B69E7716-5B37-4205-93A3-C10C5CBAA2CA}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MagicLights.UI2", "MagicLights.UI2\MagicLights.UI2.csproj", "{8A994D09-AFD3-4859-8AE7-C5542CBBE5CD}"
 EndProject
 Global
@@ -91,10 +89,6 @@ Global
 		{9521BBFB-274E-446E-8D64-27C68ACEFB50}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9521BBFB-274E-446E-8D64-27C68ACEFB50}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9521BBFB-274E-446E-8D64-27C68ACEFB50}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B69E7716-5B37-4205-93A3-C10C5CBAA2CA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B69E7716-5B37-4205-93A3-C10C5CBAA2CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B69E7716-5B37-4205-93A3-C10C5CBAA2CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B69E7716-5B37-4205-93A3-C10C5CBAA2CA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8A994D09-AFD3-4859-8AE7-C5542CBBE5CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8A994D09-AFD3-4859-8AE7-C5542CBBE5CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8A994D09-AFD3-4859-8AE7-C5542CBBE5CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
