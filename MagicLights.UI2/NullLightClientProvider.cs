@@ -7,6 +7,18 @@ using System.Threading.Tasks;
 
 namespace MagicLights.UI2
 {
+    public class NullMagicLights : IMagicLights
+    {
+        public Task Start()
+        {
+            return Task.CompletedTask;
+        }
+
+        public void Stop()
+        {
+        }
+    }
+
     public class NullLightClientProvider : ILightClientProvider
     {
         public string Id => "UiProxy";

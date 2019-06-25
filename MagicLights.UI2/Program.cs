@@ -1,11 +1,10 @@
 ﻿using Castle.MicroKernel.Registration;
 using Castle.Windsor;
+using MagicLights.UI2;
 using MTGADispatcher;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using static System.Environment;
 
 namespace MagicLights.UI
@@ -13,7 +12,7 @@ namespace MagicLights.UI
     internal static class Program
     {
         [STAThread]
-        private static async Task Main()
+        private static void Main()
         {
             Game game = new Game();
 
@@ -41,12 +40,12 @@ namespace MagicLights.UI
 
                 var application = container.Resolve<IMagicLights>();
 
-                //await application.Start();
+                var _ = application.Start();
 
-                Application.EnableVisualStyles();
-                Application.SetCompatibleTextRenderingDefault(false);
-                Application.Run(new ConfigurationForm(
-                    container.Resolve<ConfigurationFormModel>()));
+                var model = container.Resolve<ConfigurationFormModel>();
+
+                var ui = new App(model);
+                ui.Run();
             }
         }
 

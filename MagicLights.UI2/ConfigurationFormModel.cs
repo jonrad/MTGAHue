@@ -1,6 +1,8 @@
 ﻿using LightsApi;
 using MagicLights.Configuration;
 using MagicLights.Configuration.Models;
+using MTGADispatcher;
+using MTGADispatcher.Events;
 using System;
 using System.Linq;
 using System.Windows.Input;
@@ -11,30 +13,46 @@ namespace MagicLights.UI2
     {
         private readonly ILightsConfigurationProvider configurationProvider;
 
+        private readonly ILightClientProvider[] lightClientProviders;
+
+        private readonly IMagicLights magicLights;
+
+        private readonly Game game;
+
         private Config configuration;
 
-        private readonly ILightClientProvider[] lightClientProviders;
+        private bool isDirty;
 
         public ConfigurationFormModel()
             : this(
                   new NullConfigurationProvider(),
-                  new ILightClientProvider[] { new NullLightClientProvider() })
+                  new ILightClientProvider[] { new NullLightClientProvider() },
+                  new NullMagicLights(),
+                  new Game())
         {
         }
 
         public ConfigurationFormModel(
             ILightsConfigurationProvider configurationProvider,
-            ILightClientProvider[] lightClientProviders)
+            ILightClientProvider[] lightClientProviders,
+            IMagicLights magicLights,
+            Game game)
         {
             SaveCommand = new RelayCommand(Save);
             ResetCommand = new RelayCommand(Reset);
 
             this.configurationProvider = configurationProvider;
             this.lightClientProviders = lightClientProviders;
-
+            this.magicLights = magicLights;
+            this.game = game;
             Configurations = lightClientProviders.Select(l =>
                 new ClientConfigurationModel(l))
                 .ToArray();
+
+            foreach (var configuration in Configurations)
+            {
+                configuration.ConfigurationChanged += () => IsDirty = true;
+            }
 
             configuration = new Config();
 
@@ -52,9 +70,47 @@ namespace MagicLights.UI2
 
         public ICommand ResetCommand { get; }
 
+        public string Status
+        {
+            get
+            {
+                if (IsDirty)
+                {
+                    return "Press Save for changed to take effect";
+                }
+
+                return "";
+            }
+        }
+
+        public bool IsDirty
+        {
+            get { return isDirty; }
+            set
+            {
+                isDirty = value;
+                OnPropertyChanged(nameof(Status));
+            }
+        }
+
         public void Save()
         {
             configurationProvider.Save(configuration);
+
+            IsDirty = false;
+
+            magicLights.Stop();
+            var _ = magicLights
+                .Start()
+                .ContinueWith(__ =>
+                {
+                    game.Events.Dispatch(new CastSpell(
+                        new Instance(1, 1, 1, new[]
+                        {
+                            MagicColor.Red,
+                            MagicColor.Blue
+                        })));
+                });
         }
 
         public void Reset()
@@ -74,6 +130,8 @@ namespace MagicLights.UI2
 
             //TODO this should be part of configurationprovider maybe?
             configuration.LightClients = Configurations.Select(c => c.Configuration).ToArray();
+
+            IsDirty = false;
         }
 
         private class NullConfigurationProvider : ILightsConfigurationProvider

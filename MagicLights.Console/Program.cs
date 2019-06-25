@@ -56,7 +56,7 @@ namespace MagicLights.Console
             {
                 container.Install(installers.ToArray());
 
-                var application = container.Resolve<MagicLightsApplication>();
+                var application = container.Resolve<IMagicLights>();
 
                 await application.Start();
 

@@ -49,7 +49,7 @@ namespace MagicLights
 
                 Component.For<ILightClientProviderFactory>().AsFactory(),
                 Component.For<LightClientManager>(),
-                Component.For<MagicLightsApplication>());
+                Component.For<IMagicLights>().ImplementedBy<MagicLightsApplication>());
         }
 
         internal class NamedCustomSelector : DefaultTypedFactoryComponentSelector

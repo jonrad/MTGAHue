@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 
 namespace MagicLights.UI2
 {
@@ -8,26 +7,35 @@ namespace MagicLights.UI2
     /// </summary>
     public partial class App : Application
     {
-        /// <summary>
-        /// InitializeComponent
-        /// </summary>
+        public App()
+            : this(new ConfigurationFormModel())
+        {
+        }
+
+        public App(ConfigurationFormModel model)
+        {
+            Model = model;
+        }
+
+        public ConfigurationFormModel Model { get; }
+
         [System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [System.CodeDom.Compiler.GeneratedCodeAttribute("PresentationBuildTasks", "4.0.0.0")]
         public void InitializeComponent()
         {
-#line 5 "..\..\..\App.xaml"
             this.StartupUri = new System.Uri("MainWindow.xaml", System.UriKind.Relative);
-
-#line default
-#line hidden
         }
 
-        [STAThread]
-        public static void Main()
+        protected override void OnStartup(StartupEventArgs e)
         {
-            var application = new App();
-            application.InitializeComponent();
-            application.Run();
+            base.OnStartup(e);
+
+            var window = new MainWindow
+            {
+                DataContext = Model
+            };
+
+            window.Show();
         }
     }
 }

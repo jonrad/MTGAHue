@@ -5,16 +5,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MagicLights.UI2"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MagicLights"
+        Height="291"
+        Width="467">
     <Window.DataContext>
         <local:ConfigurationFormModel />
     </Window.DataContext>
     <Grid>
         <DockPanel VerticalAlignment="Stretch">
-            <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" FlowDirection="RightToLeft">
-                <Button Height="20" Width="100" Margin="10" Command="{Binding SaveCommand}">Save</Button>
-                <Button Height="20" Width="100" Margin="10" Command="{Binding ResetCommand}">Reset</Button>
-            </StackPanel>
+            <DockPanel DockPanel.Dock="Bottom">
+                <Label HorizontalAlignment="Stretch" DockPanel.Dock="Left" Content="{Binding Status}" VerticalAlignment="Center" />
+                <StackPanel Orientation="Horizontal" FlowDirection="RightToLeft">
+                    <Button Height="20" Width="100" Margin="10" Command="{Binding SaveCommand}">Save</Button>
+                    <Button Height="20" Width="100" Margin="10" Command="{Binding ResetCommand}">Reset</Button>
+                </StackPanel>
+            </DockPanel>
             <TabControl
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
@@ -28,6 +33,7 @@
                     <DataTemplate>
                         <StackPanel Margin="10">
                             <CheckBox IsChecked="{Binding Enabled}">Enabled</CheckBox>
+                            <Label Margin="0 20 0 0">More configuration to come....</Label>
                         </StackPanel>
                     </DataTemplate>
                 </TabControl.ContentTemplate>

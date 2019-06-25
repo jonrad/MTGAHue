@@ -1,11 +1,10 @@
-﻿using LightsApi;
-using MagicLights.Configuration;
+﻿using MagicLights.Configuration;
 using MTGADispatcher;
 using System.Threading.Tasks;
 
 namespace MagicLights
 {
-    public class MagicLightsApplication
+    public class MagicLightsApplication : IMagicLights
     {
         private readonly LightClientManager lightClientManager;
 

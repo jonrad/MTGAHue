@@ -3,27 +3,34 @@
   <PropertyGroup>
     <OutputType>winexe</OutputType>
     <TargetFramework>net461</TargetFramework>
-    <ApplicationIcon />
+    <ApplicationIcon>icon.ico</ApplicationIcon>
     <OutputTypeEx>winexe</OutputTypeEx>
     <StartupObject />
+    <Win32Resource />
   </PropertyGroup>
 
   <ItemGroup>
     <EmbeddedResource Update="Properties\Resources.resx" Generator="ResXFileCodeGenerator" LastGenOutput="Resources.Designer.cs" />
     <Compile Update="Properties\Resources.Designer.cs" DesignTime="True" AutoGen="True" DependentUpon="Resources.resx" />
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
     <Compile Update="Settings.Designer.cs" AutoGen="True" DependentUpon="Settings.settings" />
+    <None Update="config.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
     <None Update="Settings.settings" LastGenOutput="Settings.Designer.cs" Generator="SettingsSingleFileGenerator" />
 
     <Page Include="**\*.xaml" SubType="Designer" Generator="MSBuild:Compile" Exclude="App.xaml" />
     <Compile Update="**\*.xaml.cs" SubType="Designer" DependentUpon="%(Filename)" />
 
     <Resource Include="assets\*.*" />
-<!--
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MsBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ApplicationDefinition>
-    -->
 
   </ItemGroup>
 

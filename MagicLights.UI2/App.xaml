@@ -4,6 +4,6 @@
              xmlns:local="clr-namespace:MagicLights.UI2"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <local:Model x:Key="MainViewModel" />
     </Application.Resources>
 </Application>
