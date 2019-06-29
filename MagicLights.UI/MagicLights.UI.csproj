@@ -35,6 +35,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="LightSourceConfiguration.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\MagicLights\MagicLights.csproj" />
   </ItemGroup>
 

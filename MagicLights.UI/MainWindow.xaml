@@ -4,13 +4,38 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MagicLights.UI.Models"
+        xmlns:ui="clr-namespace:MagicLights.UI"
         mc:Ignorable="d"
         Title="MagicLights"
         Height="291"
+        x:Name="main"
         Width="467">
     <Window.DataContext>
         <local:ConfigurationFormModel />
     </Window.DataContext>
+    <Window.Resources>
+        <CompositeCollection x:Key="tabs">
+            <CollectionContainer Collection="{Binding DataContext.Configurations, Source={x:Reference main}}" />
+            <CollectionContainer>
+                <CollectionContainer.Collection>
+                    <x:Array Type="TabItem">
+                        <TabItem Header="Demo">
+                            <TabItem.Content>
+                                <Grid>
+                                    <StackPanel Orientation="Horizontal" FlowDirection="LeftToRight">
+                                        <Button Height="20" Width="100" Margin="10" Command="{Binding CastSpellCommand}">Cast Spell</Button>
+                                    </StackPanel>
+                                </Grid>
+                            </TabItem.Content>
+                        </TabItem>
+                    </x:Array>
+                </CollectionContainer.Collection>
+            </CollectionContainer>
+        </CompositeCollection>
+        <DataTemplate DataType="{x:Type local:ClientConfigurationModel}">
+            <ui:LightSourceConfiguration DataContext="{Binding}" />
+        </DataTemplate>
+    </Window.Resources>
     <Grid>
         <DockPanel VerticalAlignment="Stretch">
             <DockPanel DockPanel.Dock="Bottom">
@@ -23,20 +48,22 @@
             <TabControl
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
-                ItemsSource="{Binding Configurations}">
+                ItemsSource="{Binding Source={StaticResource tabs}}">
+                <TabControl.Resources>
+                    <!--<Binding Path="Configurations" />-->
+                </TabControl.Resources>
                 <TabControl.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding Id}" />
                     </DataTemplate>
                 </TabControl.ItemTemplate>
-                <TabControl.ContentTemplate>
+                <!--<TabControl.ContentTemplate>
                     <DataTemplate>
                         <StackPanel Margin="10">
-                            <CheckBox IsChecked="{Binding Enabled}">Enabled</CheckBox>
-                            <Label Margin="0 20 0 0">More configuration to come....</Label>
+                            <ui:LightSourceConfiguration DataContext="{Binding}" />
                         </StackPanel>
                     </DataTemplate>
-                </TabControl.ContentTemplate>
+                </TabControl.ContentTemplate>-->
             </TabControl>
         </DockPanel>
     </Grid>

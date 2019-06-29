@@ -4,7 +4,6 @@ using MagicLights.Configuration.Models;
 using MagicLights.UI.Designer;
 using MTGADispatcher;
 using MTGADispatcher.Events;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -40,6 +39,7 @@ namespace MagicLights.UI.Models
         {
             SaveCommand = new AsyncRelayCommand(Save);
             ResetCommand = new RelayCommand(Reset);
+            CastSpellCommand = new RelayCommand(CastSpell);
 
             this.configurationProvider = configurationProvider;
             this.magicLights = magicLights;
@@ -69,6 +69,8 @@ namespace MagicLights.UI.Models
         public ICommand SaveCommand { get; }
 
         public ICommand ResetCommand { get; }
+
+        public ICommand CastSpellCommand { get; }
 
         public string Status
         {
@@ -104,13 +106,18 @@ namespace MagicLights.UI.Models
                 .Start()
                 .ContinueWith(__ =>
                 {
-                    game.Events.Dispatch(new CastSpell(
-                        new Instance(1, 1, 1, new[]
-                        {
-                            MagicColor.Red,
-                            MagicColor.Blue
-                        })));
+                    CastSpell();
                 });
+        }
+
+        public void CastSpell()
+        {
+            game.Events.Dispatch(new CastSpell(
+                new Instance(1, 1, 1, new[]
+                {
+                    MagicColor.Red,
+                    MagicColor.Blue
+                })));
         }
 
         public void Reset()
@@ -132,110 +139,6 @@ namespace MagicLights.UI.Models
             configuration.LightClients = Configurations.Select(c => c.Configuration).ToArray();
 
             IsDirty = false;
-        }
-
-        private class NullConfigurationProvider : ILightsConfigurationProvider
-        {
-            public Config Get()
-            {
-                return new Config
-                {
-                    LightClients = new LightClientConfiguration[0]
-                };
-            }
-
-            public void Save(Config config)
-            {
-            }
-        }
-    }
-
-    public class AsyncRelayCommand : ICommand
-    {
-        private readonly object syncObject = new object();
-
-        private bool isExecuting = false;
-
-        private readonly Func<object, Task> execute;
-
-        public AsyncRelayCommand(Func<object, Task> execute)
-        {
-            this.execute = execute;
-        }
-
-        public AsyncRelayCommand(Func<Task> execute)
-            : this(_ => execute())
-        {
-        }
-
-        public event EventHandler CanExecuteChanged;
-
-        public bool IsExecuting
-        {
-            get => isExecuting;
-            set
-            {
-                isExecuting = value;
-                CanExecuteChanged?.Invoke(this, new EventArgs());
-            }
-        }
-
-        public bool CanExecute(object parameter)
-        {
-            return !isExecuting;
-        }
-
-        public void Execute(object parameter)
-        {
-            lock (syncObject)
-            {
-                if (isExecuting)
-                {
-                    return;
-                }
-
-                execute(parameter);
-            }
-        }
-
-        public async Task ExecuteAsync(object parameter)
-        {
-            try
-            {
-                isExecuting = true;
-                await execute(parameter);
-            }
-            finally
-            {
-                isExecuting = false;
-            }
-        }
-    }
-
-    public class RelayCommand : ICommand
-    {
-        private readonly Action<object> execute;
-
-        public RelayCommand(Action<object> execute)
-        {
-            this.execute = execute;
-        }
-
-        public RelayCommand(Action execute)
-            : this(_ => execute())
-        {
-        }
-
-        public event EventHandler CanExecuteChanged;
-
-        public bool CanExecute(object parameter)
-        {
-            return true;
-        }
-
-        public void Execute(object parameter)
-        {
-            execute(parameter);
         }
     }
 }
