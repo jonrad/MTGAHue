@@ -1,6 +1,7 @@
 ﻿using LightsApi;
 using MagicLights.Configuration;
 using MagicLights.Configuration.Models;
+using MagicLights.UI.Designer;
 using MTGADispatcher;
 using MTGADispatcher.Events;
 using System;
@@ -8,13 +9,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace MagicLights.UI
+namespace MagicLights.UI.Models
 {
-    public class ConfigurationFormModel : Model
+    public class ConfigurationFormModel : BaseModel
     {
         private readonly ILightsConfigurationProvider configurationProvider;
-
-        private readonly ILightClientProvider[] lightClientProviders;
 
         private readonly IMagicLights magicLights;
 
@@ -43,9 +42,9 @@ namespace MagicLights.UI
             ResetCommand = new RelayCommand(Reset);
 
             this.configurationProvider = configurationProvider;
-            this.lightClientProviders = lightClientProviders;
             this.magicLights = magicLights;
             this.game = game;
+
             Configurations = lightClientProviders.Select(l =>
                 new ClientConfigurationModel(l))
                 .ToArray();
@@ -105,12 +104,12 @@ namespace MagicLights.UI
                 .Start()
                 .ContinueWith(__ =>
                 {
-                    /*game.Events.Dispatch(new CastSpell(
+                    game.Events.Dispatch(new CastSpell(
                         new Instance(1, 1, 1, new[]
                         {
                             MagicColor.Red,
                             MagicColor.Blue
-                        })));*/
+                        })));
                 });
         }
 
@@ -129,7 +128,7 @@ namespace MagicLights.UI
                     };
             }
 
-            //TODO this should be part of configurationprovider maybe?
+            //TODO this is too hacky
             configuration.LightClients = Configurations.Select(c => c.Configuration).ToArray();
 
             IsDirty = false;

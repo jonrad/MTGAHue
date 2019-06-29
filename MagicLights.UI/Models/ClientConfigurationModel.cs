@@ -2,9 +2,9 @@
 using MagicLights.Configuration.Models;
 using System;
 
-namespace MagicLights.UI
+namespace MagicLights.UI.Models
 {
-    public class ClientConfigurationModel : Model
+    public class ClientConfigurationModel : BaseModel
     {
         private readonly ILightClientProvider lightClientProvider;
 

@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using MagicLights.UI.Models;
+using System.Windows;
 
 namespace MagicLights.UI
 {

@@ -5,21 +5,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MagicLights.UI
+namespace MagicLights.UI.Designer
 {
-    public class NullMagicLights : IMagicLights
-    {
-        public Task Start()
-        {
-            return Task.CompletedTask;
-        }
-
-        public Task Stop()
-        {
-            return Task.CompletedTask;
-        }
-    }
-
     public class NullLightClientProvider : ILightClientProvider
     {
         public string Id => "UiProxy";

@@ -2,6 +2,7 @@
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
 using MagicLights.UI;
+using MagicLights.UI.Models;
 
 namespace MagicLights.UI
 {
