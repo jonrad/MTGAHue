@@ -1,9 +1,9 @@
 ﻿using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
+using LightsApi;
 using MagicLights.Configuration;
 using MagicLights.Effects;
-using MagicLights.LightClients;
 using MTGADispatcher;
 using MTGADispatcher.BlockProcessing;
 using MTGADispatcher.Events;

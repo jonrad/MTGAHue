@@ -1,9 +1,11 @@
-﻿namespace MTGADispatcher
+﻿using System.Threading.Tasks;
+
+namespace MTGADispatcher
 {
     public interface IMagicService
     {
         void Start();
 
-        void Stop();
+        Task Stop();
     }
 }

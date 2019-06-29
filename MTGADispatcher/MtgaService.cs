@@ -1,5 +1,6 @@
 ﻿using MTGADispatcher.BlockProcessing;
 using System;
+using System.Threading.Tasks;
 
 namespace MTGADispatcher
 {
@@ -23,15 +24,15 @@ namespace MTGADispatcher
             blockDispatcher.Start();
         }
 
-        public void Stop()
+        public async Task Stop()
         {
-            blockDispatcher?.Stop();
             blockDispatcher.Subscriptions.Unsubscribe<Block>(blockProcessor.Process);
+            await blockDispatcher.Stop();
         }
 
         public void Dispose()
         {
-            Stop();
+            var _ = Stop();
         }
     }
 }

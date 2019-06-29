@@ -1,34 +1,20 @@
 ﻿using Castle.MicroKernel.Registration;
 using Castle.Windsor;
-using CommandLine;
+using MagicLights.UI;
+using MagicLights.UI.Models;
 using MTGADispatcher;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
 using static System.Environment;
 
-namespace MagicLights.Console
+namespace MagicLights.UI
 {
-    internal class Program
+    internal static class Program
     {
-        public class Options
+        [STAThread]
+        private static void Main()
         {
-            [Option('d', "demo", Required = false, HelpText = "Run demo")]
-            public bool Demo { get; set; }
-        }
-
-        private static async Task Main(string[] args)
-        {
-            Options? options = null;
-
-            var optionsResults = Parser.Default.ParseArguments<Options>(args)
-                .WithParsed(o => options = o);
-
-            if (options == null)
-            {
-                return;
-            }
-
             Game game = new Game();
 
             var path = MtgaOutputPath();
@@ -43,14 +29,11 @@ namespace MagicLights.Console
                     new ApplicationInstaller()
                 });
 
-            if (options.Demo)
-            {
-                installers.Add(new DemoInstaller());
-            }
-
             installers.Add(new HueInstaller());
             installers.Add(new ChromaInstaller());
             installers.Add(new CueInstaller());
+
+            installers.Add(new UiInstaller());
 
             using (var container = new WindsorContainer())
             {
@@ -58,10 +41,12 @@ namespace MagicLights.Console
 
                 var application = container.Resolve<IMagicLights>();
 
-                await application.Start();
+                var _ = application.Start();
 
-                System.Console.WriteLine("Press enter to quit");
-                System.Console.ReadLine();
+                var model = container.Resolve<ConfigurationFormModel>();
+
+                var ui = new App(model);
+                ui.Run();
             }
         }
 

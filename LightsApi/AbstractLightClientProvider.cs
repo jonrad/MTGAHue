@@ -1,8 +1,7 @@
-﻿using LightsApi;
-using System;
+﻿using System;
 using System.Threading.Tasks;
 
-namespace MagicLights.LightClients
+namespace LightsApi
 {
     public abstract class AbstractLightClientProvider<TConfig> :
         ILightClientProvider

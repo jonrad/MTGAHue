@@ -1,11 +1,10 @@
-﻿using LightsApi;
-using MagicLights.Configuration;
+﻿using MagicLights.Configuration;
 using MTGADispatcher;
 using System.Threading.Tasks;
 
 namespace MagicLights
 {
-    public class MagicLightsApplication
+    public class MagicLightsApplication : IMagicLights
     {
         private readonly LightClientManager lightClientManager;
 
@@ -32,9 +31,9 @@ namespace MagicLights
             magicService.Start();
         }
 
-        public void Stop()
+        public async Task Stop()
         {
-            magicService.Stop();
+            await magicService.Stop();
             lightClientManager.Stop();
         }
     }

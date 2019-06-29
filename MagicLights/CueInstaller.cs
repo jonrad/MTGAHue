@@ -1,7 +1,8 @@
 ﻿using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.SubSystems.Configuration;
 using Castle.Windsor;
-using MagicLights.LightClients;
+using LightsApi;
+using LightsApi.Cue;
 
 namespace MagicLights
 {

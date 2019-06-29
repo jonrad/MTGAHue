@@ -1,5 +1,6 @@
 ﻿using MTGADispatcher.Dispatcher;
 using System;
+using System.Threading.Tasks;
 
 namespace MTGADispatcher
 {
@@ -9,6 +10,6 @@ namespace MTGADispatcher
 
         void Start();
 
-        void Stop();
+        Task Stop();
     }
 }

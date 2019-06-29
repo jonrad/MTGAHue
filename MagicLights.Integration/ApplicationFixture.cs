@@ -53,13 +53,13 @@ namespace MagicLights.Integration
 
         public void Stop()
         {
-            var application = Container.Resolve<MagicLightsApplication>();
+            var application = Container.Resolve<IMagicLights>();
             application.Stop();
         }
 
         public void Start(Config config)
         {
-            var application = Container.Resolve<MagicLightsApplication>();
+            var application = Container.Resolve<IMagicLights>();
             var configuration = (ConfigurationProviderProxy)Container.Resolve<ILightsConfigurationProvider>();
 
             configuration.Save(config);
