@@ -102,12 +102,9 @@ namespace MagicLights.UI.Models
             IsDirty = false;
 
             await magicLights.Stop();
-            await magicLights
-                .Start()
-                .ContinueWith(__ =>
-                {
-                    CastSpell();
-                });
+            await magicLights.Start();
+
+            CastSpell();
         }
 
         public void CastSpell()
