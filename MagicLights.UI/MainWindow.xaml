@@ -49,21 +49,11 @@
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
                 ItemsSource="{Binding Source={StaticResource tabs}}">
-                <TabControl.Resources>
-                    <!--<Binding Path="Configurations" />-->
-                </TabControl.Resources>
                 <TabControl.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding Id}" />
                     </DataTemplate>
                 </TabControl.ItemTemplate>
-                <!--<TabControl.ContentTemplate>
-                    <DataTemplate>
-                        <StackPanel Margin="10">
-                            <ui:LightSourceConfiguration DataContext="{Binding}" />
-                        </StackPanel>
-                    </DataTemplate>
-                </TabControl.ContentTemplate>-->
             </TabControl>
         </DockPanel>
     </Grid>
